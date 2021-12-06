@@ -10,6 +10,18 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MagdadMilbat">
         <activity
+            android:name=".ExrChoiceScreen"
+            android:exported="false" />
+        <activity
+            android:name=".ExercisePage"
+            android:exported="false" />
+        <activity
+            android:name=".HistoryPage"
+            android:exported="false" />
+        <activity
+            android:name=".SettingsPage"
+            android:exported="false" />
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
