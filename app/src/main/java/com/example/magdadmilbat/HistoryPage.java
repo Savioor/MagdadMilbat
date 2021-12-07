@@ -11,4 +11,13 @@ public class HistoryPage extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_page);
     }
+
+    /**
+     * populate the history page
+     */
+    private void loadHistory() {
+
+    }
+
+
 }
