@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/layout/activity_exr_choice_screen.xml" value="0.1859375" />
+        <entry key="app/src/main/res/layout/activity_history_page.xml" value="0.33" />
       </map>
     </option>
   </component>
@@ -12,5 +13,12 @@
   </component>
   <component name="ProjectType">
     <option name="id" value="Android" />
+  </component>
+  <component name="VisualizationToolProject">
+    <option name="state">
+      <ProjectState>
+        <option name="scale" value="0.33" />
+      </ProjectState>
+    </option>
   </component>
 </project>
