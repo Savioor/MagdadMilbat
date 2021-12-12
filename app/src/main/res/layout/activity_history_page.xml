@@ -6,5 +6,44 @@
     android:layout_height="match_parent"
     tools:context=".HistoryPage"
     android:orientation="vertical">
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="45dp" />
 
+    <TextView
+        android:id="@+id/tvH"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="היסטוריה:"
+        android:textSize="25sp"
+        android:textStyle="bold" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="15dp" />
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="400dp"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="140dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:id="@+id/lvHistory"
+            android:layout_weight="1" />
+
+        <Space
+            android:layout_width="140dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="25dp" />
 </LinearLayout>
