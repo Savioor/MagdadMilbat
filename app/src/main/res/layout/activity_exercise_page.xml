@@ -5,5 +5,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ExercisePage">
+    
+    
+    <androidx.appcompat.widget.AppCompatImageView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/camera"
+    android:Width="150dp"
+    android:Height="150dp"
+    android:layout_marginTop="25dp"
+    android:scaleType="centerCrop"/>
+
+    
+    
 
 </androidx.constraintlayout.widget.ConstraintLayout>
