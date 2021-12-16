@@ -19,9 +19,11 @@
 
 
     <Button
+        android:id="@+id/esc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="escape" />
+        android:text="escape"    
+        android:layout_marginTop="25dp" />
         
 >
 
