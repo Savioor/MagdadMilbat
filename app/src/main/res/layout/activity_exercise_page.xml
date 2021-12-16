@@ -16,7 +16,12 @@
     android:layout_marginTop="25dp"
     android:scaleType="centerCrop"/>
 
-    
+       <Button
+        android:id="@+id/esc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="camera"
+        android:layout_marginTop="25dp"/> 
     
 
 </androidx.constraintlayout.widget.ConstraintLayout>
