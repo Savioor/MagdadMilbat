@@ -1,28 +1,38 @@
 package com.example.magdadmilbat;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import com.example.MagdadMilbat.R;
 
-public class ExercisePage extends AppCompatActivity {
+public class ExercisePage extends AppCompatActivity implements View.OnClickListener {
+    Button btnBack;
+    TextView tvTimes, tvExercise;
 
-    companion bobject {
-        private const val camara_permission_code = 1;
-        private const val camara = 2;
-    }
-    
-    
-    override fun onCreate(savedInstanceState){
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_page);
-        
-        btn_camera.setOnClickListener {it:View!
-            if(ContextCompat.checkselfpermission(context:this,Manifast.permission.camera)
-               == PackageManager.PERMISSION_GRANTED)
-            {
-             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-            
+
+        btnBack = (Button)findViewById(R.id.btnBack);
+        tvTimes = (TextView)findViewById(R.id.tvTimes);
+        tvExercise = (TextView)findViewById(R.id.tvExercise);
+
+        btnBack.setOnClickListener(this);
+        tvExercise.setText(getIntent().getStringExtra("exercise"));
     }
-    
-    
+
+    @Override
+    public void onClick(View view) {
+        if (view == btnBack)
+        {
+            Intent intent = new Intent(this, ExrChoiceScreen.class);
+            startActivity(intent);
+        }
+    }
 }

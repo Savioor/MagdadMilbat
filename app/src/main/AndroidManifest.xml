@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.magdadmilbat">
+    package="com.example.MagdadMilbat">
 
     <application
         android:allowBackup="true"
@@ -10,19 +10,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MagdadMilbat">
         <activity
-            android:name=".ExrChoiceScreen"
+            android:name="com.example.magdadmilbat.ExrChoiceScreen"
             android:exported="false" />
         <activity
-            android:name=".ExercisePage"
+            android:name="com.example.magdadmilbat.ExercisePage"
             android:exported="false" />
         <activity
-            android:name=".HistoryPage"
+            android:name="com.example.magdadmilbat.HistoryPage"
             android:exported="false" />
         <activity
-            android:name=".SettingsPage"
+            android:name="com.example.magdadmilbat.SettingsPage"
             android:exported="false" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.magdadmilbat.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

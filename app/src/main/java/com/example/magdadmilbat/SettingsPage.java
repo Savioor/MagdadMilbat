@@ -1,41 +1,72 @@
 package com.example.magdadmilbat;
 
+import android.content.Intent;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Bundle;
+import com.example.MagdadMilbat.R;
 
-import com.example.magdadmilbat.database.settings.SettingsManager;
+public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
+    Button btnBack;
+    SeekBar sbLevel, sbTimes;
+    TextView tvLevelNumber, tvTimesNumber;
 
-public class SettingsPage extends AppCompatActivity {
-
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        btnBack = (Button)findViewById(R.id.btnBack);
+        sbLevel = (SeekBar)findViewById(R.id.sbLevel);
+        sbTimes = (SeekBar)findViewById(R.id.sbTimes);
+        tvLevelNumber = (TextView)findViewById(R.id.tvLevelNumber);
+        tvTimesNumber = (TextView)findViewById(R.id.tvTimesNumber);
+
+        btnBack.setOnClickListener(this);
+        sbLevel.setOnSeekBarChangeListener(this);
+        sbTimes.setOnSeekBarChangeListener(this);
+        sbLevel.setMin(1);
+        sbTimes.setMin(1);
+        sbLevel.setMax(10);
+        sbTimes.setMax(10);
     }
 
-    /**
-     * Return to the main menu
-     */
-    private void backToMain() {
+    @Override
+    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+        if (seekBar == sbLevel)
+        {
+            tvLevelNumber.setText(String.valueOf(i));
+        }
+        else if (seekBar == sbTimes)
+        {
+            tvTimesNumber.setText(String.valueOf(i));
+        }
+    }
+
+    @Override
+    public void onStartTrackingTouch(SeekBar seekBar) {
 
     }
 
-    /**
-     * Load the data from the given profile into the UI elements
-     * @param profile
-     */
-    private void loadData(String profile) {
-        SettingsManager manager = SettingsManager.getInstance();
+    @Override
+    public void onStopTrackingTouch(SeekBar seekBar) {
+
     }
 
-    /**
-     * Save the date from the UI elements to memory (both code memory [RAM] and the phone memory
-     * [hard disk])
-     * @param profile
-     */
-    private void saveData(String profile) {
-        SettingsManager manager = SettingsManager.getInstance();
+    @Override
+    public void onClick(View view) {
+        if (view == btnBack)
+        {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
     }
-
 }
