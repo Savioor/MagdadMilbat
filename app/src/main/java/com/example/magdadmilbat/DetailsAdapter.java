@@ -36,7 +36,7 @@ public class DetailsAdapter extends ArrayAdapter<Details> {
 
         Details temp = data.get(position);
         tvExercise.setText(temp.getExercise());
-        tvQuality.setText(temp.getQuality());
+        tvQuality.setText(temp.getRepetition());
         tvDate.setText(temp.getDate());
         tvTime.setText(temp.getTime());
 

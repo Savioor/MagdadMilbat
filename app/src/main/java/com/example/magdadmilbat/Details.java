@@ -1,15 +1,27 @@
 package com.example.magdadmilbat;
 
 public class Details {
+    private String exercise;
     private String date;
     private String time;
-    private int quality;
-    private String exercise;
+    private int level;
+    private int repetition;
+    private int duration;
 
-    public Details(String date, String time, int quality, String exercise) {
+    public Details(String exercise, String date, String time, int level, int repetition, int duration) {
+        this.exercise = exercise;
         this.date = date;
         this.time = time;
-        this.quality = quality;
+        this.level = level;
+        this.repetition = repetition;
+        this.duration = duration;
+    }
+
+    public String getExercise() {
+        return exercise;
+    }
+
+    public void setExercise(String exercise) {
         this.exercise = exercise;
     }
 
@@ -29,19 +41,27 @@ public class Details {
         this.time = time;
     }
 
-    public int getQuality() {
-        return quality;
+    public int getLevel() {
+        return level;
     }
 
-    public void setQuality(int quality) {
-        this.quality = quality;
+    public void setLevel(int level) {
+        this.level = level;
     }
 
-    public String getExercise() {
-        return exercise;
+    public int getRepetition() {
+        return repetition;
     }
 
-    public void setExercise(String exercise) {
-        this.exercise = exercise;
+    public void setRepetition(int repetition) {
+        this.repetition = repetition;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 }

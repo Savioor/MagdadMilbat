@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Migdal David Project/MagdadMilbat/app/src/main/res/drawable-v24/ic_baseline_keyboard_backspace_24.xml" value="0.2203125" />
+        <entry key="..\:/Migdal David Project/MagdadMilbat/app/src/main/res/layout/activity_settings.xml" value="0.22" />
         <entry key="app/src/main/res/layout/activity_exr_choice_screen.xml" value="0.1859375" />
         <entry key="app/src/main/res/layout/activity_history_page.xml" value="0.33" />
       </map>
@@ -18,7 +19,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.33" />
+        <option name="scale" value="0.22" />
       </ProjectState>
     </option>
   </component>

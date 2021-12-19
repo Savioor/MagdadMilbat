@@ -16,7 +16,7 @@
             android:layout_marginLeft="60dp"
             android:textSize="30dp"
             android:text = "חזרות"
-            android:id="@+id/tvTimes"
+            android:id="@+id/tvRepetition"
             />
 
         <TextView

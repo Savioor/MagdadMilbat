@@ -4,20 +4,68 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
     <Button
         android:layout_width="60dp"
         android:layout_height="50dp"
         android:layout_gravity="left"
         android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/ic_baseline_keyboard_backspace_24"
         android:id="@+id/btnBack"
         />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text = "חיוך"
+            android:id="@+id/btnSmile"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text = "פה גדול"
+            android:id="@+id/btnOpenMouth"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text = "נשיקה"
+            android:id="@+id/btnKiss"
+            />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:text = "ניפוח לחיים"
+            android:textSize="12dp"
+            android:id="@+id/btnCheeks"
+            />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="50dp"
         android:layout_marginRight="10dp"
         android:textSize="25dp"
         android:text = "רמת קושי:"
@@ -48,14 +96,14 @@
         android:layout_marginRight="10dp"
         android:textSize="25dp"
         android:text = "מספר חזרות:"
-        android:id="@+id/tvTimes"
+        android:id="@+id/tvRepetition"
         />
 
     <SeekBar
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:id="@+id/sbTimes"
+        android:id="@+id/sbRepetition"
         />
 
     <TextView
@@ -64,47 +112,35 @@
         android:layout_gravity="left"
         android:layout_marginLeft="20dp"
         android:text="1"
-        android:id="@+id/tvTimesNumber"
+        android:id="@+id/tvRepetitionNumber"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:layout_marginTop="15dp"
+        android:layout_marginRight="10dp"
+        android:textSize="25dp"
+        android:text = "משך חזרה:"
+        android:id="@+id/tvDuration"
+        />
+
+    <EditText
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:hint="משך חזרה (בשניות)"
+        android:id="@+id/etDuration"
         />
 
     <Button
-        android:layout_width="350dp"
-        android:layout_height="70dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:text = "חיוך"
-        android:textSize="30dp"
-        android:id="@+id/btnSmile"
-        />
-
-    <Button
-        android:layout_width="350dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text = "פה גדול"
-        android:textSize="30dp"
-        android:id="@+id/btnOpenMouth"
-        />
-
-    <Button
-        android:layout_width="350dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text = "נשיקה"
-        android:textSize="30dp"
-        android:id="@+id/btnKiss"
-        />
-
-    <Button
-        android:layout_width="350dp"
-        android:layout_height="70dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text = "ניפוח לחיים"
-        android:textSize="30dp"
-        android:id="@+id/btnCheeks"
+        android:layout_marginTop="50dp"
+        android:text="save"
+        android:id="@+id/btnSave"
         />
 
 </LinearLayout>

@@ -10,9 +10,12 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.MagdadMilbat.R;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 public class ExercisePage extends AppCompatActivity implements View.OnClickListener {
     Button btnBack;
-    TextView tvTimes, tvExercise;
+    TextView tvRepetition, tvExercise;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,7 +23,7 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_exercise_page);
 
         btnBack = (Button)findViewById(R.id.btnBack);
-        tvTimes = (TextView)findViewById(R.id.tvTimes);
+        tvRepetition = (TextView)findViewById(R.id.tvRepetition);
         tvExercise = (TextView)findViewById(R.id.tvExercise);
 
         btnBack.setOnClickListener(this);
