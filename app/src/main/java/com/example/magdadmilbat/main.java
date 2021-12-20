@@ -14,11 +14,16 @@ import java.util.List;
 import java.util.Vector;
 
 public class main {
-    private static final String filename = "src/firstvid.mp4";
+    private static final String filename = "src/thirdvid.mp4";
     public static void main(String[] args){
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME); // Loading the OpenCV library.
         int numOfFrames = 0;
-        // Mat img = loadImage("src/Screenshot_2.png"); // Getting the image.
+        int RANGE = 30;
+        Mat procImg;
+        Mat circles;
+        int initialY = 0;
+        int firstBallFramesCounter = 0, secondBallFramesCounter = 0, thirdBallFramesCounter = 0, countOfBalls;
+
         VideoCapture vid = new VideoCapture(filename);
         Mat img = new Mat();
         JFrame jframe = new JFrame("Video"); // We create a new JFrame object.
@@ -27,15 +32,13 @@ public class main {
         jframe.setContentPane(vidPanel); // We assign vidpanel to the jframe we created.
         jframe.setSize(2000, 4000); // We set the frame size to 2000x4000
         jframe.setVisible(true); // We make the jframe visible.
-        Mat procImg;
-        Mat circles;
-        int initialY = 0;
-        int firstBallFramesCounter = 0, secondBallFramesCounter = 0, thirdBallFramesCounter = 0, countOfBalls;
 
         while(vid.read(img)) {
+
             if(numOfFrames == 0){
                 initialY = getFrameData(img);
             }
+
             procImg = prepareImage(img); // We prepare the image.
 
             /*
@@ -54,11 +57,9 @@ public class main {
                 // Drawing the circle's outlines.
                 int radius = (int) Math.round(c[2]);
                 Imgproc.circle(img, center, radius, new Scalar(255, 0, 255), 3, 8, 0);
-                if(center.y >= initialY - 30 && center.y <= initialY + 30) countOfBalls++; // Only counts the balls that are in the range of the initial Y axis position.
+                if(center.y >= initialY - RANGE && center.y <= initialY + RANGE) countOfBalls++; // Only counts the balls that are in the range of the initial Y axis position.
             }
-            /**
-             *
-             */
+
             switch(countOfBalls){
                 case 3:
                     firstBallFramesCounter++;
@@ -121,6 +122,7 @@ public class main {
         Mat dest = new Mat(); // Creating a destination Matrix (Image) for the grayscale.
         Imgproc.cvtColor(img, dest, Imgproc.COLOR_RGB2GRAY); // We grayscale the image to get it to binary form
         Imgproc.medianBlur(dest, dest, 3); // We blur the grayscale image using a kernel size of 3.
+        // Imgproc.Canny(dest, dest, 70, 50);
         return dest;
     }
 
