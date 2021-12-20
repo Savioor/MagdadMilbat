@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/ic_baseline_keyboard_backspace_24"
+        android:id="@+id/btnBack"
+        />
+
+    <Button
+        android:layout_width="350dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="50dp"
+        android:layout_gravity="center"
+        android:text = "חיוך"
+        android:textSize="30dp"
+        android:id="@+id/btnSmile"
+        />
+
+    <Button
+        android:layout_width="350dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text = "פה גדול"
+        android:textSize="30dp"
+        android:id="@+id/btnOpenMouth"
+        />
+
+    <Button
+        android:layout_width="350dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text = "נשיקה"
+        android:textSize="30dp"
+        android:id="@+id/btnKiss"
+        />
+
+    <Button
+        android:layout_width="350dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text = "ניפוח לחיים"
+        android:textSize="30dp"
+        android:id="@+id/btnCheeks"
+        />
+</LinearLayout>
