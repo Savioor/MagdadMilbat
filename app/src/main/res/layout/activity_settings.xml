@@ -8,16 +8,11 @@
     <Button
         android:layout_width="60dp"
         android:layout_height="50dp"
-        android:layout_gravity="left"
+        android:layout_gravity="start"
         android:layout_marginLeft="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/ic_baseline_keyboard_backspace_24"
         android:id="@+id/btnBack"
-        />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         />
 
     <TextView
@@ -26,8 +21,8 @@
         android:layout_gravity="right"
         android:layout_marginTop="50dp"
         android:layout_marginRight="10dp"
-        android:textSize="25dp"
-        android:text = "רמת קושי:"
+        android:textSize="25sp"
+        android:text = "@string/difficulty"
         android:id="@+id/tvLevel"
         />
 

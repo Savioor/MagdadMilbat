@@ -10,7 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MagdadMilbat">
         <activity
-            android:name="com.example.magdadmilbat.ExrChoiceScreen"
+            android:name=".FeedbackPage"
             android:exported="false" />
         <activity
             android:name="com.example.magdadmilbat.ExercisePage"
