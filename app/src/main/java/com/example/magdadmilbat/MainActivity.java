@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         if (view == btnStartExercise)
         {
-            Intent intent = new Intent(this, ExrChoiceScreen.class);
+            Intent intent = new Intent(this, ExercisePage.class);
             startActivity(intent);
         }
         else if (view == btnHistory)

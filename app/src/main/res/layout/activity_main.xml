@@ -4,36 +4,33 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.magdadmilbat.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="com.example.magdadmilbat.MainActivity">
 
     <Button
+        android:id="@+id/btnStartExercise"
         android:layout_width="350dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:layout_marginTop="75dp"
-        android:text = "התחל תרגיל"
-        android:textSize="30dp"
-        android:id="@+id/btnStartExercise"
-        />
+        android:text="התחל תרגיל"
+        android:textSize="30dp" />
 
     <Button
-        android:layout_width="350dp"
-        android:layout_height="150dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text = "היסטוריה"
-        android:textSize="30dp"
         android:id="@+id/btnHistory"
-        />
-
-    <Button
         android:layout_width="350dp"
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text = "הגדרות"
-        android:textSize="30dp"
+        android:text="היסטוריה"
+        android:textSize="30dp" />
+
+    <Button
         android:id="@+id/btnSettings"
-        />
+        android:layout_width="350dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:text="הגדרות"
+        android:textSize="30dp" />
 </LinearLayout>
