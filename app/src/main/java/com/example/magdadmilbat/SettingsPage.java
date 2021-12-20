@@ -30,10 +30,10 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
         btnBack = (Button)findViewById(R.id.btnBack);
 
-        btnSmile = (Button)findViewById(R.id.btnSmile);
-        btnOpenMouth = (Button)findViewById(R.id.btnOpenMouth);
-        btnKiss = (Button)findViewById(R.id.btnKiss);
-        btnCheeks = (Button)findViewById(R.id.btnCheeks);
+//        btnSmile = (Button)findViewById(R.id.btnSmile);
+//        btnOpenMouth = (Button)findViewById(R.id.btnOpenMouth);
+//        btnKiss = (Button)findViewById(R.id.btnKiss);
+//        btnCheeks = (Button)findViewById(R.id.btnCheeks);
 
         sbLevel = (SeekBar)findViewById(R.id.sbLevel);
         sbRepetition = (SeekBar)findViewById(R.id.sbRepetition);
@@ -43,10 +43,10 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
         btnBack.setOnClickListener(this);
 
-        btnSmile.setOnClickListener(this);
-        btnOpenMouth.setOnClickListener(this);
-        btnKiss.setOnClickListener(this);
-        btnCheeks.setOnClickListener(this);
+//        btnSmile.setOnClickListener(this);
+//        btnOpenMouth.setOnClickListener(this);
+//        btnKiss.setOnClickListener(this);
+//        btnCheeks.setOnClickListener(this);
 
         sbLevel.setOnSeekBarChangeListener(this);
         sbRepetition.setOnSeekBarChangeListener(this);

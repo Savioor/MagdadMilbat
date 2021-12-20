@@ -22,19 +22,18 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_page);
 
-        btnBack = (Button)findViewById(R.id.btnBack);
-        tvRepetition = (TextView)findViewById(R.id.tvRepetition);
-        tvExercise = (TextView)findViewById(R.id.tvExercise);
-
+        btnBack = (Button) findViewById(R.id.btnBack);
+        tvRepetition = (TextView) findViewById(R.id.tvRepetition);
+        tvExercise = (TextView) findViewById(R.id.tvExercise);
         btnBack.setOnClickListener(this);
         tvExercise.setText(getIntent().getStringExtra("exercise"));
+
     }
 
     @Override
     public void onClick(View view) {
-        if (view == btnBack)
-        {
-            Intent intent = new Intent(this, ExrChoiceScreen.class);
+        if (view == btnBack) {
+            Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
     }
