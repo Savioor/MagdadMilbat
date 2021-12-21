@@ -5,7 +5,7 @@
     android:id="@+id/btnBackMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".FeedbackPage">
+    tools:context="com.example.magdadmilbat.FeedbackPage">
 
     <Button
         android:id="@+id/button"
