@@ -9,10 +9,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.MagdadMilbat.R;
-import com.example.magdadmilbat.Feedback;
-
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 public class ExercisePage extends AppCompatActivity implements View.OnClickListener {
     Button btnBack, btnFeedback;

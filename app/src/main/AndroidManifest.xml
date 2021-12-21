@@ -10,10 +10,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MagdadMilbat">
         <activity
-            android:name=".Feedback"
-            android:exported="false" />
-        <activity
-            android:name="com.example.magdadmilbat.FeedbackPage"
+            android:name="com.example.magdadmilbat.Feedback"
             android:exported="false" />
         <activity
             android:name="com.example.magdadmilbat.ExercisePage"
