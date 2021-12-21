@@ -8,8 +8,6 @@ import android.view.View;
 import android.widget.Button;
 
 import com.example.MagdadMilbat.R;
-import com.example.magdadmilbat.ExercisePage;
-import com.example.magdadmilbat.MainActivity;
 
 public class Feedback extends AppCompatActivity implements View.OnClickListener {
     Button btnBackMain;
@@ -19,7 +17,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_feedback);
 
-        btnBackMain = (Button) findViewById(R.id.btnSettings);
+        btnBackMain = (Button) findViewById(R.id.btnFeedback);
 
         btnBackMain.setOnClickListener(this);
     }

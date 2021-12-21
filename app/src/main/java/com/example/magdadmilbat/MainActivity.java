@@ -19,7 +19,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         btnStartExercise = (Button)findViewById(R.id.btnStartExercise);
         btnHistory = (Button)findViewById(R.id.btnHistory);
-        btnSettings = (Button)findViewById(R.id.btnSettings);
+        btnSettings = (Button)findViewById(R.id.btnFeedback);
 
         btnStartExercise.setOnClickListener(this);
         btnHistory.setOnClickListener(this);
