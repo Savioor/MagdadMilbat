@@ -8,8 +8,8 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-//import com.example.magdadmilbat.FeedbackPage;
 import com.example.MagdadMilbat.R;
+import com.example.magdadmilbat.Feedback;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -41,9 +41,8 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         }
 
-        if (view == btnFeedback)
-        {
-            Intent intent = new Intent(this, FeedbackPage.class);
+        if (view == btnFeedback) {
+            Intent intent = new Intent(this, Feedback.class);
             startActivity(intent);
         }
     }

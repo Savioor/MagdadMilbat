@@ -11,13 +11,13 @@ import com.example.MagdadMilbat.R;
 import com.example.magdadmilbat.ExercisePage;
 import com.example.magdadmilbat.MainActivity;
 
-public class FeedbackPage extends AppCompatActivity implements View.OnClickListener {
+public class Feedback extends AppCompatActivity implements View.OnClickListener {
     Button btnBackMain;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feedback_page);
+        setContentView(R.layout.activity_feedback);
 
         btnBackMain = (Button) findViewById(R.id.btnSettings);
 
