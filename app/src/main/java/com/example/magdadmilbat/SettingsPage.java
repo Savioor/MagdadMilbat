@@ -16,11 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.MagdadMilbat.R;
 
 public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
-    Button btnBack, btnSmile, btnOpenMouth, btnKiss, btnCheeks, btnSave;
+    Button btnBack, btnBreath, btnSave;
     SeekBar sbLevel, sbRepetition;
     TextView tvLevelNumber, tvRepetitionNumber;
     EditText etDuration;
-    SharedPreferences spSmile, spOpenMouth, spKiss, spCheeks;
+    SharedPreferences spBreath;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -30,7 +30,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
         btnBack = (Button)findViewById(R.id.btnBack);
 
-//        btnSmile = (Button)findViewById(R.id.btnSmile);
+        btnBreath = (Button)findViewById(R.id.btnBreath);
 //        btnOpenMouth = (Button)findViewById(R.id.btnOpenMouth);
 //        btnKiss = (Button)findViewById(R.id.btnKiss);
 //        btnCheeks = (Button)findViewById(R.id.btnCheeks);
@@ -43,7 +43,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
         btnBack.setOnClickListener(this);
 
-//        btnSmile.setOnClickListener(this);
+        btnBreath.setOnClickListener(this);
 //        btnOpenMouth.setOnClickListener(this);
 //        btnKiss.setOnClickListener(this);
 //        btnCheeks.setOnClickListener(this);
@@ -55,7 +55,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         sbLevel.setMax(10);
         sbRepetition.setMax(10);
 
-//        spSmile = getSharedPreferences("settings smile", 0);
+        spBreath = getSharedPreferences("settings breath", 0);
 //        spOpenMouth = getSharedPreferences("settings open mouth", 0);
 //        spKiss = getSharedPreferences("settings kiss", 0);
 //        spCheeks = getSharedPreferences("settings cheeks", 0);
@@ -63,25 +63,25 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
     @Override
     public void onClick(View view) {
-        SharedPreferences.Editor editor = spSmile.edit();
+        SharedPreferences.Editor editor = spBreath.edit();
 
         if (view == btnBack)
         {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
-        else if (view == btnOpenMouth)
+        else if (view == btnBreath)
         {
-            editor = spOpenMouth.edit();
+            editor = spBreath.edit();
         }
-        else if (view == btnKiss)
-        {
-            editor = spKiss.edit();
-        }
-        else if (view == btnCheeks)
-        {
-            editor = spCheeks.edit();
-        }
+//        else if (view == btnKiss)
+//        {
+//            editor = spKiss.edit();
+//        }
+//        else if (view == btnCheeks)
+//        {
+//            editor = spCheeks.edit();
+//        }
 
         else if (view == btnSave)
         {
