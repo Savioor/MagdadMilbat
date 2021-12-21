@@ -55,10 +55,10 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         sbLevel.setMax(10);
         sbRepetition.setMax(10);
 
-        spSmile = getSharedPreferences("settings smile", 0);
-        spOpenMouth = getSharedPreferences("settings open mouth", 0);
-        spKiss = getSharedPreferences("settings kiss", 0);
-        spCheeks = getSharedPreferences("settings cheeks", 0);
+//        spSmile = getSharedPreferences("settings smile", 0);
+//        spOpenMouth = getSharedPreferences("settings open mouth", 0);
+//        spKiss = getSharedPreferences("settings kiss", 0);
+//        spCheeks = getSharedPreferences("settings cheeks", 0);
     }
 
     @Override
@@ -82,6 +82,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         {
             editor = spCheeks.edit();
         }
+
         else if (view == btnSave)
         {
             editor.putString("מספר חזרות", "1");
