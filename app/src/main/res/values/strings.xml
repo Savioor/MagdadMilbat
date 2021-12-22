@@ -14,6 +14,6 @@
     <string name="diff_lvl">רמת קושי:</string>
     <string name="num_of_reps">מספר חזרות:</string>
     <string name="duration_sec">משך חזרה (בשניות):</string>
-    <string name="שמירה">save</string>
+    <string name="save">"שמירה"</string>
 
 </resources>

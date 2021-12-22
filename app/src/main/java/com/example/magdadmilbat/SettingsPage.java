@@ -30,7 +30,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
         btnBack = (Button)findViewById(R.id.btnBack);
 
-        btnBreath = (Button)findViewById(R.id.btnBreath);
+//        btnBreath = (Button)findViewById(R.id.btnBreath);
 //        btnOpenMouth = (Button)findViewById(R.id.btnOpenMouth);
 //        btnKiss = (Button)findViewById(R.id.btnKiss);
 //        btnCheeks = (Button)findViewById(R.id.btnCheeks);
@@ -43,7 +43,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
         btnBack.setOnClickListener(this);
 
-        btnBreath.setOnClickListener(this);
+//        btnBreath.setOnClickListener(this);
 //        btnOpenMouth.setOnClickListener(this);
 //        btnKiss.setOnClickListener(this);
 //        btnCheeks.setOnClickListener(this);
