@@ -17,7 +17,10 @@ import androidx.core.app.ActivityCompat;
 
 import com.example.MagdadMilbat.R;
 
-public class ExercisePage extends AppCompatActivity implements View.OnClickListener {
+import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.core.Mat;
+
+public class ExercisePage extends AppCompatActivity implements View.OnClickListener, CameraBridgeViewBase.CvCameraViewListener2 {
     Button btnBack, btnFeedback;
     TextView tvRepetition, tvExercise;
 
@@ -53,5 +56,22 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
             Intent intent = new Intent(this, Feedback.class);
             startActivity(intent);
         }
+    }
+
+    @Override
+    public void onCameraViewStarted(int width, int height) {
+        return;
+    }
+
+    @Override
+    public void onCameraViewStopped() {
+        return;
+    }
+
+    @Override
+    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+        Mat frame = inputFrame.rgba();
+
+        return frame;
     }
 }
