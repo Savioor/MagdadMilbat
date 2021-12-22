@@ -13,6 +13,9 @@ import com.example.magdadmilbat.database.DatabaseManager;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+/**
+ * A page that opens on the end of the practice, with a feedback to the user
+ */
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -20,6 +23,9 @@ import java.time.LocalTime;
 public class Feedback extends AppCompatActivity implements View.OnClickListener {
     Button btnBackMain2;
 
+    /**
+     * on create func - contains  feedback text, return button
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +37,9 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
 
     }
 
+    /**
+     * returns to the main page when click on the back button
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public void onClick(View view) {
         if (view == btnBackMain2) {

@@ -1,7 +1,5 @@
 package com.example.magdadmilbat;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -11,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.MagdadMilbat.R;
 import com.example.magdadmilbat.database.DatabaseManager;
@@ -27,6 +27,9 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
     private DatabaseManager databaseManager;
     private SQLiteDatabase sqLiteDatabase;
     Button btnBack;
+    ListView lvHistory;
+    ArrayList<Details> details;
+    DetailsAdapter detailsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,5 +93,4 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
             startActivity(intent);
         }
     }
-
 }

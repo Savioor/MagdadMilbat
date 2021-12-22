@@ -33,9 +33,6 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
         btnBack = (Button)findViewById(R.id.btnBack);
         btnSave = (Button)findViewById(R.id.btnSave);
-//        btnOpenMouth = (Button)findViewById(R.id.btnOpenMouth);
-//        btnKiss = (Button)findViewById(R.id.btnKiss);
-//        btnCheeks = (Button)findViewById(R.id.btnCheeks);
 
         sbLevel = (SeekBar)findViewById(R.id.sbLevel);
         sbRepetition = (SeekBar)findViewById(R.id.sbRepetition);
