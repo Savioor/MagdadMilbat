@@ -28,12 +28,12 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private void createTrainingTable(SQLiteDatabase sqLiteDatabase)
     {
         String sql = "Create table Training (id integer primary key autoincrement, exerciseDescription text not null," +
-                " trainingQuality integer not null, date text not null, time text not null)";
+                " trainingQuality integer not null, date text not null, time text not null, duration double not null)";
         sqLiteDatabase.execSQL(sql);
     }
     public void addTraining(Training training) {
-        String sql = "insert into Training(date, time, exerciseDescription, trainingQuality) " +
-                "values ('"+training.getDate() + "','" + training.getTime() + "','" + training.getExerciseDescription() + "',"+ training.getTrainingQuality()+ ")";
+        String sql = "insert into Training(date, time, exerciseDescription, trainingQuality, duration) " +
+                "values ('"+training.getDate() + "','" + training.getTime() + "','" + training.getExerciseDescription() + "','"+ training.getTrainingQuality() + "',"+ training.getDuration()+ ")";
         SQLiteDatabase sqLiteDatabase = getWritableDatabase(); // Open connection.
         sqLiteDatabase.execSQL(sql);
         sqLiteDatabase.close(); // Close connection.
@@ -43,14 +43,16 @@ public class DatabaseManager extends SQLiteOpenHelper {
     {
         int dateI = cursor.getColumnIndex("date");
         int timeI = cursor.getColumnIndex("time");
+        int durationI = cursor.getColumnIndex("duration");
         int exerciseDescriptionI = cursor.getColumnIndex("exerciseDescription");
         int trainingQualityI = cursor.getColumnIndex("trainingQuality");
         int trainingQuality = cursor.getInt(trainingQualityI);
+        double duration = cursor.getDouble(durationI);
         String exerciseDescription = cursor.getString(exerciseDescriptionI);
         String date = cursor.getString(dateI);
         String time = cursor.getString(timeI);
 
-        return new Training(date, time, exerciseDescription, trainingQuality);
+        return new Training(date, time, exerciseDescription, trainingQuality,duration);
 
     }
 

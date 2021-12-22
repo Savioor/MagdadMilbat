@@ -6,12 +6,14 @@ public class Training {
     private String time;
     private String exerciseDescription;
     private int trainingQuality;
+    private double duration;
 
-    public Training(String date, String time, String exerciseDescription, int trainingQuality) {
+    public Training(String date, String time, String exerciseDescription, int trainingQuality, double duration) {
         this.date = date;
         this.time = time;
         this.exerciseDescription = exerciseDescription;
         this.trainingQuality = trainingQuality;
+        this.duration = duration;
     }
 
     public String getDate() {
@@ -25,6 +27,8 @@ public class Training {
     public String getTime() {
         return time;
     }
+
+    public double getDuration(){return this.duration;}
 
     public void setTime(String time) {
         this.time = time;
@@ -52,7 +56,8 @@ public class Training {
                 "Date='" + date + '\'' +
                 ", Time='" + time + '\'' +
                 ", Exercise Description: '" + exerciseDescription + '\'' +
-                ", Training Quality: " + trainingQuality +
+                ", Training Quality: " + trainingQuality + '\'' +
+                ", duration:" + duration +
                 '}';
     }
 }
