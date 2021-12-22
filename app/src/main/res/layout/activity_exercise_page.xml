@@ -9,22 +9,22 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
 
-        <Button
-            android:id="@+id/btn_camera"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="250dp"
-            android:text="CAMERA" />
+<!--        <Button-->
+<!--            android:id="@+id/btn_camera"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="250dp"-->
+<!--            android:text="CAMERA" />-->
 
 
-    <androidx.appcompat.widget.AppCompatImageView
-        android:id="@+id/iv_image"
-        android:width="150dp"
-        android:height="150dp"
-        android:layout_marginTop="250dp"
-        android:scaleType="centerCrop"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"/>
+<!--    <androidx.appcompat.widget.AppCompatImageView-->
+<!--        android:id="@+id/iv_image"-->
+<!--        android:width="150dp"-->
+<!--        android:height="150dp"-->
+<!--        android:layout_marginTop="250dp"-->
+<!--        android:scaleType="centerCrop"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_width="wrap_content"/>-->
         
         
         <TextView
