@@ -9,11 +9,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal">
 
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CAMERA"
-        android:layout_marginTop="250dp"/>
+        <Button
+            android:id="@+id/btn_camera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="250dp"
+            android:text="CAMERA" />
 
 
     <androidx.appcompat.widget.AppCompatImageView
@@ -21,7 +22,9 @@
         android:width="150dp"
         android:height="150dp"
         android:layout_marginTop="250dp"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"/>
         
         
         <TextView
