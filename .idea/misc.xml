@@ -3,14 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exercise_details.xml" value="0.4" />
-        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exercise_page.xml" value="0.2" />
-        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exr_choice_screen.xml" value="0.264" />
-        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_feedback.xml" value="0.1" />
-        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_feedback_page.xml" value="0.1" />
-        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_history_page.xml" value="0.4" />
-        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_main.xml" value="0.1" />
-        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_settings.xml" value="0.1" />
+        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_camera.xml" value="0.1" />
+        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exercise_page.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exr_choice_screen.xml" value="0.19375" />
+        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
+        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_settings.xml" value="0.36666666666666664" />
         <entry key="app/src/main/res/layout/activity_exr_choice_screen.xml" value="0.1859375" />
         <entry key="app/src/main/res/layout/activity_history_page.xml" value="0.33" />
       </map>
@@ -26,7 +23,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.2" />
+        <option name="scale" value="0.33" />
       </ProjectState>
     </option>
   </component>
