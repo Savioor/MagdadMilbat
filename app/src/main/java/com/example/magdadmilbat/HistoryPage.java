@@ -32,7 +32,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         databaseManager = new DatabaseManager(this);
         sqLiteDatabase = databaseManager.getWritableDatabase();
         sqLiteDatabase.close();
-        databaseManager.addTraining(new Training("18/1/2002", "2:00", "Breathe", 8));
+        //databaseManager.addTraining(new Training("18/1/2002", "2:00", "Breathe", 8)); --> Test if the function work and we can show the data on the list
         lv = (ListView) findViewById(R.id.lvHistory);
         loadHistory();
         curr = "None";
