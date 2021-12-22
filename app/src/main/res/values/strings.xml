@@ -15,5 +15,6 @@
     <string name="num_of_reps">מספר חזרות:</string>
     <string name="duration_sec">משך חזרה (בשניות):</string>
     <string name="save">"שמירה"</string>
+    <string name="good_job">עבודה טובה!</string>
 
 </resources>
