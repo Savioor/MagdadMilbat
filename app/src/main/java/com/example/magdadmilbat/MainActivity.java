@@ -9,9 +9,15 @@ import android.widget.Button;
 
 import com.example.MagdadMilbat.R;
 
+/**
+ * The main page
+ */
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnStartExercise, btnHistory, btnSettings;
 
+    /**
+     * on create func - contains three buttons - exercise, history and settings
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +32,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnSettings.setOnClickListener(this);
     }
 
+    /**
+     * go to the relevant page on click
+     */
     @Override
     public void onClick(View view) {
         if (view == btnStartExercise)

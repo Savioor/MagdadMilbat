@@ -23,12 +23,13 @@ public class HistoryPage extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_history_page);
 
         btnBack = (Button)findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(this);
         details = new ArrayList<Details>();
         detailsAdapter = new DetailsAdapter(this, details);
         lvHistory = (ListView)findViewById(R.id.lvHistory);
 
         lvHistory.setAdapter(detailsAdapter);
-        btnBack.setOnClickListener(this);
+
     }
 
     @Override
