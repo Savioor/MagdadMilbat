@@ -26,7 +26,7 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
         tvRepetition = (TextView) findViewById(R.id.tvRepetition);
         tvExercise = (TextView) findViewById(R.id.tvExercise);
 
-        tvExercise.setText(getIntent().getStringExtra("exercise"));
+//        tvExercise.setText(getIntent().getStringExtra("exercise"));
 
     }
 
