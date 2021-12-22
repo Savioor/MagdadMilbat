@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,11 +17,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.MagdadMilbat.R;
 
 public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener {
-    Button btnBack, btnBreath, btnSave;
+    Button btnBack, btnSave;
     SeekBar sbLevel, sbRepetition;
     TextView tvLevelNumber, tvRepetitionNumber;
     EditText etDuration;
     SharedPreferences spBreath;
+    int sbLevelNumber = 1;
+    int sbRepNumber = 1;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -29,8 +32,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         setContentView(R.layout.activity_settings);
 
         btnBack = (Button)findViewById(R.id.btnBack);
-
-        btnBreath = (Button)findViewById(R.id.btnBreath);
+        btnSave = (Button)findViewById(R.id.btnSave);
 //        btnOpenMouth = (Button)findViewById(R.id.btnOpenMouth);
 //        btnKiss = (Button)findViewById(R.id.btnKiss);
 //        btnCheeks = (Button)findViewById(R.id.btnCheeks);
@@ -40,13 +42,9 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         tvLevelNumber = (TextView)findViewById(R.id.tvLevelNumber);
         tvRepetitionNumber = (TextView)findViewById(R.id.tvRepetitionNumber);
         etDuration = (EditText)findViewById(R.id.etDuration);
-
+        btnSave.setOnClickListener(this);
         btnBack.setOnClickListener(this);
 
-        btnBreath.setOnClickListener(this);
-//        btnOpenMouth.setOnClickListener(this);
-//        btnKiss.setOnClickListener(this);
-//        btnCheeks.setOnClickListener(this);
 
         sbLevel.setOnSeekBarChangeListener(this);
         sbRepetition.setOnSeekBarChangeListener(this);
@@ -55,41 +53,46 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         sbLevel.setMax(10);
         sbRepetition.setMax(10);
 
-        spBreath = getSharedPreferences("settings breath", 0);
-//        spOpenMouth = getSharedPreferences("settings open mouth", 0);
-//        spKiss = getSharedPreferences("settings kiss", 0);
-//        spCheeks = getSharedPreferences("settings cheeks", 0);
+        spBreath = getSharedPreferences("settingsBreath", 0);
+        String numberOfrep = spBreath.getString("numberOfrep",null);
+        String difficulty = spBreath.getString("difficulty",null);
+        String duration = spBreath.getString("duration",null);
+        if(numberOfrep != null){
+            sbRepNumber = Integer.parseInt(numberOfrep);
+            sbRepetition.setProgress(sbRepNumber);
+            tvRepetitionNumber.setText(numberOfrep);
+        }
+        if(difficulty != null){
+            tvLevelNumber.setText(difficulty);
+            sbLevelNumber = Integer.parseInt(difficulty);
+            sbLevel.setProgress(sbLevelNumber);
+        }
+        if(duration != null){
+            etDuration.setText(duration);
+        }
+
     }
 
     @Override
     public void onClick(View view) {
-        SharedPreferences.Editor editor = spBreath.edit();
 
         if (view == btnBack)
         {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
-        else if (view == btnBreath)
-        {
-            editor = spBreath.edit();
-        }
-//        else if (view == btnKiss)
-//        {
-//            editor = spKiss.edit();
-//        }
-//        else if (view == btnCheeks)
-//        {
-//            editor = spCheeks.edit();
-//        }
 
         else if (view == btnSave)
         {
-            editor.putString("מספר חזרות", "1");
-            editor.putString("קושי", "1");
-            editor.putString("משך זמן", "1");
-            editor.putString("תאריך", "1");
-            editor.putString("שעה", "1");
+            SharedPreferences.Editor editor = spBreath.edit();
+            String d = etDuration.getText().toString();
+            editor.putString("numberOfrep", String.valueOf(sbRepNumber));
+            editor.putString("difficulty", String.valueOf(sbLevelNumber));
+            if(d.length() > 0){
+                editor.putString("duration", d);
+            }
+            editor.putString("date", "1");
+            editor.putString("hour", "1");
             editor.apply();
         }
     }
@@ -99,10 +102,12 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         if (seekBar == sbLevel)
         {
             tvLevelNumber.setText(String.valueOf(i));
+            sbLevelNumber = i;
         }
         else if (seekBar == sbRepetition)
         {
             tvRepetitionNumber.setText(String.valueOf(i));
+            sbRepNumber = i;
         }
     }
 
