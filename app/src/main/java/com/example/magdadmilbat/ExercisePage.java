@@ -1,15 +1,19 @@
 package com.example.magdadmilbat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
 import com.example.MagdadMilbat.R;
 
@@ -17,8 +21,8 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
     Button btnBack, btnFeedback;
     TextView tvRepetition, tvExercise;
 
-    private SurfaceTexture previewFrameTexture;
-    private SurfaceView previewDisplayView;
+//    private SurfaceTexture previewFrameTexture;
+//    private SurfaceView previewDisplayView;
 
 
     @Override
@@ -35,32 +39,6 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
 
         tvExercise.setText(getIntent().getStringExtra("exercise"));
 
-
-
-        previewDisplayView = new SurfaceView(this);
-        setupPreviewDisplayView();
-
-//        PermissionHelper.checkAndRequestCameraPermissions(this);
-//
-//        glSurfaceView.setVisibility(View.VISIBLE);
-
-//        cameraInput.start(this, faceMesh.getGlContext(), CameraInput.CameraFacing.FRONT,
-//                1024, 768);
-
-    }
-
-    private void setupPreviewDisplayView() {
-//            previewDisplayView.setVisibility(View.GONE);
-//            ViewGroup viewGroup = findViewById(R.id.preview_display_layout);
-//            viewGroup.addView(previewDisplayView);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-//        if (PermissionHelper.cameraPermissionsGranted(this)) {
-//            startCamera();
-//        }
     }
 
 
