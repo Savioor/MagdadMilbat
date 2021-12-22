@@ -16,7 +16,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="מספר חזרות: "
+            android:text="@string/num_of_reps"
             android:id="@+id/tvRepetition"
             />
 
@@ -27,7 +27,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="רמת קושי: "
+            android:text="@string/diff_lvl"
             android:id="@+id/tvLevel"
             />
 
@@ -38,7 +38,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="משך (בשניות): "
+            android:text="@string/duration"
             android:id="@+id/tvDuration"
             />
 
@@ -57,7 +57,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="סוג תרגיל: "
+            android:text="@string/exercise_kind"
             android:id="@+id/tvExercise"
             />
 
@@ -68,7 +68,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="שעה: "
+            android:text="@string/time"
             android:id="@+id/tvTime"
             />
 
@@ -79,7 +79,7 @@
             android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:text="תאריך: "
+            android:text="@string/date"
             android:id="@+id/tvDate"
             />
 

@@ -13,7 +13,7 @@
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:layout_marginTop="75dp"
-        android:text="התחל תרגיל"
+        android:text="@string/start_exercise"
         android:textSize="30dp" />
 
     <Button
@@ -22,7 +22,7 @@
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="היסטוריה"
+        android:text="@string/history"
         android:textSize="30dp" />
 
     <Button
@@ -31,6 +31,6 @@
         android:layout_height="150dp"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="הגדרות"
+        android:text="@string/settings"
         android:textSize="30dp" />
 </LinearLayout>

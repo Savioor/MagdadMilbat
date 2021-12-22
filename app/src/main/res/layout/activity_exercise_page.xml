@@ -11,29 +11,19 @@
 
 
         <TextView
+            android:id="@+id/tvRepetition"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="60dp"
-            android:textSize="30dp"
-            android:text = "חזרות"
-            android:id="@+id/tvRepetition"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:text = "סוג תרגיל"
-            android:id="@+id/tvExercise"
-            />
+            android:text="@string/repetitions"
+            android:textSize="30dp" />
 
         <Button
+            android:id="@+id/btnBack"
             android:layout_width="60dp"
             android:layout_height="50dp"
             android:layout_marginRight="60dp"
-            android:background="@drawable/ic_baseline_keyboard_backspace_24"
-            android:id="@+id/btnBack"
-            />
+            android:background="@drawable/ic_baseline_keyboard_backspace_24" />
 
     </LinearLayout>
 
@@ -44,7 +34,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="10dp"
-        android:text="סיום"
+        android:text="@string/finish"
         android:textSize="30dp" />
 
     <ImageView

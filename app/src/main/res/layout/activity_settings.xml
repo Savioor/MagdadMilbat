@@ -15,15 +15,6 @@
         android:id="@+id/btnBack"
         />
 
-    <Button
-        android:id="@+id/btnBreath"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:text="נשיפה עמוקה" />
-
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -58,7 +49,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
         android:textSize="25dp"
-        android:text = "מספר חזרות:"
+        android:text ="@string/num_of_reps"
         android:id="@+id/tvRepetition"
         />
 
@@ -85,7 +76,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
         android:textSize="25dp"
-        android:text = "משך חזרה:"
+        android:text = "@string/duration_sec"
         android:id="@+id/tvDuration"
         />
 
@@ -93,7 +84,7 @@
         android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:hint="משך חזרה (בשניות)"
+        android:hint="@string/duration_sec"
         android:id="@+id/etDuration"
         />
 
@@ -102,7 +93,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:text="save"
+        android:text="@string/save"
         android:id="@+id/btnSave"
         />
 
