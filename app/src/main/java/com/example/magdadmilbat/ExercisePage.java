@@ -1,10 +1,12 @@
 package com.example.magdadmilbat;
 
 import android.content.Intent;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +20,9 @@ import com.example.MagdadMilbat.R;
 public class ExercisePage extends AppCompatActivity implements View.OnClickListener {
     Button btnBack, btnFeedback;
     TextView tvRepetition, tvExercise;
+    Camera camera;
+    FrameLayout cameraFrameLayout;
+    ShowCamera showCamera;
 
     /**
      * on create func - contains return button
@@ -37,6 +42,11 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
         tvRepetition = (TextView) findViewById(R.id.tvRepetition);
         tvExercise = (TextView) findViewById(R.id.tvExercise);
 
+        // open camera
+        cameraFrameLayout = findViewById(R.id.cameraFrameLayout);
+        camera = Camera.open();
+        showCamera = new ShowCamera(this, camera);
+        cameraFrameLayout.addView(showCamera);
     }
     /**
      * returns to the main page when click on the back button
