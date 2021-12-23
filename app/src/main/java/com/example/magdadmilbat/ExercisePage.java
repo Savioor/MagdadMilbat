@@ -18,7 +18,7 @@ import com.example.MagdadMilbat.R;
  *  # TODO: display practice duration and num of reps
  */
 public class ExercisePage extends AppCompatActivity implements View.OnClickListener {
-    Button btnBack, btnFeedback;
+    Button btnBack, btnBack0, btnFeedback;
     TextView tvRepetition, tvExercise;
     Camera camera;
     FrameLayout cameraFrameLayout;
@@ -37,6 +37,8 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
 
         btnBack = (Button) findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
+        btnBack0 = (Button) findViewById(R.id.btnBack0);
+        btnBack0.setOnClickListener(this); //temporary btnBack button
         btnFeedback = (Button) findViewById(R.id.btnFeedback);
         btnFeedback.setOnClickListener(this);
         tvRepetition = (TextView) findViewById(R.id.tvRepetition);
@@ -54,6 +56,11 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     public void onClick(View view) {
+        if (view == btnBack0) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
         if (view == btnBack) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);

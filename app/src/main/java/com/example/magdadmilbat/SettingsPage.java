@@ -97,6 +97,9 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             editor.putString("date", "1");
             editor.putString("hour", "1");
             editor.apply();
+
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
         }
     }
 
