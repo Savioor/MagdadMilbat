@@ -22,7 +22,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
     TextView tvLevelNumber, tvRepetitionNumber;
     EditText etDuration;
     SharedPreferences spBreath;
-    int sbLevelNumber = 1;
+    int sbLevelNumber = 1; //difficulty level
     int sbRepNumber = 1;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -33,27 +33,30 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
         btnBack = (Button)findViewById(R.id.btnBack);
         btnSave = (Button)findViewById(R.id.btnSave);
-
         sbLevel = (SeekBar)findViewById(R.id.sbLevel);
         sbRepetition = (SeekBar)findViewById(R.id.sbRepetition);
         tvLevelNumber = (TextView)findViewById(R.id.tvLevelNumber);
         tvRepetitionNumber = (TextView)findViewById(R.id.tvRepetitionNumber);
         etDuration = (EditText)findViewById(R.id.etDuration);
+        //Set listeners
         btnSave.setOnClickListener(this);
         btnBack.setOnClickListener(this);
-
-
         sbLevel.setOnSeekBarChangeListener(this);
         sbRepetition.setOnSeekBarChangeListener(this);
+
+        // set the range of the slider (min & max)
         sbLevel.setMin(1);
         sbRepetition.setMin(1);
         sbLevel.setMax(10);
         sbRepetition.setMax(10);
 
+        // Sets the SharedPreferences "settingsBreath"
         spBreath = getSharedPreferences("settingsBreath", 0);
         String numberOfrep = spBreath.getString("numberOfrep",null);
         String difficulty = spBreath.getString("difficulty",null);
         String duration = spBreath.getString("duration",null);
+
+        //If there are already saved settings,display and update the page
         if(numberOfrep != null){
             sbRepNumber = Integer.parseInt(numberOfrep);
             sbRepetition.setProgress(sbRepNumber);
@@ -70,6 +73,9 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
     }
 
+
+//   * returns to the main page when click on the back button.
+//   * if btnSave clicked ,save the "settingsBreath" on SharedPreferences.
     @Override
     public void onClick(View view) {
 
@@ -94,6 +100,8 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         }
     }
 
+    //if slider level change, update the difficulty level setting
+    //if slider Repetition change,update the "number Of Repetition" setting
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         if (seekBar == sbLevel)

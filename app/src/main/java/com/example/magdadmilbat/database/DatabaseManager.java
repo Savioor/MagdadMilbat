@@ -19,10 +19,11 @@ public class DatabaseManager extends SQLiteOpenHelper {
         createTrainingTable(sqLiteDatabase);
     }
 
+    //The function updates the table
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("drop table Training");
-        onCreate(sqLiteDatabase);
+        sqLiteDatabase.execSQL("drop table Training"); //Deletes the table
+        onCreate(sqLiteDatabase); // call to "onCreate" function,that will recreate the table
     }
 
     private void createTrainingTable(SQLiteDatabase sqLiteDatabase)
@@ -31,6 +32,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 " trainingQuality integer not null, date text not null, time text not null, duration double not null)";
         sqLiteDatabase.execSQL(sql);
     }
+
+    /** This function adds the value of the training it receives to the training table **/
     public void addTraining(Training training) {
         String sql = "insert into Training(date, time, exerciseDescription, trainingQuality, duration) " +
                 "values ('"+training.getDate() + "','" + training.getTime() + "','" + training.getExerciseDescription() + "','"+ training.getTrainingQuality() + "',"+ training.getDuration()+ ")";
@@ -39,6 +42,10 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sqLiteDatabase.close(); // Close connection.
     }
 
+/**
+    This method gets a cursor that holds a record (row) from the training table
+    and creates for us a training object according to that record.
+**/
     private Training getTraining(Cursor cursor)
     {
         int dateI = cursor.getColumnIndex("date");
@@ -56,12 +63,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     }
 
+/**
+    This function receives from the table all the training performed,
+    and adds it to the array of training that we return at the end.
+**/
     public ArrayList<Training> getAllTraining() {
-        ArrayList<Training> trainingArrayList = new ArrayList<>();
+        ArrayList<Training> trainingArrayList = new ArrayList<>(); //array of training
 
         SQLiteDatabase sqLiteDatabase = getReadableDatabase();
         Cursor cursor = sqLiteDatabase.rawQuery("select * from Training", null);
-        while(cursor.moveToNext()) {
+
+        while(cursor.moveToNext()) { //Goes through all the records and adds them to the array
             trainingArrayList.add(getTraining(cursor));
         }
         cursor.close();
