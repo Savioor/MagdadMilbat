@@ -37,7 +37,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         setContentView(R.layout.activity_history_page);
         btnBack = (Button)findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
-        databaseManager = new DatabaseManager(this);
+        databaseManager = new DatabaseManager(this); //  initialization the database
         sqLiteDatabase = databaseManager.getWritableDatabase();
         sqLiteDatabase.close();
         //databaseManager.addTraining(new Training("18/1/2002", "2:00", "Breathe", 8)); --> Test if the function work and we can show the data on the list
@@ -53,6 +53,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
     private void loadHistory() {
         trainings = databaseManager.getAllTraining();
         arraylistToStringArray();
+        //creating the list view
         adap = new ArrayAdapter(this, android.R.layout.simple_list_item_1, trainingHistory);
         lv.setAdapter(adap);
     }
@@ -73,6 +74,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         }
     }
 
+    // checks if training data are empty,And displays a message
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
         if(trainings.isEmpty())
@@ -85,6 +87,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         }
     }
 
+     //returns to the main page when click on the back button
     @Override
     public void onClick(View view) {
         if (view == btnBack)

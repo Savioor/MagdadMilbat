@@ -38,6 +38,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     }
 
     /**
+     * creates Training object and adds to training Database
      * returns to the main page when click on the back button
      */
     @RequiresApi(api = Build.VERSION_CODES.O)

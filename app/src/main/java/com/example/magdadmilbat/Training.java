@@ -3,10 +3,10 @@ package com.example.magdadmilbat;
 public class Training {
     //private Date date;
     private String date;
-    private String time;
+    private String time; // Training start time
     private String exerciseDescription;
     private int trainingQuality;
-    private double duration;
+    private double duration;//duration that the Training take
 
     public Training(String date, String time, String exerciseDescription, int trainingQuality, double duration) {
         this.date = date;
