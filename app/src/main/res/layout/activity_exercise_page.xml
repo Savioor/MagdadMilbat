@@ -1,58 +1,13 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:opencv="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal">
-
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="60dp"
-            android:textSize="30dp"
-            android:text = "חזרות"
-            android:id="@+id/tvRepetition"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="30dp"
-            android:text = "סוג תרגיל"
-            android:id="@+id/tvExercise"
-            />
-
-        <Button
-            android:layout_width="60dp"
-            android:layout_height="50dp"
-            android:layout_marginRight="60dp"
-            android:background="@drawable/ic_baseline_keyboard_backspace_24"
-            android:id="@+id/btnBack"
-            />
-
-    </LinearLayout>
-
-
-    <Button
-        android:id="@+id/btnFeedback"
-        android:layout_width="270dp"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginTop="10dp"
-        android:text="סיום"
-        android:textSize="30dp" />
-
-    <ImageView
-        android:layout_width="350dp"
-        android:layout_height="518dp"
-        android:layout_gravity="center"
-        android:layout_marginTop="20dp"
-        android:layout_marginBottom="20dp"
-        android:background="@color/black" />
-
+    android:layout_height="match_parent" >
+    <org.opencv.android.JavaCameraView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone"
+        android:id="@+id/HelloOpenCvView"
+        opencv:show_fps="true"
+        opencv:camera_id="any" />
 </LinearLayout>

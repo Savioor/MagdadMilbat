@@ -32,8 +32,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (!OpenCVLoader.initDebug())
             Log.e("OpenCV", "Unable to load OpenCV!");
-        else
+        else {
             Log.d("OpenCV", "OpenCV loaded Successfully!");
+        }
     }
 
     @Override
@@ -54,4 +55,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             startActivity(intent);
         }
     }
+
+
 }
