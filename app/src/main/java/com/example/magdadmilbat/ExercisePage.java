@@ -46,8 +46,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     private final int PERMISSIONS_READ_CAMERA=1;
     TextView tvRepetition, tvExercise;
 
+    /* IMAGE PROCESSING VARIABLES */
     static Scalar[][] rgbRange= new Scalar[3][2];
-    static double ballArea;
+    static double ballArea = Double.MAX_VALUE;
     private CameraBridgeViewBase mOpenCvCameraView;
     int numOfFrames = 0;
     int RANGE = 30;
@@ -55,6 +56,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     Mat circles;
     int initialY = 0;
     int firstBallFramesCounter = 0, secondBallFramesCounter = 0, thirdBallFramesCounter = 0, countOfBalls;
+    /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -72,6 +74,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         }
     };
 
+    /*
+        Initialization of variables, properties and checking for permissions.
+     */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -91,6 +96,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
 
+    /*
+        Initialization of the OpenCV Library.
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -120,24 +128,35 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             mOpenCvCameraView.disableView();
     }
 
+    /*
+        Must be implemented in order to extend the view listener.
+     */
     @Override
     public void onCameraViewStarted(int width, int height) {
     }
 
+    /*
+        Must be implemented in order to extend the view listener.
+     */
     @Override
     public void onCameraViewStopped() {
     }
 
+    /**
+     * Gets each camera frame and handles it accordingly.
+     * @param inputFrame the current frame.
+     * @return the frame after it's marked.
+     */
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
-        Mat frame = inputFrame.rgba();
+        Mat frame = inputFrame.rgba(); // we get the frame in rgb.
+
         if(numOfFrames == 0){
-            initialY = getFrameData(frame);
+            initialY = getFrameData(frame); // we get the initial Y and get starting parameters.
         }
 
         frame = findContoursAndDraw(frame);
         numOfFrames++;
-
         return frame;
     }
 
@@ -161,58 +180,72 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     private static int getFrameData(Mat img) {
         Mat procImg = prepareImage(img);
         Mat circles = new Mat();
-
+        int sensitivity = 22;
 
         Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
 
-        double[] c = circles.get(0, 0); // Getting the circle, c is in the format of: {x, y, radius}.
-        Point center = new Point(Math.round(c[0]), Math.round(c[1]));
-        double[] rgb = img.get((int)center.y, (int)center.x);
-        int sensitivity = 22;
-        rgbRange[0][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity);
-        rgbRange[0][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity);
-        ballArea = Math.PI * c[2] * c[2];
+        double[] c; // a circle.
+        Point center; // the circle's center.
+        double[] rgb; // the circle's color.
 
+        for(int i = 0; i < 2; i++){
+            c = circles.get(0, i);
+            center = new Point(Math.round(c[0]), Math.round(c[1]));
+            rgb = img.get((int)center.y, (int)center.x);
 
-        c = circles.get(0, 1);
-        center = new Point(Math.round(c[0]), Math.round(c[1]));
-        rgb = img.get((int)center.y, (int)center.x);
-        rgbRange[1][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity);
-        rgbRange[1][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity);
-        ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
+            rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball.
+            rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
+            ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
+        }
 
-        c = circles.get(0, 2);
-        center = new Point(Math.round(c[0]), Math.round(c[1]));
-        rgb = img.get((int)center.y, (int)center.x);
-        rgbRange[2][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity);
-        rgbRange[2][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity);
-        ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
-
-
-        return (int)Math.round(circles.get(0, 0)[1]);
+        return (int)Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
     }
 
+    /**
+     * This function gets an image (which is a singular frame), finds the balls, draws them and returns the frame.
+     * @param img the image to analyze.
+     * @return processed image.
+     */
     private static Mat findContoursAndDraw(Mat img){
+        /*
+         * We divide the frame to 3 separate frames, each representing one ball.
+         */
         Mat green = new Mat();
         Mat blue = new Mat();
         Mat orange = new Mat();
+        /* --------------------------------------------------------------------------------------------------------- */
 
+        /*
+         * Each frame will consist only of the pixels in the color range of each ball.
+         */
         Core.inRange(img, rgbRange[0][0], rgbRange[0][1], green);
         Core.inRange(img, rgbRange[1][0], rgbRange[1][1], orange);
         Core.inRange(img, rgbRange[2][0], rgbRange[2][1], blue);
+        /* --------------------------------------------------------------------------------------------------------- */
 
-
+        /*
+         * Creating separate contour lists for each of the frames.
+         */
         List<MatOfPoint> greenContours = new ArrayList<MatOfPoint>();
         List<MatOfPoint> blueContours = new ArrayList<MatOfPoint>();
         List<MatOfPoint> orangeContours = new ArrayList<MatOfPoint>();
+        /* --------------------------------------------------------------------------------------------------------- */
 
+        /*
+         * We find the contours of each color.
+         */
         Imgproc.findContours(orange, greenContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.findContours(blue, blueContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.findContours(green, greenContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-
-        double maxArea = ballArea * 0.4; // 500 for second vid
+        /* --------------------------------------------------------------------------------------------------------- */
+        double maxArea = ballArea * 0.4;
         float[] radius = new float[1];
         Point center = new Point();
+
+        /*
+         * We iterate over each of the contours in each color and only mark the contours that can be the balls.
+         * We do that by factoring the area of each contour.
+         */
         for (int i = 0; i < greenContours.size(); i++) {
             MatOfPoint cnt = greenContours.get(i);
             if (Imgproc.contourArea(cnt) > maxArea) {
@@ -245,16 +278,23 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                 }
             }
         }
+        /* --------------------------------------------------------------------------------------------------------- */
 
         return img;
     }
 
+    /*
+        FRONTEND.
+     */
     @Override
     public void onClick(View view) {
         return;
     }
 
-
+    /*
+        FRONTEND - But, this function checks if we had gotten camera permissions, if we did not, it asks for them,
+        if we did, it updates the camera view accordingly.
+     */
     @Override
     public void onRequestPermissionsResult(
             int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -264,10 +304,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             // Check if the request was granted or denied
             if (grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // The request was granted -> tell the camera view
+                // The request was granted --> tell the camera view
                 mOpenCvCameraView.setCameraPermissionGranted();
             } else {
-                // The request was denied -> tell the user and exit the application
+                // The request was denied --> tell the user and exit the application
                 Toast.makeText(this, "Camera permission required.",
                         Toast.LENGTH_LONG).show();
                 this.finish();
