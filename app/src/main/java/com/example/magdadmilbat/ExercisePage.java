@@ -1,23 +1,38 @@
 package com.example.magdadmilbat;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.hardware.Camera;
+import android.nfc.Tag;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.example.MagdadMilbat.R;
+
+import java.util.ArrayList;
 
 /**
  *  A page that opens a camera during the practices.
  *  # TODO: display practice duration and num of reps
  */
 public class ExercisePage extends AppCompatActivity implements View.OnClickListener {
+    private static final String TAG = "SearchActivity";
+    private static final int REQUEST_CODE = 200;
     Button btnBack, btnBack0, btnFeedback;
     TextView tvRepetition, tvExercise;
     Camera camera;
@@ -27,8 +42,7 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
     /**
      * on create func - contains return button
      * # TODO: go automatically to feedback when finish practice, else just return to main page.
-     * # TODO : add camera frame
-     * # TODO: add  image processing code
+     * # TODO: add  image processing code.
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,16 +58,32 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
         tvRepetition = (TextView) findViewById(R.id.tvRepetition);
         tvExercise = (TextView) findViewById(R.id.tvExercise);
 
-        // open camera
-        cameraFrameLayout = findViewById(R.id.cameraFrameLayout);
-        camera = Camera.open();
-        showCamera = new ShowCamera(this, camera);
-        cameraFrameLayout.addView(showCamera);
+        verifyPermissions();
     }
-    /**
-     * returns to the main page when click on the back button
-     * # TODO: delete feedback button
-     */
+
+    private void verifyPermissions() {
+        Log.d(TAG, "verifyPermissions: asking user for permission");
+        String[] permissions = {Manifest.permission.CAMERA};
+
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ExercisePage.this,
+                    permissions, REQUEST_CODE);
+        }
+        else{
+            // open camera
+            cameraFrameLayout = findViewById(R.id.cameraFrameLayout);
+            camera = Camera.open();
+            showCamera = new ShowCamera(this, camera);
+            cameraFrameLayout.addView(showCamera);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        verifyPermissions();
+    }
+
     @Override
     public void onClick(View view) {
         if (view == btnBack0) {

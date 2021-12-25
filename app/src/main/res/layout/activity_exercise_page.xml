@@ -28,22 +28,19 @@
 <!--        android:layout_height="wrap_content"-->
 <!--        android:layout_width="wrap_content"/>-->
 
+        <TextView
+            android:id="@+id/tvRepetition"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/repetitions"
+            android:textSize="30dp" />
 
         <Button
             android:id="@+id/btnBack"
             android:layout_width="60dp"
             android:layout_height="50dp"
-            android:background="@drawable/ic_baseline_keyboard_backspace_24" />
-
-
-        <TextView
-            android:id="@+id/tvRepetition"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_marginStart="200dp"
-            android:text="@string/repetitions"
-            android:textSize="30dp" />
-
+            android:background="@drawable/ic_baseline_keyboard_backspace_24" />
 
     </LinearLayout>
 
