@@ -47,6 +47,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     TextView tvRepetition, tvExercise;
 
     /* IMAGE PROCESSING VARIABLES */
+    static ArrayList<Double> greenHeight = new ArrayList<Double>();
+    static ArrayList<Double> blueHeight = new ArrayList<Double>();
+    static ArrayList<Double> orangeHeight = new ArrayList<Double>();
+
     static Scalar[][] rgbRange= new Scalar[3][2];
     static double ballArea = Double.MAX_VALUE;
     private CameraBridgeViewBase mOpenCvCameraView;
@@ -54,8 +58,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     int RANGE = 30;
     Mat procImg;
     Mat circles;
-    int initialY = 0;
-    int firstBallFramesCounter = 0, secondBallFramesCounter = 0, thirdBallFramesCounter = 0, countOfBalls;
+    static int initialY = 0;
+    static int greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -241,6 +245,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         Imgproc.findContours(blue, blueContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.findContours(green, greenContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         /* --------------------------------------------------------------------------------------------------------- */
+
         double maxArea = ballArea * 0.4;
         float[] radius = new float[1];
         Point center = new Point();
@@ -256,6 +261,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                 Imgproc.minEnclosingCircle(c2f, center, radius);
                 if(radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
                     Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
+                    double currHeight = Math.abs(center.y - initialY);
+                    greenHeight.add(currHeight);
+                    if(currHeight > 30){
+                        greenBallFrames++;
+                    }
                 }
             }
         }
@@ -267,6 +277,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                 Imgproc.minEnclosingCircle(c2f, center, radius);
                 if(radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
                     Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
+                    double currHeight = Math.abs(center.y - initialY);
+                    blueHeight.add(currHeight);
+                    if(currHeight > 30){
+                        blueBallFrames++;
+                    }
                 }
             }
         }
@@ -278,6 +293,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                 Imgproc.minEnclosingCircle(c2f, center, radius);
                 if(radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
                     Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
+                    double currHeight = Math.abs(center.y - initialY);
+                    orangeHeight.add(currHeight);
+                    if(currHeight > 30){
+                        orangeBallFrames++;
+                    }
                 }
             }
         }
