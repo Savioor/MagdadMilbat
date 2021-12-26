@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback
-{
+    {
     Camera camera;
     SurfaceHolder holder;
 
@@ -40,7 +40,6 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback
     public void surfaceCreated(@NonNull SurfaceHolder surfaceHolder) {
         Camera.Parameters params = camera.getParameters();
 
-        /*
         List<Camera.Size> sizes = params.getSupportedPictureSizes();
         Camera.Size mSize = null;
 
@@ -48,7 +47,6 @@ public class ShowCamera extends SurfaceView implements SurfaceHolder.Callback
             mSize = size;
         }
 
-         */
 
         if(this.getResources().getConfiguration().orientation!= Configuration.ORIENTATION_LANDSCAPE) {
             params.set("Orientation","portrait");

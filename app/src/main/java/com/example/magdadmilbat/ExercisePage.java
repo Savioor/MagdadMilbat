@@ -1,11 +1,9 @@
 package com.example.magdadmilbat;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -24,15 +22,13 @@ import androidx.core.content.ContextCompat;
 
 import com.example.MagdadMilbat.R;
 
-import java.util.ArrayList;
-
 /**
  *  A page that opens a camera during the practices.
  *  # TODO: display practice duration and num of reps
  */
 public class ExercisePage extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "SearchActivity";
-    private static final int REQUEST_CODE = 200;
+    private static final int REQUEST_CODE = 209;
     Button btnBack, btnBack0, btnFeedback;
     TextView tvRepetition, tvExercise;
     Camera camera;
