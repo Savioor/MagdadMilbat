@@ -51,6 +51,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     static ArrayList<Double> blueHeight = new ArrayList<Double>();
     static ArrayList<Double> orangeHeight = new ArrayList<Double>();
 
+    static ArrayList<Double> greenAirTime = new ArrayList<Double>();
+    static ArrayList<Double> blueAirTime = new ArrayList<Double>();
+    static ArrayList<Double> orangeAirTime = new ArrayList<Double>();
+
+    static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
+
     static Scalar[][] rgbRange= new Scalar[3][2];
     static double ballArea = Double.MAX_VALUE;
     private CameraBridgeViewBase mOpenCvCameraView;
@@ -59,7 +65,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     Mat procImg;
     Mat circles;
     static int initialY = 0;
-    static int greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
+    static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -264,7 +270,15 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                     double currHeight = Math.abs(center.y - initialY);
                     greenHeight.add(currHeight);
                     if(currHeight > 30){
+                        if(!greenInAir) greenInAir = true;
                         greenBallFrames++;
+                    }
+                    else{
+                        if(greenInAir){
+                            greenInAir = false;
+                            greenAirTime.add(greenBallFrames);
+                            greenBallFrames = 0; 
+                        } 
                     }
                 }
             }
@@ -280,7 +294,15 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                     double currHeight = Math.abs(center.y - initialY);
                     blueHeight.add(currHeight);
                     if(currHeight > 30){
+                        if(!blueInAir) blueInAir = true;
                         blueBallFrames++;
+                    }
+                    else{
+                        if(blueInAir){
+                            blueInAir = false;
+                            blueAirTime.add(greenBallFrames);
+                            blueBallFrames = 0; 
+                        } 
                     }
                 }
             }
@@ -296,7 +318,15 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                     double currHeight = Math.abs(center.y - initialY);
                     orangeHeight.add(currHeight);
                     if(currHeight > 30){
+                        if(!orangeInAir) orangeInAir = true;
                         orangeBallFrames++;
+                    }
+                    else{
+                        if(orangeInAir){
+                            orangeInAir = false;
+                            orangeAirTime.add(orangeBallFrames);
+                            orangeBallFrames = 0; 
+                        }
                     }
                 }
             }
@@ -340,6 +370,26 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         }
     }
 
+    public double getMaxHeight(int color){
+       double maxHeight = 0;
+       ArrayList<Double> temp = color == 1 ? greenHeight : color == 2 ? blueHeight : color == 3 ? orangeHeight : null;
+       for(int i = 0; i < temp.size(); i++){
+            int currHeight = temp.get(i);
+            maxHeight = maxHeight > currHeight ? maxHeight : currHeight;
+       }
+       return maxHeight;
+    }
+
+    public double getOverallTime(int color){
+       double overAllTime = 0;
+       ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null;
+       for(int i = 0; i < temp.size(); i++){
+            overAllTime += temp.get(i);
+       }
+
+       return overAllTime;
+        
+    }
 
 
 }
