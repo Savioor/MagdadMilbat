@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.magdadmilbat">
+    package="com.example.MagdadMilbat">
+
+    <uses-permission android:name="android.permission.CAMERA"/>
 
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="נשיפה עמוקה"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MagdadMilbat">
         <activity
-            android:name=".MainActivity"
+            android:name="com.example.magdadmilbat.Feedback"
+            android:exported="false" />
+        <activity
+            android:name="com.example.magdadmilbat.ExercisePage"
+            android:exported="false" />
+        <activity
+            android:name="com.example.magdadmilbat.HistoryPage"
+            android:exported="false" />
+        <activity
+            android:name="com.example.magdadmilbat.SettingsPage"
+            android:exported="false" />
+        <activity
+            android:name="com.example.magdadmilbat.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

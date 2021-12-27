@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+  <TextView
+      android:id="@+id/feed"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:layout_marginTop="250dp"
+      android:text="@string/good_job"
+      android:textSize="40sp" />
+
+  <Button
+      android:id="@+id/btnBackMain2"
+      android:layout_width="277dp"
+      android:layout_height="109dp"
+      android:layout_gravity="center"
+      android:layout_marginTop="75dp"
+      android:text="@string/back"
+      android:textSize="30dp" />
+
+</LinearLayout>
+
+
