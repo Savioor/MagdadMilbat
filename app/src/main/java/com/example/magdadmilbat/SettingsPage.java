@@ -30,7 +30,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        TextView tvExercise = (TextView) findViewById(R.id.tvExercise);
+        tvExercise = (TextView) findViewById(R.id.tvExercise);
         tvExercise.setText(getIntent().getStringExtra("exercise"));
 
         btnBack = (Button)findViewById(R.id.btnBack);
