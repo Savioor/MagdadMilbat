@@ -30,15 +30,19 @@ public class DetailsAdapter extends ArrayAdapter<Details> {
         @SuppressLint("ViewHolder") View view = layoutInflater.inflate(R.layout.activity_exercise_details, parent, false);
 
         TextView tvExercise = (TextView) view.findViewById(R.id.tvExercise);
-//        TextView tvQuality = (TextView) view.findViewById(R.id.tvQuality);
         TextView tvDate = (TextView) view.findViewById(R.id.tvDate);
         TextView tvTime = (TextView) view.findViewById(R.id.tvTime);
+        TextView tvRepetition = (TextView) view.findViewById(R.id.tvRepetition);
+        TextView tvLevel = (TextView) view.findViewById(R.id.tvLevel);
+        TextView tvDuration = (TextView) view.findViewById(R.id.tvDuration);
 
         Details temp = data.get(position);
         tvExercise.setText(temp.getExercise());
-//        tvQuality.setText(temp.getRepetition());
         tvDate.setText(temp.getDate());
         tvTime.setText(temp.getTime());
+        tvRepetition.setText(temp.getRepetition());
+        tvLevel.setText(temp.getLevel());
+        tvDuration.setText(temp.getDuration());
 
         return view;
     }

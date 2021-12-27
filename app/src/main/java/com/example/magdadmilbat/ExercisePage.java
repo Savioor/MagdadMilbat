@@ -33,7 +33,7 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View view) {
         if (view == btnBack) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, ExrChoiceScreen.class);
             startActivity(intent);
         }
     }

@@ -8,7 +8,7 @@
     <Button
         android:layout_width="60dp"
         android:layout_height="50dp"
-        android:layout_gravity="start"
+        android:layout_gravity="left"
         android:layout_marginLeft="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/ic_baseline_keyboard_backspace_24"
@@ -18,11 +18,20 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:textSize="40sp"
+        android:id="@+id/tvExercise"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_marginTop="50dp"
         android:layout_marginRight="10dp"
         android:textSize="25sp"
-        android:text = "@string/difficulty"
+        android:text = "רמת קושי:"
         android:id="@+id/tvLevel"
         />
 
@@ -48,7 +57,7 @@
         android:layout_gravity="right"
         android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:text = "מספר חזרות:"
         android:id="@+id/tvRepetition"
         />
@@ -75,7 +84,7 @@
         android:layout_gravity="right"
         android:layout_marginTop="15dp"
         android:layout_marginRight="10dp"
-        android:textSize="25dp"
+        android:textSize="25sp"
         android:text = "משך חזרה:"
         android:id="@+id/tvDuration"
         />
