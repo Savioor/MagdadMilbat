@@ -1,6 +1,7 @@
 package com.example.magdadmilbat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -16,6 +17,7 @@ import java.time.format.DateTimeFormatter;
 public class ExercisePage extends AppCompatActivity implements View.OnClickListener {
     Button btnBack;
     TextView tvRepetition, tvExercise;
+    SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,11 +30,14 @@ public class ExercisePage extends AppCompatActivity implements View.OnClickListe
         btnBack.setOnClickListener(this);
         tvExercise.setText(getIntent().getStringExtra("exercise"));
 
+        sp = getSharedPreferences(getIntent().getStringExtra("exercise sp"), 0);
+        tvRepetition.setText(sp.getString("repetition", "1"));
     }
 
     @Override
     public void onClick(View view) {
-        if (view == btnBack) {
+        if (view == btnBack)
+        {
             Intent intent = new Intent(this, ExrChoiceScreen.class);
             startActivity(intent);
         }

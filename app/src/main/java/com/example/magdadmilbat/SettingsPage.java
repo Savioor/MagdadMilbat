@@ -86,9 +86,9 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
     public void loadSP(SharedPreferences sp)
     {
-        this.sbLevel.setProgress(Integer.parseInt(sp.getString("level", "1")));
-        this.sbRepetition.setProgress(Integer.parseInt(sp.getString("repetition", "1")));
-        this.etDuration.setText(sp.getString("duration", null));
+        sbLevel.setProgress(Integer.parseInt(sp.getString("level", "1")));
+        sbRepetition.setProgress(Integer.parseInt(sp.getString("repetition", "1")));
+        etDuration.setText(sp.getString("duration", null));
     }
 
     public void saveSP(SharedPreferences sp)
