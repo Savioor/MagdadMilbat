@@ -43,11 +43,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class ExercisePage extends Activity implements View.OnClickListener, CameraBridgeViewBase.CvCameraViewListener2 {
-    Button btnBack, btnFeedback;
+    Button btnBack, btnBack0, btnFeedback;
     private final int PERMISSIONS_READ_CAMERA=1;
     TextView tvRepetition, tvExercise;
 
-    static SharedPreferences spBreath = getSharedPreferences("settingsBreath", 0);
+    static SharedPreferences spBreath ;
 
     /* IMAGE PROCESSING VARIABLES */
     static ArrayList<Double> greenHeight = new ArrayList<Double>();
@@ -95,9 +95,15 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_page);
+        btnBack = (Button) findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(this);
+        btnBack0 = (Button) findViewById(R.id.btnBack0);
+        btnBack0.setOnClickListener(this); //temporary btnBack button
+        btnFeedback = (Button) findViewById(R.id.btnFeedback);
+        btnFeedback.setOnClickListener(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
+        spBreath = getSharedPreferences("settingsBreath", 0);
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.HelloOpenCvView);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -126,6 +132,25 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         }
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view == btnBack0) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        if (view == btnBack) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+        }
+
+        if (view == btnFeedback) {
+            Intent intent = new Intent(this, Feedback.class);
+            intent.putExtra("greenAirTime",getOverallTime(1));
+            intent.putExtra("blueAirTime",getOverallTime(2));
+            startActivity(intent);
+        }
+    }
 
     @Override
     public void onPause()
@@ -354,14 +379,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         /* --------------------------------------------------------------------------------------------------------- */
 
         return img;
-    }
-
-    /*
-        FRONTEND.
-     */
-    @Override
-    public void onClick(View view) {
-        return;
     }
 
     /*

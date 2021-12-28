@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">תנו חיוך :)</string>
-    <string name="difficulty">רמת קושי:</string>
+    <string name="difficulty">גובה (באחוזים):</string>
+    <string name="blueBall">כדור כחול</string>
+    <string name="orangeBall">כדור כתום</string>
     <string name="back">חזרה</string>
     <string name="start_exercise">התחל תרגיל</string>
     <string name="settings">הגדרות</string>

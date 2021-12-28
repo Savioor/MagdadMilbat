@@ -5,6 +5,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 
 import com.example.MagdadMilbat.R;
@@ -22,7 +23,8 @@ import java.time.LocalTime;
 
 public class Feedback extends AppCompatActivity implements View.OnClickListener {
     Button btnBackMain2;
-
+    String greenAirTime,blueAirTime;
+    TextView greenTimeText,blueTimeText;
     /**
      * on create func - contains  feedback text, return button
      */
@@ -34,7 +36,13 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         btnBackMain2 = (Button) findViewById(R.id.btnBackMain2);
 
         btnBackMain2.setOnClickListener(this);
-
+        Intent intent=getIntent();
+        greenTimeText = findViewById(R.id.greenAirTime);
+        blueTimeText = findViewById(R.id.blueAirTime);
+        greenAirTime = String.valueOf(intent.getExtras().getDouble("greenAirTime"));
+        blueAirTime = String.valueOf(intent.getExtras().getDouble("blueAirTime"));
+        greenTimeText.setText("זמן באוויר (כדור ירוק) : "+greenAirTime);
+        blueTimeText.setText("זמן באוויר (כדור כחול) : "+blueAirTime);
     }
 
     /**
