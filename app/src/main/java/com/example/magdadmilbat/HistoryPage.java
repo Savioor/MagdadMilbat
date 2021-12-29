@@ -20,16 +20,16 @@ import java.util.ArrayList;
 public class HistoryPage extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private Intent go;
     private ListView lv;
-    private ArrayAdapter adap;
+    private TrainingListAdapter adap;
     private ArrayList<Training> trainings;
     private String[] trainingHistory;
-    private String curr;
+    private Training curr;
     private DatabaseManager databaseManager;
     private SQLiteDatabase sqLiteDatabase;
     Button btnBack;
     ListView lvHistory;
     ArrayList<Details> details;
-    DetailsAdapter detailsAdapter;
+//    DetailsAdapter detailsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +43,6 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         //databaseManager.addTraining(new Training("18/1/2002", "2:00", "Breathe", 8)); --> Test if the function work and we can show the data on the list
         lv = (ListView) findViewById(R.id.lvHistory);
         loadHistory();
-        curr = "None";
         lv.setOnItemClickListener(this);
     }
 
@@ -54,7 +53,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         trainings = databaseManager.getAllTraining();
         arraylistToStringArray();
         //creating the list view
-        adap = new ArrayAdapter(this, android.R.layout.simple_list_item_1, trainingHistory);
+        adap = new TrainingListAdapter(this, R.layout.list_item, trainings);
         lv.setAdapter(adap);
     }
     /**
@@ -83,7 +82,14 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         }
         else
         {
-            curr = trainingHistory[i];
+            curr = trainings.get(i);
+            Intent intentDetails = new Intent(this, exercise_details.class);
+            intentDetails.putExtra("quality",String.valueOf(curr.getTrainingQuality()));
+            intentDetails.putExtra("date",curr.getDate());
+            intentDetails.putExtra("description",curr.getExerciseDescription());
+            intentDetails.putExtra("time",curr.getTime());
+            intentDetails.putExtra("duration",String.valueOf(curr.getDuration()));
+            startActivity(intentDetails);
         }
     }
 

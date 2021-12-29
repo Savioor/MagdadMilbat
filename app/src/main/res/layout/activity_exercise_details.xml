@@ -2,87 +2,112 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal">
-
-    <LinearLayout
+    android:orientation="vertical">
+    <Button
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:layout_gravity="left"
+        android:layout_marginLeft="10dp"
+        android:background="@drawable/ic_baseline_keyboard_backspace_24"
+        android:id="@+id/btnBack"
+        />
+    <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:textSize="30sp"
+        android:layout_gravity="center"
+        android:layout_margin="30dp"
+        android:text="title"
+        android:id="@+id/tvTitle"
+        />
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:columnCount="2">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/num_of_reps"
-            android:id="@+id/tvRepetition"
+            android:textSize="20dp"
+            android:text="ציון"
+            android:layout_gravity="center"
             />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            android:text="@string/date"
+            />
+    </GridLayout>
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginBottom="20dp"
+        android:columnCount="2">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/diff_lvl"
+            android:textSize="20dp"
+            android:text=""
+            android:layout_gravity="center"
             android:id="@+id/tvLevel"
             />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/duration"
-            android:id="@+id/tvDuration"
+            android:textSize="20dp"
+            android:text=""
+            android:id="@+id/tvRepetition"
             />
+    </GridLayout>
 
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="wrap_content"
+    <GridLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="20dp"
+        android:columnCount="2">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/exercise_kind"
-            android:id="@+id/tvExercise"
+            android:text="@string/time"
+            android:layout_gravity="center"
             />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@string/duration"
+            />
+    </GridLayout>
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:columnCount="2">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/time"
+            android:textSize="20sp"
+            android:text=""
+            android:layout_gravity="center"
             android:id="@+id/tvTime"
             />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="15sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:text="@string/date"
-            android:id="@+id/tvDate"
+            android:textSize="20sp"
+            android:text=""
+            android:id="@+id/tvDuration"
             />
 
-    </LinearLayout>
-
+    </GridLayout>
 </LinearLayout>
