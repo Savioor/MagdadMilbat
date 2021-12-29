@@ -1,5 +1,7 @@
 package com.example.magdadmilbat;
 
+import org.opencv.core.Size;
+
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
@@ -9,7 +11,6 @@ import android.graphics.SurfaceTexture;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Size;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -182,6 +183,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame = inputFrame.rgba(); // we get the frame in rgb.
+        Mat resizedFrame = new Mat();
+        Imgproc.resize(frame, resizedFrame, new Size(800, 600));
+
+        Core.transpose(resizedFrame.t(), resizedFrame);
+        Core.flip(resizedFrame.t(), resizedFrame, 1);
+
+        Imgproc.resize(resizedFrame, frame, new Size(640, 480));
 
         if(numOfFrames == 0){
             initialY = getFrameData(frame); // we get the initial Y and get starting parameters.
@@ -190,6 +198,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
 
         frame = findContoursAndDraw(frame);
         numOfFrames++;
+
         return frame;
     }
 
@@ -219,6 +228,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         if(circles.cols() == 0){
             return -1;
         }
+
         double[] c; // a circle.
         Point center; // the circle's center.
         double[] rgb; // the circle's color.
