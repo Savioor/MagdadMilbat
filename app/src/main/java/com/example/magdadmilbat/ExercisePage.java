@@ -71,6 +71,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     Mat circles;
     static int initialY = 0;
     static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
+    boolean started = false;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -194,10 +195,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         if(numOfFrames == 0){
             initialY = getFrameData(frame); // we get the initial Y and get starting parameters.
             if(initialY == -1) return frame;
+            else started = true;
         }
 
         frame = findContoursAndDraw(frame);
-        numOfFrames++;
+        if(started) numOfFrames++;
 
         return frame;
     }
@@ -225,19 +227,16 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         int sensitivity = 22;
 
         Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
-        if(circles.cols() == 0){
-            return -1;
-        }
+        if(circles.cols() < 3) return -1;
 
         double[] c; // a circle.
         Point center; // the circle's center.
         double[] rgb; // the circle's color.
 
-        for(int i = 0; i <= 2; i++){
+        for(int i = 0; i < circles.cols() && i <= 2; i++){
             c = circles.get(0, i);
             center = new Point(Math.round(c[0]), Math.round(c[1]));
             rgb = img.get((int)center.y, (int)center.x);
-
             rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball.
             rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
             ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
