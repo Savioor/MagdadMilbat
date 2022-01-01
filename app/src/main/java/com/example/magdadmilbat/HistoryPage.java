@@ -1,13 +1,17 @@
 package com.example.magdadmilbat;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,17 +20,18 @@ import com.example.MagdadMilbat.R;
 import com.example.magdadmilbat.database.DatabaseManager;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class HistoryPage extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener {
     private Intent go;
     private ListView lv;
     private TrainingListAdapter adap;
     private ArrayList<Training> trainings;
-    private String[] trainingHistory;
     private Training curr;
     private DatabaseManager databaseManager;
     private SQLiteDatabase sqLiteDatabase;
     Button btnBack;
+    TextView alertTv;
     ListView lvHistory;
     ArrayList<Details> details;
 //    DetailsAdapter detailsAdapter;
@@ -36,6 +41,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_page);
         btnBack = (Button)findViewById(R.id.btnBack);
+        alertTv = findViewById(R.id.alert);
         btnBack.setOnClickListener(this);
         databaseManager = new DatabaseManager(this); //  initialization the database
         sqLiteDatabase = databaseManager.getWritableDatabase();
@@ -51,26 +57,14 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
      */
     private void loadHistory() {
         trainings = databaseManager.getAllTraining();
-        arraylistToStringArray();
-        //creating the list view
+        Collections.reverse(trainings);
+        if(trainings.isEmpty()){
+            alertTv.setText("אין אימונים ברשימה");
+            alertTv.setVisibility(View.VISIBLE);
+            return;
+        }
         adap = new TrainingListAdapter(this, R.layout.list_item, trainings);
         lv.setAdapter(adap);
-    }
-    /**
-     * This function create string array
-     */
-    private void arraylistToStringArray()
-    {
-        if (trainings.size() == 0) {
-            trainingHistory = new String[1];
-            trainingHistory[0] = "There is no training in the list!";
-        }
-        else {
-            trainingHistory = new String[trainings.size()];
-            for (int i = 0; i < trainings.size(); i++) {
-                trainingHistory[i] = trainings.get(i).toString();
-            }
-        }
     }
 
     // checks if training data are empty,And displays a message

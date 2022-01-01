@@ -13,6 +13,7 @@
     <string name="time">שעה:</string>
     <string name="exercise_kind">סוג תרגיל:</string>
     <string name="duration">משך חזרה :</string>
+    <string name="durationTraining">משך האימון :</string>
     <string name="diff_lvl">רמת קושי:</string>
     <string name="num_of_reps">מספר חזרות:</string>
     <string name="duration_sec">משך חזרה (בשניות):</string>

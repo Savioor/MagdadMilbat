@@ -2,6 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#6BB8B8B8"
+    android:id="@+id/historyLayout"
     android:orientation="vertical">
 
     <Button
@@ -12,10 +14,21 @@
         android:background="@drawable/ic_baseline_keyboard_backspace_24"
         android:id="@+id/btnBack"
         />
-
+    <TextView
+        android:id="@+id/alert"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="250dp"
+        android:text=""
+        android:visibility="gone"
+        android:textSize="20sp" />
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_margin="10dp"
+        android:dividerHeight="10.0sp"
+        android:divider="@android:color/transparent"
         android:id="@+id/lvHistory"
         />
 

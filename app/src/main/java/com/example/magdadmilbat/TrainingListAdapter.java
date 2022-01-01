@@ -1,14 +1,18 @@
 package com.example.magdadmilbat;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 
 import com.example.MagdadMilbat.R;
 
@@ -25,6 +29,7 @@ public class TrainingListAdapter  extends ArrayAdapter<Training> {
         mResource = resource;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -38,8 +43,10 @@ public class TrainingListAdapter  extends ArrayAdapter<Training> {
         TextView tvQuality = convertView.findViewById(R.id.textView1);
         TextView tvDate = convertView.findViewById(R.id.textView2);
         TextView tvTime = convertView.findViewById(R.id.textView3);
+        ProgressBar pb = convertView.findViewById(R.id.ProgressBar);
 
         tvQuality.setText(trainingQuality);
+        pb.setProgress(Integer.parseInt(trainingQuality));
         tvDate.setText(date);
         tvTime.setText(time);
         return convertView;
