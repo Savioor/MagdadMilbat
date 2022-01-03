@@ -8,6 +8,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
+import android.hardware.Camera;
+import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -46,6 +48,7 @@ import java.util.List;
 public class ExercisePage extends Activity implements View.OnClickListener, CameraBridgeViewBase.CvCameraViewListener2 {
     Button btnBack, btnFeedback;
     private final int PERMISSIONS_READ_CAMERA=1;
+    private final int REQUEST_CODE = 2;
     TextView tvRepetition, tvExercise;
 
     static SharedPreferences spBreath ;
@@ -145,6 +148,31 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             intent.putExtra("blueAirTime",getOverallTime(2));
             startActivity(intent);
         }
+    }
+    private void verifyPermissions() {
+        Log.d(Tag, "verifyPermissions: asking user for permission");
+        String[] permissions = {Manifest.permission.CAMERA};
+
+        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+                permissions[0]) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(ExercisePage.this,
+                    permissions, REQUEST_CODE);
+        }
+        else{
+            // here the open camera code must be
+            /*
+            cameraFrameLayout = findViewById(R.id.cameraFrameLayout);
+            camera = Camera.open();
+            showCamera = new ShowCamera(this, camera);
+            cameraFrameLayout.addView(showCamera);
+
+             */
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        verifyPermissions();
     }
 
     @Override
