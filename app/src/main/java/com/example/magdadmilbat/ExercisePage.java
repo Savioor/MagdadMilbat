@@ -49,6 +49,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     Button btnBack, btnFeedback;
     private final int PERMISSIONS_READ_CAMERA=1;
     private final int REQUEST_CODE = 2;
+    private static final String TAG = "MyActivity";
+
     TextView tvRepetition, tvExercise;
 
     static SharedPreferences spBreath ;
@@ -149,11 +151,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             Intent intent = new Intent(this, Feedback.class);
             intent.putExtra("greenAirTime",getOverallTime(1));
             intent.putExtra("blueAirTime",getOverallTime(2));
+            intent.putExtra("orangeAirTime",getOverallTime(3));
             startActivity(intent);
         }
     }
     private void verifyPermissions() {
-        Log.d(Tag, "verifyPermissions: asking user for permission");
+        Log.d(TAG, "verifyPermissions: asking user for permission");
         String[] permissions = {Manifest.permission.CAMERA};
 
         if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
@@ -412,27 +415,27 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         FRONTEND - But, this function checks if we had gotten camera permissions, if we did not, it asks for them,
         if we did, it updates the camera view accordingly.
      */
-    @Override
-    public void onRequestPermissionsResult(
-            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        // Ensure that this result is for the camera permission request
-        if (requestCode == PERMISSIONS_READ_CAMERA) {
-            // Check if the request was granted or denied
-            if (grantResults.length > 0
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                // The request was granted --> tell the camera view
-                mOpenCvCameraView.setCameraPermissionGranted();
-            } else {
-                // The request was denied --> tell the user and exit the application
-                Toast.makeText(this, "Camera permission required.",
-                        Toast.LENGTH_LONG).show();
-                this.finish();
-            }
-        } else {
-            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        }
-    }
+//    @Override
+//    public void onRequestPermissionsResult(
+//            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//
+//        // Ensure that this result is for the camera permission request
+//        if (requestCode == PERMISSIONS_READ_CAMERA) {
+//            // Check if the request was granted or denied
+//            if (grantResults.length > 0
+//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+//                // The request was granted --> tell the camera view
+//                mOpenCvCameraView.setCameraPermissionGranted();
+//            } else {
+//                // The request was denied --> tell the user and exit the application
+//                Toast.makeText(this, "Camera permission required.",
+//                        Toast.LENGTH_LONG).show();
+//                this.finish();
+//            }
+//        } else {
+//            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        }
+//    }
 
     public double getMaxHeight(int color){
         double maxHeight = 0;

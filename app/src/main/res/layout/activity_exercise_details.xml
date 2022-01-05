@@ -17,6 +17,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:textStyle="bold"
         android:layout_margin="30dp"
         android:text="title"
         android:textSize="30sp" />
@@ -63,6 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:textColor="#4CAF50"
                 android:text=""
                 android:textSize="20dp"
                 android:textStyle="bold" />
@@ -72,6 +74,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
+                android:textColor="#FFC107"
                 android:textSize="21dp"
                 android:textStyle="bold" />
         </GridLayout>
@@ -115,6 +118,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text=""
+                android:textColor="#FFC107"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 
@@ -123,6 +127,82 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text=""
+                android:textColor="#FFC107"
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+        </GridLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="10dp"
+            android:background="#2F353535" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="30dp"
+            android:columnCount="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="זמן באוויר (כדור כתום) : "
+                android:textSize="20sp" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:columnCount="1">
+
+            <TextView
+                android:id="@+id/orangeAirTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FF9800"
+                android:text=""
+                android:textSize="21sp"
+                android:textStyle="bold" />
+
+        </GridLayout>
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="1dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="10dp"
+            android:background="#2F353535" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="30dp"
+            android:columnCount="1">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="זמן באוויר (כדור כחול) : "
+                android:textSize="20sp" />
+        </GridLayout>
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:columnCount="1">
+
+            <TextView
+                android:id="@+id/blueAirTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textColor="#2196F3"
                 android:textSize="21sp"
                 android:textStyle="bold" />
 

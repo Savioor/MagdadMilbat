@@ -11,13 +11,16 @@ import android.widget.TextView;
 import com.example.MagdadMilbat.R;
 
 public class exercise_details extends AppCompatActivity implements View.OnClickListener {
-TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle;
+TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle,orangeTimeText,blueTimeText;
     Button btnBack;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_exercise_details);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
         Intent intent=getIntent();
         btnBack = findViewById(R.id.btnBack);
         tvDuration = findViewById(R.id.tvDuration);
@@ -25,6 +28,8 @@ TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle;
         tvTime = findViewById(R.id.tvTime);
         tvTitle = findViewById(R.id.tvTitle);
         tvRepetition = findViewById(R.id.tvRepetition);
+        blueTimeText = findViewById(R.id.blueAirTime);
+        orangeTimeText = findViewById(R.id.orangeAirTime);
         btnBack.setOnClickListener(this);
 
         tvDuration.setText(String.valueOf(intent.getExtras().getString("duration")));
@@ -32,6 +37,8 @@ TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle;
         tvRepetition.setText(String.valueOf(intent.getExtras().getString("date")));
         tvTime.setText(String.valueOf(intent.getExtras().getString("time")));
         tvLevel.setText(String.valueOf(intent.getExtras().getString("quality")));
+        blueTimeText.setText(String.valueOf(intent.getExtras().getString("blueAirTime")));
+        orangeTimeText.setText(String.valueOf(intent.getExtras().getString("orangeAirTime")));
     }
 
     @Override

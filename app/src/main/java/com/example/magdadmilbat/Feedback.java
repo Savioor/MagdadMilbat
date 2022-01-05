@@ -19,12 +19,15 @@ import androidx.appcompat.app.AppCompatActivity;
  */
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 
 public class Feedback extends AppCompatActivity implements View.OnClickListener {
     Button btnBackMain2;
-    String greenAirTime,blueAirTime;
-    TextView greenTimeText,blueTimeText;
+    Double greenAirTime,blueAirTime,orangeAirTime;
+    TextView greenTimeText,blueTimeText,orangeTimeText;
     /**
      * on create func - contains  feedback text, return button
      */
@@ -39,10 +42,13 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         Intent intent=getIntent();
         greenTimeText = findViewById(R.id.greenAirTime);
         blueTimeText = findViewById(R.id.blueAirTime);
-        greenAirTime = String.valueOf(intent.getExtras().getDouble("greenAirTime"));
-        blueAirTime = String.valueOf(intent.getExtras().getDouble("blueAirTime"));
+        orangeTimeText = findViewById(R.id.orangeAirTime);
+        greenAirTime = intent.getExtras().getDouble("greenAirTime");
+        blueAirTime = intent.getExtras().getDouble("blueAirTime");
+        orangeAirTime = intent.getExtras().getDouble("orangeAirTime");
         greenTimeText.setText("זמן באוויר (כדור ירוק) : "+greenAirTime);
         blueTimeText.setText("זמן באוויר (כדור כחול) : "+blueAirTime);
+        blueTimeText.setText("זמן באוויר (כדור כתום) : "+orangeAirTime);
     }
 
     /**
@@ -53,8 +59,10 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View view) {
         if (view == btnBackMain2) {
             LocalDate dateObj = LocalDate.now();
-            LocalTime timeObj = LocalTime.now();
-            Training exerciseObj = new Training(dateObj.toString(),timeObj.toString(),"נשיפה עמוקה",10,22);
+            String timeObj = LocalTime.now()
+                    .truncatedTo(ChronoUnit.SECONDS)
+                    .format(DateTimeFormatter.ISO_LOCAL_TIME);
+            Training exerciseObj = new Training(dateObj.toString(),timeObj,"נשיפה עמוקה",10,22,greenAirTime,blueAirTime,orangeAirTime);
             DatabaseManager dbObj = new DatabaseManager(Feedback.this);
             dbObj.addTraining(exerciseObj);
             Intent intent = new Intent(this, MainActivity.class);
