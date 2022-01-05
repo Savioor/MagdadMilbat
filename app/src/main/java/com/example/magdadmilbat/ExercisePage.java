@@ -106,6 +106,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         btnFeedback.setOnClickListener(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
+        verifyPermissions();
+        //in the verify permission the open camera code must be
+
         spBreath = getSharedPreferences("settingsBreath", 0);
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.HelloOpenCvView);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
@@ -160,13 +163,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         }
         else{
             // here the open camera code must be
-            /*
-            cameraFrameLayout = findViewById(R.id.cameraFrameLayout);
-            camera = Camera.open();
-            showCamera = new ShowCamera(this, camera);
-            cameraFrameLayout.addView(showCamera);
 
-             */
         }
     }
 
