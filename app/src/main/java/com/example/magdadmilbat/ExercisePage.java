@@ -27,6 +27,7 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 
@@ -165,6 +166,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame = inputFrame.rgba(); // we get the frame in rgb.
+        Mat resizedFrame = new Mat();
+        Imgproc.resize(frame, resizedFrame, new Size(800, 600));
+
+        Core.transpose(resizedFrame.t(), resizedFrame);
+        Core.flip(resizedFrame.t(), resizedFrame, 1);
+
+        Imgproc.resize(resizedFrame, frame, new Size(640, 480));
 
         if(isDone) {
             initialY = getFrameData(frame);
