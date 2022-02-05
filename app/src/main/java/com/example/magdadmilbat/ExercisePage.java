@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.graphics.SurfaceTexture;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.CountDownTimer;
+import android.os.Looper;
 import android.util.Log;
 import android.util.Size;
 import android.view.SurfaceView;
@@ -60,11 +62,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     static Scalar[][] rgbRange= new Scalar[3][2];
     static double ballArea = Double.MAX_VALUE;
     private CameraBridgeViewBase mOpenCvCameraView;
-    int numOfFrames = 0;
     int RANGE = 30;
     Mat procImg;
     Mat circles;
-    static int initialY = 0;
+    static int initialY = -1;
+    boolean isDone = false;
     static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
     /* --------------------------------------------------------------------------------------------------- */
 
@@ -104,6 +106,18 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             mOpenCvCameraView.setCameraPermissionGranted();
         }
         mOpenCvCameraView.setCvCameraViewListener(this);
+        CountDownTimer count = new CountDownTimer(10000, 1000) {
+            @Override
+            public void onTick(long l) {
+                return;
+            }
+
+            @Override
+            public void onFinish() {
+                isDone = true;
+            }
+        };
+        count.start();
     }
 
     /*
@@ -161,13 +175,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame = inputFrame.rgba(); // we get the frame in rgb.
 
-        if(numOfFrames == 0){
-            initialY = getFrameData(frame); // we get the initial Y and get starting parameters.
-            if(initialY == -1) return frame;
+        if(isDone) {
+            initialY = getFrameData(frame);
         }
 
-        frame = findContoursAndDraw(frame);
-        numOfFrames++;
+        frame = initialY == -1 ? frame : findContoursAndDraw(frame);
+        frame = drawLine(frame, new Point(0, frame.height() - 100), new Point(frame.width(), frame.height() - 100));
+        frame = drawLine(frame, new Point(0, frame.height() - 300), new Point(frame.width(), frame.height() - 300));
         return frame;
     }
 
@@ -374,7 +388,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
        double maxHeight = 0;
        ArrayList<Double> temp = color == 1 ? greenHeight : color == 2 ? blueHeight : color == 3 ? orangeHeight : null;
        for(int i = 0; i < temp.size(); i++){
-            int currHeight = temp.get(i);
+            double currHeight = temp.get(i);
             maxHeight = maxHeight > currHeight ? maxHeight : currHeight;
        }
        return maxHeight;
@@ -389,6 +403,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
 
        return overAllTime;
         
+    }
+
+    private Mat drawLine(Mat img, Point p1, Point p2){
+        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
+        return img;
     }
 
 
