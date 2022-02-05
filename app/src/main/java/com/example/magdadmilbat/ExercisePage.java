@@ -2,26 +2,17 @@ package com.example.magdadmilbat;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.SurfaceTexture;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Looper;
-import android.util.Log;
-import android.util.Size;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.MagdadMilbat.R;
@@ -40,7 +31,6 @@ import org.opencv.imgproc.Imgproc;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ExercisePage extends Activity implements View.OnClickListener, CameraBridgeViewBase.CvCameraViewListener2 {
@@ -106,6 +96,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             mOpenCvCameraView.setCameraPermissionGranted();
         }
         mOpenCvCameraView.setCvCameraViewListener(this);
+
         CountDownTimer count = new CountDownTimer(10000, 1000) {
             @Override
             public void onTick(long l) {
@@ -204,6 +195,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
      */
     private static int getFrameData(Mat img) {
         Mat procImg = prepareImage(img);
+        procImg = procImg.submat(procImg.height() - 300, procImg.height() - 100, 0, procImg.width());
         Mat circles = new Mat();
         int sensitivity = 22;
 
@@ -214,16 +206,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         double[] c; // a circle.
         Point center; // the circle's center.
         double[] rgb; // the circle's color.
+        try {
+            for (int i = 0; i <= 2; i++) {
+                c = circles.get(0, i);
+                center = new Point(Math.round(c[0]), Math.round(c[1]));
+                rgb = img.get((int) center.y, (int) center.x);
 
-        for(int i = 0; i <= 2; i++){
-            c = circles.get(0, i);
-            center = new Point(Math.round(c[0]), Math.round(c[1]));
-            rgb = img.get((int)center.y, (int)center.x);
-
-            rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball.
-            rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
-            ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
-        }
+                rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball.
+                rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
+                ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
+            }
+        }catch(NullPointerException e){ return -1; }
 
         return (int)Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
     }
