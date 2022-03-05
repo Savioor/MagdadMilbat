@@ -179,8 +179,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         }
 
         frame = initialY == -1 ? frame : findContoursAndDraw(frame);
-        frame = drawLine(frame, new Point(0, frame.height() - 100), new Point(frame.width(), frame.height() - 100));
-        frame = drawLine(frame, new Point(0, frame.height() - 300), new Point(frame.width(), frame.height() - 300));
+        if(initialY == -1){
+            frame = drawLine(frame, new Point(0, frame.height() - 100), new Point(frame.width(), frame.height() - 100));
+            frame = drawLine(frame, new Point(0, frame.height() - 300), new Point(frame.width(), frame.height() - 300));
+        }
         return frame;
     }
 
@@ -207,7 +209,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         Mat circles = new Mat();
         int sensitivity = 22;
 
-        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
+        //Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
+        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 78.0, 28.0, procImg.width() / 20, procImg.width() / 6);
         if(circles.cols() == 0){
             return -1;
         }
