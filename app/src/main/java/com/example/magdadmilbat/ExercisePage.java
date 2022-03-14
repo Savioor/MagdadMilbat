@@ -3,26 +3,22 @@ package com.example.magdadmilbat;
 import org.opencv.core.Size;
 
 import android.Manifest;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.SurfaceTexture;
-import android.hardware.Camera;
-import android.nfc.Tag;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
@@ -42,7 +38,6 @@ import org.opencv.imgproc.Imgproc;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class ExercisePage extends Activity implements View.OnClickListener, CameraBridgeViewBase.CvCameraViewListener2 {
@@ -77,6 +72,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     static int initialY = 0;
     static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
     boolean started = false;
+   static ValueAnimator anim;
+    static ScaleAnimation animScale;
+   static View cricleView;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -107,21 +105,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         btnFeedback = (Button) findViewById(R.id.btnFeedback);
         btnFeedback.setOnClickListener(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-
-        verifyPermissions();
-        //in the verify permission the open camera code must be
-
+        cricleView = findViewById(R.id.cricleView);
         spBreath = getSharedPreferences("settingsBreath", 0);
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.HelloOpenCvView);
-        mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Camera permission required.",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            mOpenCvCameraView.setCameraPermissionGranted();
-        }
-        mOpenCvCameraView.setCvCameraViewListener(this);
+        mOpenCvCameraView.setMaxFrameSize(640, 480);
+        verifyPermissions();
+        //in the verify permission the open camera code must be
+        startWaitingAnim();
     }
 
     /*
@@ -163,10 +153,14 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                 permissions[0]) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ExercisePage.this,
                     permissions, REQUEST_CODE);
+            Toast.makeText(this, "Camera permission required.",
+                    Toast.LENGTH_LONG).show();
         }
         else{
             // here the open camera code must be
-
+            mOpenCvCameraView.setCameraPermissionGranted();
+            mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
+            mOpenCvCameraView.setCvCameraViewListener(this);
         }
     }
 
@@ -219,9 +213,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         Core.flip(resizedFrame.t(), resizedFrame, 1);
 
         Imgproc.resize(resizedFrame, frame, new Size(640, 480));
-
         if(numOfFrames == 0){
             initialY = getFrameData(frame); // we get the initial Y and get starting parameters.
+            Log.d(TAG, String.valueOf(initialY));
             if(initialY == -1) return frame;
             else started = true;
         }
@@ -371,6 +365,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                     if(currHeight > 30){
                         if(!blueInAir) blueInAir = true;
                         blueBallFrames++;
+                        anim.pause();
+                        anim.removeAllUpdateListeners();
+                        float scale = calculateScale();
+                        animScale = new ScaleAnimation(cricleView.getScaleX(), scale, cricleView.getScaleY(), scale , Animation.RELATIVE_TO_SELF, (float)0.5, Animation.RELATIVE_TO_SELF, (float)0.5);
+                        animScale.setDuration(500);
+                        cricleView.startAnimation(animScale);
                     }
                     else{
                         if(blueInAir){
@@ -458,5 +458,25 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
 
     }
 
+    public static float calculateScale(){
+            float scale = (float) ((blueHeight.get(blueHeight.size()-1) - initialY) / (400 - initialY));
+             return scale;
+        }
+
+    public void startWaitingAnim(){
+        anim = ValueAnimator.ofFloat(0.2f, 0.1f);
+        anim.setDuration(2000);
+        anim.setRepeatMode(ValueAnimator.REVERSE);
+        anim.setRepeatCount(ValueAnimator.INFINITE);
+        anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float scale = Float.parseFloat(animation.getAnimatedValue().toString());
+                cricleView.setScaleX(scale);
+                cricleView.setScaleY(scale);
+            }
+        });
+        anim.start();
+    }
 
 }
