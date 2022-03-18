@@ -39,6 +39,9 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class ExercisePage extends Activity implements View.OnClickListener, CameraBridgeViewBase.CvCameraViewListener2 {
     Button btnBack, btnFeedback;
@@ -72,9 +75,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     static int initialY = 0;
     static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
     boolean started = false;
+    static boolean hasanim = false;
    static ValueAnimator anim;
     static ScaleAnimation animScale;
    static View cricleView;
+   static float oldXscale = 1.0f;
+   static float oldYscale;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -111,7 +117,15 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         mOpenCvCameraView.setMaxFrameSize(640, 480);
         verifyPermissions();
         //in the verify permission the open camera code must be
-        startWaitingAnim();
+//        startWaitingAnim();
+        new Timer().scheduleAtFixedRate(new TimerTask(){
+            @Override
+            public void run(){
+                fakeAnimation();
+            }
+        },0,1000);
+//        anim.pause();
+//        anim.removeAllUpdateListeners();
     }
 
     /*
@@ -463,6 +477,35 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
              return scale;
         }
 
+
+        public void fakeAnimation(){
+            Random rand = new Random();
+            double randomValue = 0 + (400 - 0) * rand.nextDouble();
+            float scale = (float) ((randomValue - 0) / (400 - 0));
+            Log.w("fakeAnimation", String.valueOf(scale));
+            animScale = new ScaleAnimation(oldXscale, scale, oldXscale, scale , Animation.RELATIVE_TO_SELF, (float)0.5, Animation.RELATIVE_TO_SELF, (float)0.5);
+            animScale.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation arg0) {
+                    cricleView.setScaleX(oldXscale);
+                    cricleView.setScaleY(oldXscale);
+                    animScale.cancel();
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            animScale.setDuration(1000);
+            cricleView.startAnimation(animScale);
+            oldXscale = scale;
+        }
     public void startWaitingAnim(){
         anim = ValueAnimator.ofFloat(0.2f, 0.1f);
         anim.setDuration(2000);

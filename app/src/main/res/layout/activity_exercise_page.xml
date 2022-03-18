@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:opencv="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -44,29 +46,42 @@
 
     </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        xmlns:opencv="http://schemas.android.com/apk/res-auto"
+    <LinearLayout
         android:layout_width="match_parent"
         android:gravity="center"
         android:orientation="vertical"
         android:layout_height="match_parent" >
-        <AbsoluteLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="70dp"
-            tools:ignore="Deprecated,MissingConstraints">
-
-            <View
-                android:id="@+id/cricleView"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:background="@drawable/cricleanime"
-                />
 
 
+            <AbsoluteLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="70dp"
+                tools:ignore="Deprecated,MissingConstraints">
 
-        </AbsoluteLayout>
+                <View
+                    android:id="@+id/cricleView"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:background="@drawable/cricleanime" />
+
+<!--                <View-->
+<!--                    android:id="@+id/cricleView2"-->
+<!--                    android:layout_width="130dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_height="130dp"-->
+<!--                    android:alpha="0.5"-->
+<!--                    android:background="@drawable/cricleanime" />-->
+
+<!--                <View-->
+<!--                    android:id="@+id/cricleView3"-->
+<!--                    android:layout_width="140dp"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_height="140dp"-->
+<!--                    android:alpha="0.3"-->
+<!--                    android:background="@drawable/cricleanime" />-->
+            </AbsoluteLayout>
+
         <org.opencv.android.JavaCameraView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
