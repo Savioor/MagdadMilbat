@@ -8,4 +8,4 @@ dependencyResolutionManagement {
 }
 rootProject.name = "Magdad Milbat"
 include ':app'
-include ':openCVLibrary454'
+include ':sdk'
