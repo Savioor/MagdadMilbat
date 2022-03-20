@@ -3,14 +3,17 @@ package com.example.magdadmilbat;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
+import android.graphics.Camera;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.hardware.Camera.PreviewCallback;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -51,9 +54,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
 
+    Camera mCamera;
     static Scalar[][] rgbRange= new Scalar[3][2];
     static double ballArea = Double.MAX_VALUE;
     private JavaCameraView mOpenCvCameraView;
+    private SurfaceHolder mSurfaceHolder;
     int RANGE = 30;
     Mat procImg;
     Mat circles;
@@ -87,9 +92,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         setContentView(R.layout.activity_exercise_page);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.HelloOpenCvView);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
+
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Camera permission required.",
@@ -167,13 +173,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
         Mat frame = inputFrame.rgba(); // we get the frame in rgb.
-        Mat resizedFrame = new Mat();
-        Imgproc.resize(frame, resizedFrame, new Size(800, 600));
-
-        Core.transpose(resizedFrame.t(), resizedFrame);
-        Core.flip(resizedFrame.t(), resizedFrame, 1);
-
-        Imgproc.resize(resizedFrame, frame, new Size(640, 480));
 
         if(isDone) {
             initialY = getFrameData(frame);
