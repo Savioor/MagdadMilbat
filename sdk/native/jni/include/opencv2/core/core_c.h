@@ -53,7 +53,11 @@
                           which is incompatible with C
 
    It is OK to disable it because we only extend few plain structures with
+<<<<<<< HEAD
    C++ constructors for simpler interoperability with C++ API of the library
+=======
+   C++ construrtors for simpler interoperability with C++ API of the library
+>>>>>>> origin/backend-camera-breath
 */
 #    pragma warning(disable:4190)
 #  elif defined __clang__ && __clang_major__ >= 3
@@ -579,7 +583,11 @@ CvNArrayIterator;
 #define CV_NO_CN_CHECK        2
 #define CV_NO_SIZE_CHECK      4
 
+<<<<<<< HEAD
 /** initializes iterator that traverses through several arrays simultaneously
+=======
+/** initializes iterator that traverses through several arrays simulteneously
+>>>>>>> origin/backend-camera-breath
    (the function together with cvNextArraySlice is used for
     N-ari element-wise operations) */
 CVAPI(int) cvInitNArrayIterator( int count, CvArr** arrs,
@@ -1309,7 +1317,11 @@ CVAPI(void) cvMulTransposed( const CvArr* src, CvArr* dst, int order,
                              const CvArr* delta CV_DEFAULT(NULL),
                              double scale CV_DEFAULT(1.) );
 
+<<<<<<< HEAD
 /** Transposes matrix. Square matrices can be transposed in-place */
+=======
+/** Tranposes matrix. Square matrices can be transposed in-place */
+>>>>>>> origin/backend-camera-breath
 CVAPI(void)  cvTranspose( const CvArr* src, CvArr* dst );
 #define cvT cvTranspose
 
@@ -1576,8 +1588,13 @@ CVAPI(void)  cvRestoreMemStoragePos( CvMemStorage* storage, CvMemStoragePos* pos
 CVAPI(void*) cvMemStorageAlloc( CvMemStorage* storage, size_t size );
 
 /** Allocates string in memory storage */
+<<<<<<< HEAD
 //CVAPI(CvString) cvMemStorageAllocString( CvMemStorage* storage, const char* ptr,
 //                                         int len CV_DEFAULT(-1) );
+=======
+CVAPI(CvString) cvMemStorageAllocString( CvMemStorage* storage, const char* ptr,
+                                         int len CV_DEFAULT(-1) );
+>>>>>>> origin/backend-camera-breath
 
 /** Creates new empty sequence that will reside in the specified storage */
 CVAPI(CvSeq*)  cvCreateSeq( int seq_flags, size_t header_size,
@@ -1970,7 +1987,10 @@ CVAPI(void) cvSetIPLAllocators( Cv_iplCreateImageHeader create_header,
 *                                    Data Persistence                                    *
 \****************************************************************************************/
 
+<<<<<<< HEAD
 #if 0
+=======
+>>>>>>> origin/backend-camera-breath
 /********************************** High-level functions ********************************/
 
 /** @brief Opens file storage for reading or writing data.
@@ -2557,12 +2577,19 @@ returns NULL.
  */
 CVAPI(CvTypeInfo*) cvTypeOf( const void* struct_ptr );
 
+<<<<<<< HEAD
 #endif
 
 /** @brief Releases an object.
 
  The function finds the type of a given object and calls release with the double pointer.
  @param struct_ptr Double pointer to the object
+=======
+/** @brief Releases an object.
+
+The function finds the type of a given object and calls release with the double pointer.
+@param struct_ptr Double pointer to the object
+>>>>>>> origin/backend-camera-breath
  */
 CVAPI(void) cvRelease( void** struct_ptr );
 
@@ -2575,6 +2602,44 @@ function, like cvCloneMat.
  */
 CVAPI(void*) cvClone( const void* struct_ptr );
 
+<<<<<<< HEAD
+=======
+/** @brief Saves an object to a file.
+
+The function saves an object to a file. It provides a simple interface to cvWrite .
+@param filename File name
+@param struct_ptr Object to save
+@param name Optional object name. If it is NULL, the name will be formed from filename .
+@param comment Optional comment to put in the beginning of the file
+@param attributes Optional attributes passed to cvWrite
+ */
+CVAPI(void) cvSave( const char* filename, const void* struct_ptr,
+                    const char* name CV_DEFAULT(NULL),
+                    const char* comment CV_DEFAULT(NULL),
+                    CvAttrList attributes CV_DEFAULT(cvAttrList()));
+
+/** @brief Loads an object from a file.
+
+The function loads an object from a file. It basically reads the specified file, find the first
+top-level node and calls cvRead for that node. If the file node does not have type information or
+the type information can not be found by the type name, the function returns NULL. After the object
+is loaded, the file storage is closed and all the temporary buffers are deleted. Thus, to load a
+dynamic structure, such as a sequence, contour, or graph, one should pass a valid memory storage
+destination to the function.
+@param filename File name
+@param memstorage Memory storage for dynamic structures, such as CvSeq or CvGraph . It is not used
+for matrices or images.
+@param name Optional object name. If it is NULL, the first top-level object in the storage will be
+loaded.
+@param real_name Optional output parameter that will contain the name of the loaded object
+(useful if name=NULL )
+ */
+CVAPI(void*) cvLoad( const char* filename,
+                     CvMemStorage* memstorage CV_DEFAULT(NULL),
+                     const char* name CV_DEFAULT(NULL),
+                     const char** real_name CV_DEFAULT(NULL) );
+
+>>>>>>> origin/backend-camera-breath
 /*********************************** Measuring Execution Time ***************************/
 
 /** helper functions for RNG initialization and accurate time measurement:
@@ -2725,6 +2790,27 @@ static char cvFuncName[] = Name
 
 #ifdef __cplusplus
 
+<<<<<<< HEAD
+=======
+//! @addtogroup core_c_glue
+//! @{
+
+//! class for automatic module/RTTI data registration/unregistration
+struct CV_EXPORTS CvType
+{
+    CvType( const char* type_name,
+            CvIsInstanceFunc is_instance, CvReleaseFunc release=0,
+            CvReadFunc read=0, CvWriteFunc write=0, CvCloneFunc clone=0 );
+    ~CvType();
+    CvTypeInfo* info;
+
+    static CvTypeInfo* first;
+    static CvTypeInfo* last;
+};
+
+//! @}
+
+>>>>>>> origin/backend-camera-breath
 #include "opencv2/core/utility.hpp"
 
 namespace cv
@@ -2755,11 +2841,19 @@ CV_EXPORTS void insertImageCOI(InputArray coiimg, CvArr* arr, int coi=-1);
 
 ////// specialized implementations of DefaultDeleter::operator() for classic OpenCV types //////
 
+<<<<<<< HEAD
 template<> struct DefaultDeleter<CvMat>{ CV_EXPORTS void operator ()(CvMat* obj) const; };
 template<> struct DefaultDeleter<IplImage>{ CV_EXPORTS void operator ()(IplImage* obj) const; };
 template<> struct DefaultDeleter<CvMatND>{ CV_EXPORTS void operator ()(CvMatND* obj) const; };
 template<> struct DefaultDeleter<CvSparseMat>{ CV_EXPORTS void operator ()(CvSparseMat* obj) const; };
 template<> struct DefaultDeleter<CvMemStorage>{ CV_EXPORTS void operator ()(CvMemStorage* obj) const; };
+=======
+template<> CV_EXPORTS void DefaultDeleter<CvMat>::operator ()(CvMat* obj) const;
+template<> CV_EXPORTS void DefaultDeleter<IplImage>::operator ()(IplImage* obj) const;
+template<> CV_EXPORTS void DefaultDeleter<CvMatND>::operator ()(CvMatND* obj) const;
+template<> CV_EXPORTS void DefaultDeleter<CvSparseMat>::operator ()(CvSparseMat* obj) const;
+template<> CV_EXPORTS void DefaultDeleter<CvMemStorage>::operator ()(CvMemStorage* obj) const;
+>>>>>>> origin/backend-camera-breath
 
 ////////////// convenient wrappers for operating old-style dynamic structures //////////////
 
@@ -3014,7 +3108,11 @@ template<typename _Tp> inline void Seq<_Tp>::copyTo(std::vector<_Tp>& vec, const
     size_t len = !seq ? 0 : range == Range::all() ? seq->total : range.end - range.start;
     vec.resize(len);
     if( seq && len )
+<<<<<<< HEAD
         cvCvtSeqToArray(seq, &vec[0], cvSlice(range));
+=======
+        cvCvtSeqToArray(seq, &vec[0], range);
+>>>>>>> origin/backend-camera-breath
 }
 
 template<typename _Tp> inline Seq<_Tp>::operator std::vector<_Tp>() const
