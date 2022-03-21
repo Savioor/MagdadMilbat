@@ -13,7 +13,9 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -78,9 +80,19 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     static boolean hasanim = false;
    static ValueAnimator anim;
     static ScaleAnimation animScale;
+    static TranslateAnimation animTrans;
+    static TranslateAnimation animTrans2;
+    static TranslateAnimation animTrans3;
+    static TranslateAnimation animTrans4;
+    static TranslateAnimation animTrans5;
+    static TranslateAnimation animTrans6;
    static View cricleView;
+    static View cricleView2;
+    static View cricleView3;
+    static View cricleView4;
+    static View cricleView5;
+    static View cricleView6;
    static float oldXscale = 1.0f;
-   static float oldYscale;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -112,6 +124,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         btnFeedback.setOnClickListener(this);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         cricleView = findViewById(R.id.cricleView);
+        cricleView2 = findViewById(R.id.cricleView2);
+        cricleView3 = findViewById(R.id.cricleView3);
+        cricleView4 = findViewById(R.id.cricleView4);
+        cricleView5 = findViewById(R.id.cricleView5);
+        cricleView6 = findViewById(R.id.cricleView6);
         spBreath = getSharedPreferences("settingsBreath", 0);
         mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.HelloOpenCvView);
         mOpenCvCameraView.setMaxFrameSize(640, 480);
@@ -482,28 +499,40 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             Random rand = new Random();
             double randomValue = 0 + (400 - 0) * rand.nextDouble();
             float scale = (float) ((randomValue - 0) / (400 - 0));
-            Log.w("fakeAnimation", String.valueOf(scale));
-            animScale = new ScaleAnimation(oldXscale, scale, oldXscale, scale , Animation.RELATIVE_TO_SELF, (float)0.5, Animation.RELATIVE_TO_SELF, (float)0.5);
-            animScale.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation arg0) {
-                    cricleView.setScaleX(oldXscale);
-                    cricleView.setScaleY(oldXscale);
-                    animScale.cancel();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
+            Log.w("fakeAnimation", cricleView.getTranslationX()*scale +" | "+ cricleView.getTranslationX()*oldXscale);
+            animTrans = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*scale));
+            animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView2.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView2.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*scale));
+            animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView3.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView3.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*scale));
+            animTrans4 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView4.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*scale));
+            animTrans5 = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*scale));
+            animTrans6 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView6.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*scale));
+            animTrans.setDuration(1000);
+            animTrans2.setDuration(1000);
+            animTrans3.setDuration(1000);
+            animTrans4.setDuration(1000);
+            animTrans5.setDuration(1000);
+            animTrans6.setDuration(1000);
+            animScale = new ScaleAnimation(oldXscale, scale, oldXscale, scale , Animation.ABSOLUTE, (float)0.5, Animation.ABSOLUTE, (float)0.5);
             animScale.setDuration(1000);
             cricleView.startAnimation(animScale);
+            cricleView2.startAnimation(animScale);
+            cricleView3.startAnimation(animScale);
+            cricleView4.startAnimation(animScale);
+            cricleView5.startAnimation(animScale);
+            cricleView6.startAnimation(animScale);
+            animScale.setFillAfter(true);
+            animTrans.setFillAfter(true);
+            animTrans2.setFillAfter(true);
+            animTrans3.setFillAfter(true);
+            animTrans4.setFillAfter(true);
+            animTrans5.setFillAfter(true);
+            animTrans6.setFillAfter(true);
+            cricleView.startAnimation(animTrans);
+            cricleView2.startAnimation(animTrans2);
+            cricleView3.startAnimation(animTrans3);
+            cricleView4.startAnimation(animTrans4);
+            cricleView5.startAnimation(animTrans5);
+            cricleView6.startAnimation(animTrans6);
             oldXscale = scale;
         }
     public void startWaitingAnim(){

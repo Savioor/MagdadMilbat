@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/black"
     android:orientation="vertical">
 
     <LinearLayout
@@ -53,34 +54,68 @@
         android:layout_height="match_parent" >
 
 
-            <AbsoluteLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="70dp"
-                tools:ignore="Deprecated,MissingConstraints">
+            <FrameLayout
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                >
 
                 <View
                     android:id="@+id/cricleView"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="120px"
+                    android:layout_height="120px"
+                    android:translationX="-35px"
+                    android:translationY="-50px"
+                    android:alpha="0.75"
+                    android:layout_gravity="center"
                     android:background="@drawable/cricleanime" />
 
-<!--                <View-->
-<!--                    android:id="@+id/cricleView2"-->
-<!--                    android:layout_width="130dp"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:layout_height="130dp"-->
-<!--                    android:alpha="0.5"-->
-<!--                    android:background="@drawable/cricleanime" />-->
+                <View
+                    android:id="@+id/cricleView2"
+                    android:layout_width="120px"
+                    android:layout_height="120px"
+                    android:alpha="0.75"
+                    android:layout_gravity="center"
+                    android:translationX="35px"
+                    android:translationY="-50px"
+                    android:background="@drawable/cricleanime" />
 
-<!--                <View-->
-<!--                    android:id="@+id/cricleView3"-->
-<!--                    android:layout_width="140dp"-->
-<!--                    android:layout_gravity="center"-->
-<!--                    android:layout_height="140dp"-->
-<!--                    android:alpha="0.3"-->
-<!--                    android:background="@drawable/cricleanime" />-->
-            </AbsoluteLayout>
+                <View
+                    android:id="@+id/cricleView3"
+                    android:layout_width="120px"
+                    android:layout_gravity="center"
+                    android:translationX="-60px"
+                    android:translationY="0px"
+                    android:layout_height="120px"
+                    android:alpha="0.75"
+                    android:background="@drawable/cricleanime" />
+                <View
+                    android:id="@+id/cricleView4"
+                    android:layout_width="120px"
+                    android:layout_gravity="center"
+                    android:layout_height="120px"
+                    android:alpha="0.75"
+                    android:translationX="60px"
+                    android:translationY="0px"
+                    android:background="@drawable/cricleanime" />
+                <View
+                    android:id="@+id/cricleView5"
+                    android:layout_width="120px"
+                    android:layout_gravity="center"
+                    android:layout_height="120px"
+                    android:alpha="0.75"
+                    android:translationX="-35px"
+                    android:translationY="50px"
+                    android:background="@drawable/cricleanime" />
+                <View
+                    android:id="@+id/cricleView6"
+                    android:layout_width="120px"
+                    android:layout_gravity="center"
+                    android:layout_height="120px"
+                    android:alpha="0.75"
+                    android:translationX="35px"
+                    android:translationY="50px"
+                    android:background="@drawable/cricleanime" />
+            </FrameLayout>
 
         <org.opencv.android.JavaCameraView
             android:layout_width="fill_parent"
