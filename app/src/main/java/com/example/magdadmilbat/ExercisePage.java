@@ -3,7 +3,7 @@ package com.example.magdadmilbat;
 import android.Manifest;
 import android.app.Activity;
 import android.content.pm.PackageManager;
-import android.graphics.Camera;
+import android.hardware.Camera;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.SurfaceHolder;
@@ -35,6 +35,7 @@ import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +60,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static double ballArea = Double.MAX_VALUE;
     private JavaCameraView mOpenCvCameraView;
     private SurfaceHolder mSurfaceHolder;
+    boolean mPreviewRunning = false;
+
     int RANGE = 30;
     Mat procImg;
     Mat circles;
@@ -94,7 +97,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.HelloOpenCvView);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
-
+       // mSurfaceHolder = mOpenCvCameraView.getHolder();
+        //mSurfaceHolder.addCallback(this);
+        //mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
 
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -171,8 +176,14 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      * @return the frame after it's marked.
      */
     @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+    public Mat onCameraFrame(JavaCameraView.CvCameraViewFrame inputFrame) {
         Mat frame = inputFrame.rgba(); // we get the frame in rgb.
+        Mat resizedFrame = new Mat();
+        Point center = new Point(frame.width() / 2, frame.height() / 2);
+        Mat rotationMatrix = Imgproc.getRotationMatrix2D(center,90, 1);
+        Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP);
+
+        frame = resizedFrame;
 
         if(isDone) {
             initialY = getFrameData(frame);
@@ -183,6 +194,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             frame = drawLine(frame, new Point(0, frame.height() - 100), new Point(frame.width(), frame.height() - 100));
             frame = drawLine(frame, new Point(0, frame.height() - 300), new Point(frame.width(), frame.height() - 300));
         }
+
         return frame;
     }
 
@@ -205,30 +217,33 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      */
     private static int getFrameData(Mat img) {
         Mat procImg = prepareImage(img);
-        procImg = procImg.submat(procImg.height() - 300, procImg.height() - 100, 0, procImg.width());
+       // procImg = procImg.submat(procImg.height() - 300, procImg.height() - 100, 0, procImg.width());
         Mat circles = new Mat();
         int sensitivity = 22;
 
         //Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
-        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 78.0, 28.0, procImg.width() / 20, procImg.width() / 6);
-        if(circles.cols() == 0){
-            return -1;
-        }
-        double[] c; // a circle.
-        Point center; // the circle's center.
-        double[] rgb; // the circle's color.
-        try {
-            for (int i = 0; i <= 2; i++) {
-                c = circles.get(0, i);
-                center = new Point(Math.round(c[0]), Math.round(c[1]));
-                rgb = img.get((int) center.y, (int) center.x);
-
-                rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball.
-                rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
-                ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
+        while(circles.width() < 3) {
+            Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
+            if (circles.width() == 0) {
+                return -1;
             }
-        }catch(NullPointerException e){ return -1; }
-
+            double[] c; // a circle.
+            Point center; // the circle's center.
+            double[] rgb; // the circle's color.
+            try {
+                for (int i = 0; i <= circles.width(); i++) {
+                    c = circles.get(0, i);
+                    center = new Point(Math.round(c[0]), Math.round(c[1]));
+                    rgb = img.get((int) center.y, (int) center.x);
+                    if(i <= 2)
+                        rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball./rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
+                    ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
+                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                }
+            } catch (NullPointerException e) {
+                return -1;
+            }
+        }
         return (int)Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
     }
 
@@ -414,5 +429,30 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return img;
     }
 
+/*
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        mCamera = Camera.open();
+        mPreviewRunning = true;
 
+        mCamera.setDisplayOrientation(90);
+        try {
+            mCamera.setPreviewDisplay(holder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mCamera.startPreview();
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+
+    }
+
+ */
 }
