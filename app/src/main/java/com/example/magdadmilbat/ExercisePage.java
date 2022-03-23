@@ -93,6 +93,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     static View cricleView5;
     static View cricleView6;
    static float oldXscale = 1.0f;
+   static double duration = 0.0;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -138,9 +139,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
-                fakeAnimation();
+                breathAnimation();
+                duration++;
             }
         },0,1000);
+
 //        anim.pause();
 //        anim.removeAllUpdateListeners();
     }
@@ -173,6 +176,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             intent.putExtra("greenAirTime",getOverallTime(1));
             intent.putExtra("blueAirTime",getOverallTime(2));
             intent.putExtra("orangeAirTime",getOverallTime(3));
+            intent.putExtra("greenMaxHeight",getMaxHeight(1));
+            intent.putExtra("blueMaxHeight",getMaxHeight(2));
+            intent.putExtra("orangeMaxHeight",getMaxHeight(3));
+            intent.putExtra("greenRepSuccess",repsSuccess(1));
+            intent.putExtra("blueRepSuccess",repsSuccess(2));
+            intent.putExtra("orangeRepSuccess",repsSuccess(3));
+            intent.putExtra("duration",duration);
             startActivity(intent);
         }
     }
@@ -306,6 +316,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         return false;
     }
 
+    public static int repsSuccess(int color){
+        int numOfReps = 0;
+        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null;
+        numOfReps = temp.size();
+        return  numOfReps;
+    }
+
     public static int getDifficulty(){
         return Integer.parseInt(spBreath.getString("difficulty", null));
     }
@@ -396,12 +413,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
                     if(currHeight > 30){
                         if(!blueInAir) blueInAir = true;
                         blueBallFrames++;
-                        anim.pause();
-                        anim.removeAllUpdateListeners();
-                        float scale = calculateScale();
-                        animScale = new ScaleAnimation(cricleView.getScaleX(), scale, cricleView.getScaleY(), scale , Animation.RELATIVE_TO_SELF, (float)0.5, Animation.RELATIVE_TO_SELF, (float)0.5);
-                        animScale.setDuration(500);
-                        cricleView.startAnimation(animScale);
                     }
                     else{
                         if(blueInAir){

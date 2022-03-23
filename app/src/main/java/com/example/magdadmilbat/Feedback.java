@@ -1,6 +1,7 @@
 package com.example.magdadmilbat;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -26,8 +27,10 @@ import java.util.UUID;
 
 public class Feedback extends AppCompatActivity implements View.OnClickListener {
     Button btnBackMain2;
-    Double greenAirTime,blueAirTime,orangeAirTime;
+    static Double greenAirTime,blueAirTime,orangeAirTime,greenMaxHeight,blueMaxHeight,orangeMaxHeight,duration;
+    static int greenRepSuccess,blueRepSuccess,orangeRepSuccess;
     TextView greenTimeText,blueTimeText,orangeTimeText;
+    static SharedPreferences spBreath ;
     /**
      * on create func - contains  feedback text, return button
      */
@@ -40,15 +43,36 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
 
         btnBackMain2.setOnClickListener(this);
         Intent intent=getIntent();
+        spBreath = getSharedPreferences("settingsBreath", 0);
         greenTimeText = findViewById(R.id.greenAirTime);
         blueTimeText = findViewById(R.id.blueAirTime);
         orangeTimeText = findViewById(R.id.orangeAirTime);
         greenAirTime = intent.getExtras().getDouble("greenAirTime");
         blueAirTime = intent.getExtras().getDouble("blueAirTime");
         orangeAirTime = intent.getExtras().getDouble("orangeAirTime");
+        greenMaxHeight = intent.getExtras().getDouble("greenMaxHeight");
+        blueMaxHeight = intent.getExtras().getDouble("blueMaxHeight");
+        orangeMaxHeight = intent.getExtras().getDouble("orangeMaxHeight");
+        greenRepSuccess = intent.getExtras().getInt("greenRepSuccess");
+        blueRepSuccess = intent.getExtras().getInt("blueRepSuccess");
+        orangeRepSuccess = intent.getExtras().getInt("orangeRepSuccess");
+        greenMaxHeight = intent.getExtras().getDouble("greenMaxHeight");
         greenTimeText.setText("זמן באוויר (כדור ירוק) : "+greenAirTime);
         blueTimeText.setText("זמן באוויר (כדור כחול) : "+blueAirTime);
         blueTimeText.setText("זמן באוויר (כדור כתום) : "+orangeAirTime);
+        duration = intent.getExtras().getDouble("duration");
+    }
+
+    public static int calculateScore(){
+        int numberOfrepOrange = Integer.parseInt(spBreath.getString("numberOfrepOrange",null));
+        int numberOfrepBlue = Integer.parseInt(spBreath.getString("numberOfrepBlue",null));
+        int difficultyOrange = Integer.parseInt(spBreath.getString("difficultyOrange",null));
+        int difficultyBlue = Integer.parseInt(spBreath.getString("difficultyBlue",null));
+        int duration = Integer.parseInt(spBreath.getString("duration",null));
+        double heightScore = ((blueMaxHeight + orangeMaxHeight)/(difficultyBlue + difficultyOrange))*33;
+        double airTimeScore = ((blueAirTime + orangeAirTime)/(duration + duration))*33;
+        double repScore = ((blueRepSuccess + orangeRepSuccess)/(numberOfrepBlue + numberOfrepOrange))*34;
+       return (int) (heightScore + airTimeScore + repScore);
     }
 
     /**
@@ -62,7 +86,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
             String timeObj = LocalTime.now()
                     .truncatedTo(ChronoUnit.SECONDS)
                     .format(DateTimeFormatter.ISO_LOCAL_TIME);
-            Training exerciseObj = new Training(dateObj.toString(),timeObj,"נשיפה עמוקה",10,22,greenAirTime,blueAirTime,orangeAirTime);
+            Training exerciseObj = new Training(dateObj.toString(),timeObj,"נשיפה עמוקה",calculateScore(),duration,greenAirTime,blueAirTime,orangeAirTime,greenMaxHeight,blueMaxHeight,orangeMaxHeight,greenRepSuccess,blueRepSuccess,orangeRepSuccess);
             DatabaseManager dbObj = new DatabaseManager(Feedback.this);
             dbObj.addTraining(exerciseObj);
             Intent intent = new Intent(this, MainActivity.class);

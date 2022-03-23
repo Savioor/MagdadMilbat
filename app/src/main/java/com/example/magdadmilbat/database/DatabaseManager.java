@@ -30,14 +30,14 @@ public static final String TABLE_NAME = "Training";
     private void createTrainingTable(SQLiteDatabase sqLiteDatabase)
     {
         String sql = "Create table Training (id integer primary key autoincrement, exerciseDescription text not null," +
-                " trainingQuality integer not null, date text not null, time text not null, duration double not null, greenAirTime double not null,blueAirTime double not null, orangeAirTime double not null)";
+                " trainingQuality integer not null, date text not null, time text not null, duration double not null, greenAirTime double not null, blueAirTime double not null, orangeAirTime double not null, greenMaxHeight double not null, blueMaxHeight double not null, orangeMaxHeight double not null, greenRepSuccess int not null, blueRepSuccess int not null, orangeRepSuccess int not null)";
         sqLiteDatabase.execSQL(sql);
     }
 
     /** This function adds the value of the training it receives to the training table **/
     public void addTraining(Training training) {
-        String sql = "insert into Training(date, time, exerciseDescription, trainingQuality, duration, greenAirTime, blueAirTime, orangeAirTime) " +
-                "values ('"+training.getDate() + "','" + training.getTime() + "','" + training.getExerciseDescription() + "','"+ training.getTrainingQuality() + "','"+ training.getDuration() + "','"+ training.getArrBalls()[0].getDurationInAir() + "','"+ training.getArrBalls()[1].getDurationInAir() + "' ,"+ training.getArrBalls()[2].getDurationInAir() + ")";
+        String sql = "insert into Training(date, time, exerciseDescription, trainingQuality, duration, greenAirTime, blueAirTime, orangeAirTime, greenMaxHeight, blueMaxHeight, orangeMaxHeight, greenRepSuccess, blueRepSuccess, orangeRepSuccess) " +
+                "values ('"+training.getDate() + "','" + training.getTime() + "','" + training.getExerciseDescription() + "','"+ training.getTrainingQuality() + "','"+ training.getDuration() + "','"+ training.getArrBalls()[0].getDurationInAir() + "','"+ training.getArrBalls()[1].getDurationInAir() + "' ,'"+ training.getArrBalls()[2].getDurationInAir() + "','" + training.getArrBalls()[0].getMaxHeight() + "','" + training.getArrBalls()[1].getMaxHeight() + "','" + training.getArrBalls()[2].getMaxHeight() + "','" + training.getArrBalls()[0].getRepetitionSuccess() + "','" + training.getArrBalls()[1].getRepetitionSuccess() + "'," + training.getArrBalls()[2].getRepetitionSuccess() + ")";
         SQLiteDatabase sqLiteDatabase = getWritableDatabase(); // Open connection.
         sqLiteDatabase.execSQL(sql);
         sqLiteDatabase.close(); // Close connection.
@@ -66,6 +66,12 @@ public static final String TABLE_NAME = "Training";
         int greenAirTimeI = cursor.getColumnIndex("greenAirTime");
         int blueAirTimeI = cursor.getColumnIndex("blueAirTime");
         int orangeAirTimeI = cursor.getColumnIndex("orangeAirTime");
+        int greenMaxHeightI = cursor.getColumnIndex("greenMaxHeight");
+        int blueMaxHeightI = cursor.getColumnIndex("blueMaxHeight");
+        int orangeMaxHeightI = cursor.getColumnIndex("orangeMaxHeight");
+        int greenRepSuccessI = cursor.getColumnIndex("greenRepSuccess");
+        int blueRepSuccessI = cursor.getColumnIndex("blueRepSuccess");
+        int orangeRepSuccessI = cursor.getColumnIndex("orangeRepSuccess");
         int trainingQuality = cursor.getInt(trainingQualityI);
         double duration = cursor.getDouble(durationI);
         String exerciseDescription = cursor.getString(exerciseDescriptionI);
@@ -74,9 +80,13 @@ public static final String TABLE_NAME = "Training";
         double greenAirTime = cursor.getDouble(greenAirTimeI);
         double blueAirTime = cursor.getDouble(blueAirTimeI);
         double orangeAirTime = cursor.getDouble(orangeAirTimeI);
-
-        return new Training(date, time, exerciseDescription, trainingQuality,duration, greenAirTime, blueAirTime, orangeAirTime);
-
+        double greenMaxHeight = cursor.getDouble(greenMaxHeightI);
+        double blueMaxHeight = cursor.getDouble(blueMaxHeightI);
+        double orangeMaxHeight = cursor.getDouble(orangeMaxHeightI);
+        int greenRepSuccess = cursor.getInt(greenRepSuccessI);
+        int blueRepSuccess = cursor.getInt(blueRepSuccessI);
+        int orangeRepSuccess = cursor.getInt(orangeRepSuccessI);
+        return new Training(date, time, exerciseDescription, trainingQuality,duration, greenAirTime, blueAirTime, orangeAirTime, greenMaxHeight, blueMaxHeight, orangeMaxHeight, greenRepSuccess, blueRepSuccess, orangeRepSuccess);
     }
 
 /**

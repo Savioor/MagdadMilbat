@@ -10,16 +10,16 @@ public class Training {
     private Ball [] arrBalls;
 
 
-    public Training(String date, String time, String exerciseDescription, int trainingQuality, double duration, double greenAirTime,double blueAirTime,double orangeAirTime) {
+    public Training(String date, String time, String exerciseDescription, int trainingQuality, double duration, double greenAirTime,double blueAirTime,double orangeAirTime, double greenMaxHeight, double blueMaxHeight, double orangeMaxHeight, int greenRepSuccess, int blueRepSuccess, int orangeRepSuccessI) {
         this.date = date;
         this.time = time;
         this.exerciseDescription = exerciseDescription;
         this.trainingQuality = trainingQuality;
         this.duration = duration;
         this.arrBalls = new Ball[3];
-        this.arrBalls[0] = new Ball(1,greenAirTime,0);
-        this.arrBalls[1] = new Ball(2,blueAirTime,0);
-        this.arrBalls[2] = new Ball(3,orangeAirTime,0);
+        this.arrBalls[0] = new Ball(1,greenAirTime,greenRepSuccess,greenMaxHeight);
+        this.arrBalls[1] = new Ball(2,blueAirTime,blueRepSuccess,blueMaxHeight);
+        this.arrBalls[2] = new Ball(3,orangeAirTime,orangeRepSuccessI,orangeMaxHeight);
     }
 
     public String getDate() {
