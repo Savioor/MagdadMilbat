@@ -86,9 +86,11 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         if(difficultyOrange != null){
             sbLevelNumberOrange = Integer.parseInt(difficultyOrange);
         }
-        if(duration != null){
+
+        if(duration != null)
             etDuration.setText(duration);
-        }
+        else
+            etDuration.setText("5");
 
     }
 

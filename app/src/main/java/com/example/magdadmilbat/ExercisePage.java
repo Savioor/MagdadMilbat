@@ -500,17 +500,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
 
     }
 
-    public static float calculateScale(){
-            float scale = (float) ((blueHeight.get(blueHeight.size()-1) - initialY) / (400 - initialY));
-             return scale;
-        }
-
-
-        public void fakeAnimation(){
+        public void breathAnimation(){
+//            double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
+//            float scale = (float) ((lastOrangeHeight - initialY) / (400 - initialY));
             Random rand = new Random();
             double randomValue = 0 + (400 - 0) * rand.nextDouble();
             float scale = (float) ((randomValue - 0) / (400 - 0));
-            Log.w("fakeAnimation", cricleView.getTranslationX()*scale +" | "+ cricleView.getTranslationX()*oldXscale);
             animTrans = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*scale));
             animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView2.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView2.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*scale));
             animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView3.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView3.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*scale));
