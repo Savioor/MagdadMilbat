@@ -9,6 +9,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -94,6 +96,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     static View cricleView6;
    static float oldXscale = 1.0f;
    static double duration = 0.0;
+   Thread t;
+   Runnable r;
+   Handler handler1;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -139,13 +144,23 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
-                breathAnimation();
                 duration++;
             }
         },0,1000);
 
 //        anim.pause();
 //        anim.removeAllUpdateListeners();
+
+        handler1 = new Handler(){
+            @Override
+            public void handleMessage(Message msg){
+                super.handleMessage(msg);
+                int a = msg.what;
+                if(a == 1){
+                    breathAnimation();
+                }
+            }
+        };
     }
 
     /*
@@ -262,6 +277,24 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         }
 
         frame = findContoursAndDraw(frame);
+        if(orangeHeight.size() >2){
+            r = new Runnable() {
+                @Override
+                public void run() {
+                    Message msg = new Message();
+                    double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
+                    double preOrangeHeight  = orangeHeight.get(orangeHeight.size()-2);
+                    if(Math.abs(preOrangeHeight-lastOrangeHeight) < 0.5)
+                        msg.what = 0;
+                    else
+                        msg.what = 1;
+
+                    handler1.sendMessage(msg);
+                }
+            };
+            t= new Thread(r);
+            t.start();
+        }
         if(started) numOfFrames++;
 
         return frame;
@@ -501,11 +534,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     }
 
         public void breathAnimation(){
-//            double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-//            float scale = (float) ((lastOrangeHeight - initialY) / (400 - initialY));
-            Random rand = new Random();
-            double randomValue = 0 + (400 - 0) * rand.nextDouble();
-            float scale = (float) ((randomValue - 0) / (400 - 0));
+            double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
+            float scale = (float) ((lastOrangeHeight - initialY) / (400 - initialY));
+//            Random rand = new Random();
+//            double randomValue = 0 + (400 - 0) * rand.nextDouble();
+//            float scale = (float) ((randomValue - 0) / (400 - 0));
             animTrans = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*scale));
             animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView2.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView2.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*scale));
             animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView3.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView3.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*scale));

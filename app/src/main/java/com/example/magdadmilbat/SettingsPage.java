@@ -6,9 +6,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,14 +22,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.MagdadMilbat.R;
 
-public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBarChangeListener, View.OnClickListener, CompoundButton.OnCheckedChangeListener {
     Button btnBack, btnSave;
     SeekBar sbLevel, sbRepetition;
     TextView tvLevelNumber, tvRepetitionNumber;
     EditText etDuration;
-    RadioGroup rg1;
-    RadioButton b1,b2;
+    CheckBox b1,b2;
+    ScrollView sv;
+    ImageView ivRight,ivLeft;
     boolean blue = true,orange = false;
+    boolean blueball = true , orangeball = false;
     SharedPreferences spBreath;
     int sbLevelNumberBlue = 1; //difficulty level
     int sbRepNumberBlue = 1;
@@ -41,18 +47,23 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         btnBack = (Button)findViewById(R.id.btnBack);
         btnSave = (Button)findViewById(R.id.btnSave);
         sbLevel = (SeekBar)findViewById(R.id.sbLevel);
+        sv = findViewById(R.id.navballs);
         b1 = findViewById(R.id.blue);
         b2 = findViewById(R.id.orange);
-        rg1 = findViewById(R.id.rg1);
         sbRepetition = (SeekBar)findViewById(R.id.sbRepetition);
         tvLevelNumber = (TextView)findViewById(R.id.tvLevelNumber);
         tvRepetitionNumber = (TextView)findViewById(R.id.tvRepetitionNumber);
         etDuration = (EditText)findViewById(R.id.etDuration);
-        b1.setChecked(true);
+        ivRight = findViewById(R.id.ivRight);
+        ivLeft = findViewById(R.id.ivLeft);
+        sv.setSmoothScrollingEnabled(true);
         //Set listeners
+        b1.setOnCheckedChangeListener(this);
+        b2.setOnCheckedChangeListener(this);
+        ivRight.setOnClickListener(this);
+        ivLeft.setOnClickListener(this);
         btnSave.setOnClickListener(this);
         btnBack.setOnClickListener(this);
-        rg1.setOnCheckedChangeListener(this);
         sbLevel.setOnSeekBarChangeListener(this);
         sbRepetition.setOnSeekBarChangeListener(this);
         // set the range of the slider (min & max)
@@ -97,6 +108,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
 //   * returns to the main page when click on the back button.
 //   * if btnSave clicked ,save the "settingsBreath" on SharedPreferences.
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onClick(View view) {
 
@@ -114,6 +126,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             editor.putString("difficultyBlue", String.valueOf(sbLevelNumberBlue));
             editor.putString("numberOfrepOrange", String.valueOf(sbRepNumberOrange));
             editor.putString("difficultyOrange", String.valueOf(sbLevelNumberOrange));
+            editor.putString("orange", String.valueOf(orange));
             if(d.length() > 0){
                 editor.putString("duration", d);
             }
@@ -124,6 +137,28 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
+
+        if(view == ivRight){
+            blueball = true;
+            orangeball = false;
+            sbRepetition.setEnabled(blue);
+            sbLevel.setEnabled(blue);
+            etDuration.setEnabled(blue);
+            sv.smoothScrollTo( 0, b1.getTop());
+            sbLevel.setProgress(sbLevelNumberBlue);
+            sbRepetition.setProgress(sbRepNumberBlue);
+        }
+
+        if(view == ivLeft){
+            orangeball = true;
+            blueball = false;
+            sbRepetition.setEnabled(orange);
+            sbLevel.setEnabled(orange);
+            etDuration.setEnabled(orange);
+            sv.smoothScrollTo(0, b2.getTop());
+            sbLevel.setProgress(sbLevelNumberOrange);
+            sbRepetition.setProgress(sbRepNumberOrange);
+        }
     }
 
     //if slider level change, update the difficulty level setting
@@ -133,42 +168,23 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         if (seekBar == sbLevel)
         {
             tvLevelNumber.setText(String.valueOf(i));
-            if(orange){
+            if(orangeball){
                 sbLevelNumberOrange = i;
-            }else if(blue){
+            }else if(blueball){
                 sbLevelNumberBlue = i;
             }
         }
         else if (seekBar == sbRepetition)
         {
             tvRepetitionNumber.setText(String.valueOf(i));
-            if(orange){
+            if(orangeball){
                 sbRepNumberOrange = i;
-            }else if(blue){
+            }else if(blueball){
                 sbRepNumberBlue = i;
             }
         }
     }
 
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        if(rg1 == group){
-            blue = checkedId == R.id.blue;
-            orange = checkedId == R.id.orange;
-            if(blue){
-                b2.setChecked(false);
-                b1.setChecked(true);
-                sbLevel.setProgress(sbLevelNumberBlue);
-                sbRepetition.setProgress(sbRepNumberBlue);
-            }
-            if(orange){
-                b1.setChecked(false);
-                b2.setChecked(true);
-                sbLevel.setProgress(sbLevelNumberOrange);
-                sbRepetition.setProgress(sbRepNumberOrange);
-            }
-        }
-    }
 
     @Override
     public void onStartTrackingTouch(SeekBar seekBar) {
@@ -180,4 +196,23 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
     }
 
+    @Override
+    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if(buttonView == b1){
+            blue = isChecked;
+            if(blueball){
+                sbRepetition.setEnabled(blue);
+                sbLevel.setEnabled(blue);
+                etDuration.setEnabled(blue);
+            }
+        }
+        if(buttonView == b2){
+            orange = isChecked;
+            if(orangeball){
+                sbRepetition.setEnabled(orange);
+                sbLevel.setEnabled(orange);
+                etDuration.setEnabled(orange);
+            }
+        }
+    }
 }
