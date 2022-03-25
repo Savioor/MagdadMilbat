@@ -2,30 +2,27 @@ package com.example.magdadmilbat;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.SurfaceTexture;
-import android.os.Build;
+import android.hardware.Camera;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Size;
+import android.os.CountDownTimer;
+import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.hardware.Camera.PreviewCallback;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import com.example.MagdadMilbat.R;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
@@ -34,14 +31,15 @@ import org.opencv.core.MatOfPoint;
 import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
 import org.opencv.core.Scalar;
+import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-public class ExercisePage extends Activity implements View.OnClickListener, CameraBridgeViewBase.CvCameraViewListener2 {
+public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {
     Button btnBack, btnFeedback;
     private final int PERMISSIONS_READ_CAMERA=1;
     TextView tvRepetition, tvExercise;
@@ -57,14 +55,18 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
 
     static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
 
+    Camera mCamera;
     static Scalar[][] rgbRange= new Scalar[3][2];
     static double ballArea = Double.MAX_VALUE;
-    private CameraBridgeViewBase mOpenCvCameraView;
-    int numOfFrames = 0;
+    private JavaCameraView mOpenCvCameraView;
+    private SurfaceHolder mSurfaceHolder;
+    boolean mPreviewRunning = false;
+
     int RANGE = 30;
     Mat procImg;
     Mat circles;
-    static int initialY = 0;
+    static int initialY = -1;
+    boolean isDone = false;
     static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
     /* --------------------------------------------------------------------------------------------------- */
 
@@ -93,9 +95,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         setContentView(R.layout.activity_exercise_page);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-
-        mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.HelloOpenCvView);
+        mOpenCvCameraView = (JavaCameraView) findViewById(R.id.HelloOpenCvView);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
+       // mSurfaceHolder = mOpenCvCameraView.getHolder();
+        //mSurfaceHolder.addCallback(this);
+        //mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_NORMAL);
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Camera permission required.",
@@ -104,6 +109,19 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             mOpenCvCameraView.setCameraPermissionGranted();
         }
         mOpenCvCameraView.setCvCameraViewListener(this);
+
+        CountDownTimer count = new CountDownTimer(10000, 1000) {
+            @Override
+            public void onTick(long l) {
+                return;
+            }
+
+            @Override
+            public void onFinish() {
+                isDone = true;
+            }
+        };
+        count.start();
     }
 
     /*
@@ -158,16 +176,25 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
      * @return the frame after it's marked.
      */
     @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+    public Mat onCameraFrame(JavaCameraView.CvCameraViewFrame inputFrame) {
         Mat frame = inputFrame.rgba(); // we get the frame in rgb.
+        Mat resizedFrame = new Mat();
+        Point center = new Point(frame.width() / 2, frame.height() / 2);
+        Mat rotationMatrix = Imgproc.getRotationMatrix2D(center,90, 1);
+        Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP);
 
-        if(numOfFrames == 0){
-            initialY = getFrameData(frame); // we get the initial Y and get starting parameters.
-            if(initialY == -1) return frame;
+        frame = resizedFrame;
+
+        if(isDone) {
+            initialY = getFrameData(frame);
         }
 
-        frame = findContoursAndDraw(frame);
-        numOfFrames++;
+        frame = initialY == -1 ? frame : findContoursAndDraw(frame);
+        if(initialY == -1){
+            frame = drawLine(frame, new Point(0, frame.height() - 100), new Point(frame.width(), frame.height() - 100));
+            frame = drawLine(frame, new Point(0, frame.height() - 300), new Point(frame.width(), frame.height() - 300));
+        }
+
         return frame;
     }
 
@@ -190,27 +217,33 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
      */
     private static int getFrameData(Mat img) {
         Mat procImg = prepareImage(img);
+       // procImg = procImg.submat(procImg.height() - 300, procImg.height() - 100, 0, procImg.width());
         Mat circles = new Mat();
         int sensitivity = 22;
 
-        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
-        if(circles.cols() == 0){
-            return -1;
+        //Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
+        while(circles.width() < 3) {
+            Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
+            if (circles.width() == 0) {
+                return -1;
+            }
+            double[] c; // a circle.
+            Point center; // the circle's center.
+            double[] rgb; // the circle's color.
+            try {
+                for (int i = 0; i <= circles.width(); i++) {
+                    c = circles.get(0, i);
+                    center = new Point(Math.round(c[0]), Math.round(c[1]));
+                    rgb = img.get((int) center.y, (int) center.x);
+                    if(i <= 2)
+                        rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball./rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
+                    ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
+                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                }
+            } catch (NullPointerException e) {
+                return -1;
+            }
         }
-        double[] c; // a circle.
-        Point center; // the circle's center.
-        double[] rgb; // the circle's color.
-
-        for(int i = 0; i <= 2; i++){
-            c = circles.get(0, i);
-            center = new Point(Math.round(c[0]), Math.round(c[1]));
-            rgb = img.get((int)center.y, (int)center.x);
-
-            rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball.
-            rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
-            ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
-        }
-
         return (int)Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
     }
 
@@ -374,7 +407,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
        double maxHeight = 0;
        ArrayList<Double> temp = color == 1 ? greenHeight : color == 2 ? blueHeight : color == 3 ? orangeHeight : null;
        for(int i = 0; i < temp.size(); i++){
-            int currHeight = temp.get(i);
+            double currHeight = temp.get(i);
             maxHeight = maxHeight > currHeight ? maxHeight : currHeight;
        }
        return maxHeight;
@@ -391,5 +424,35 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         
     }
 
+    private Mat drawLine(Mat img, Point p1, Point p2){
+        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
+        return img;
+    }
 
+/*
+    @Override
+    public void surfaceCreated(@NonNull SurfaceHolder holder) {
+        mCamera = Camera.open();
+        mPreviewRunning = true;
+
+        mCamera.setDisplayOrientation(90);
+        try {
+            mCamera.setPreviewDisplay(holder);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        mCamera.startPreview();
+    }
+
+    @Override
+    public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+
+    }
+
+    @Override
+    public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
+
+    }
+
+ */
 }
