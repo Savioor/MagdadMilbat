@@ -5,6 +5,31 @@ import org.opencv.core.Size;
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import org.opencv.core.Size;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.animation.ValueAnimator;
+import org.opencv.core.Size;
+import android.os.Handler;
+import android.os.Message;
+import android.util.Log;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
+import android.view.animation.TranslateAnimation;
+import android.os.CountDownTimer;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
+import android.hardware.Camera;
+import android.hardware.Camera.PreviewCallback;
+import androidx.core.app.ActivityCompat;
+import org.opencv.android.JavaCameraView;
+import java.io.IOException;
+
+
+import android.Manifest;
+import android.animation.ValueAnimator;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -47,8 +72,7 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ExercisePage extends Activity implements View.OnClickListener, CameraBridgeViewBase.CvCameraViewListener2 {
-    Button btnBack, btnFeedback;
+public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {    Button btnBack, btnFeedback;
     private final int PERMISSIONS_READ_CAMERA=1;
     private final int REQUEST_CODE = 2;
     private static final String TAG = "MyActivity";
@@ -69,18 +93,21 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
 
     static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
 
+    Camera mCamera;
     static Scalar[][] rgbRange= new Scalar[3][2];
     static double ballArea = Double.MAX_VALUE;
-    private CameraBridgeViewBase mOpenCvCameraView;
-    int numOfFrames = 0;
+    private JavaCameraView mOpenCvCameraView;
+    private SurfaceHolder mSurfaceHolder;
+    boolean mPreviewRunning = false;
     int RANGE = 30;
     Mat procImg;
     Mat circles;
-    static int initialY = 0;
+    static int initialY = -1;
+    boolean isDone = false;
     static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
     boolean started = false;
     static boolean hasanim = false;
-   static ValueAnimator anim;
+    static ValueAnimator anim;
     static ScaleAnimation animScale;
     static TranslateAnimation animTrans;
     static TranslateAnimation animTrans2;
@@ -88,17 +115,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
     static TranslateAnimation animTrans4;
     static TranslateAnimation animTrans5;
     static TranslateAnimation animTrans6;
-   static View cricleView;
+    static View cricleView;
     static View cricleView2;
     static View cricleView3;
     static View cricleView4;
     static View cricleView5;
     static View cricleView6;
-   static float oldXscale = 1.0f;
-   static double duration = 0.0;
-   Thread t;
-   Runnable r;
-   Handler handler1;
+    static float oldXscale = 1.0f;
+    static double duration = 0.0;
+    Thread t;
+    Runnable r;
+    Handler handler1;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -128,7 +155,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         btnBack.setOnClickListener(this);
         btnFeedback = (Button) findViewById(R.id.btnFeedback);
         btnFeedback.setOnClickListener(this);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         cricleView = findViewById(R.id.cricleView);
         cricleView2 = findViewById(R.id.cricleView2);
         cricleView3 = findViewById(R.id.cricleView3);
@@ -136,20 +162,38 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         cricleView5 = findViewById(R.id.cricleView5);
         cricleView6 = findViewById(R.id.cricleView6);
         spBreath = getSharedPreferences("settingsBreath", 0);
-        mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.HelloOpenCvView);
-        mOpenCvCameraView.setMaxFrameSize(640, 480);
-        verifyPermissions();
-        //in the verify permission the open camera code must be
-//        startWaitingAnim();
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mOpenCvCameraView = (JavaCameraView) findViewById(R.id.HelloOpenCvView);
+        mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
+
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Camera permission required.",
+                    Toast.LENGTH_LONG).show();
+        } else {
+            mOpenCvCameraView.setCameraPermissionGranted();
+        }
+        mOpenCvCameraView.setCvCameraViewListener(this);
+
+        CountDownTimer count = new CountDownTimer(10000, 1000) {
+            @Override
+            public void onTick(long l) {
+                return;
+            }
+
+            @Override
+            public void onFinish() {
+                isDone = true;
+            }
+        };
+        count.start();
+
         new Timer().scheduleAtFixedRate(new TimerTask(){
             @Override
             public void run(){
                 duration++;
             }
         },0,1000);
-
-//        anim.pause();
-//        anim.removeAllUpdateListeners();
 
         handler1 = new Handler(){
             @Override
@@ -260,23 +304,25 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
      * @return the frame after it's marked.
      */
     @Override
-    public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
+    public Mat onCameraFrame(JavaCameraView.CvCameraViewFrame inputFrame) {
         Mat frame = inputFrame.rgba(); // we get the frame in rgb.
         Mat resizedFrame = new Mat();
-        Imgproc.resize(frame, resizedFrame, new Size(800, 600));
+        Point center = new Point(frame.width() / 2, frame.height() / 2);
+        Mat rotationMatrix = Imgproc.getRotationMatrix2D(center,90, 1);
+        Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP);
 
-        Core.transpose(resizedFrame.t(), resizedFrame);
-        Core.flip(resizedFrame.t(), resizedFrame, 1);
+        frame = resizedFrame;
 
-        Imgproc.resize(resizedFrame, frame, new Size(640, 480));
-        if(numOfFrames == 0){
-            initialY = getFrameData(frame); // we get the initial Y and get starting parameters.
-            Log.d(TAG, String.valueOf(initialY));
-            if(initialY == -1) return frame;
-            else started = true;
+        if(isDone) {
+            initialY = getFrameData(frame);
         }
 
-        frame = findContoursAndDraw(frame);
+        frame = initialY == -1 ? frame : findContoursAndDraw(frame);
+        if(initialY == -1){
+            frame = drawLine(frame, new Point(0, frame.height() - 100), new Point(frame.width(), frame.height() - 100));
+            frame = drawLine(frame, new Point(0, frame.height() - 300), new Point(frame.width(), frame.height() - 300));
+        }
+
         if(orangeHeight.size() >2){
             r = new Runnable() {
                 @Override
@@ -295,8 +341,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
             t= new Thread(r);
             t.start();
         }
-        if(started) numOfFrames++;
-
         return frame;
     }
 
@@ -319,25 +363,32 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
      */
     private static int getFrameData(Mat img) {
         Mat procImg = prepareImage(img);
+        // procImg = procImg.submat(procImg.height() - 300, procImg.height() - 100, 0, procImg.width());
         Mat circles = new Mat();
         int sensitivity = 22;
-
-        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
-        if(circles.cols() < 3) return -1;
-
-        double[] c; // a circle.
-        Point center; // the circle's center.
-        double[] rgb; // the circle's color.
-
-        for(int i = 0; i < circles.cols() && i <= 2; i++){
-            c = circles.get(0, i);
-            center = new Point(Math.round(c[0]), Math.round(c[1]));
-            rgb = img.get((int)center.y, (int)center.x);
-            rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball.
-            rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
-            ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
+        //Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
+        while(circles.width() < 3) {
+            Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
+            if (circles.width() == 0) {
+                return -1;
+            }
+            double[] c; // a circle.
+            Point center; // the circle's center.
+            double[] rgb; // the circle's color.
+            try {
+                for (int i = 0; i <= circles.width(); i++) {
+                    c = circles.get(0, i);
+                    center = new Point(Math.round(c[0]), Math.round(c[1]));
+                    rgb = img.get((int) center.y, (int) center.x);
+                    if(i <= 2)
+                        rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball./rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
+                    ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
+                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                }
+            } catch (NullPointerException e) {
+                return -1;
+            }
         }
-
         return (int)Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
     }
 
@@ -521,59 +572,82 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         }
         return maxHeight;
     }
-
     public double getOverallTime(int color){
         double overAllTime = 0;
         ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null;
         for(int i = 0; i < temp.size(); i++){
             overAllTime += temp.get(i);
         }
-
         return overAllTime;
 
     }
+    private Mat drawLine(Mat img, Point p1, Point p2){
+        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
+        return img;
+    }
+/*
+ @Override
+ public void surfaceCreated(@NonNull SurfaceHolder holder) {
+     mCamera = Camera.open();
+     mPreviewRunning = true;
+     mCamera.setDisplayOrientation(90);
+     try {
+         mCamera.setPreviewDisplay(holder);
+     } catch (IOException e) {
+         e.printStackTrace();
+     }
+     mCamera.startPreview();
+ }
+ @Override
+ public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
+ }
+ @Override
+ public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
 
-        public void breathAnimation(){
-            double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-            float scale = (float) ((lastOrangeHeight - initialY) / (400 - initialY));
+ }
+ */
+
+    public void breathAnimation(){
+        double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
+        float scale = (float) ((lastOrangeHeight - initialY) / (400 - initialY));
 //            Random rand = new Random();
 //            double randomValue = 0 + (400 - 0) * rand.nextDouble();
 //            float scale = (float) ((randomValue - 0) / (400 - 0));
-            animTrans = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*scale));
-            animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView2.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView2.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*scale));
-            animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView3.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView3.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*scale));
-            animTrans4 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView4.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*scale));
-            animTrans5 = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*scale));
-            animTrans6 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView6.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*scale));
-            animTrans.setDuration(1000);
-            animTrans2.setDuration(1000);
-            animTrans3.setDuration(1000);
-            animTrans4.setDuration(1000);
-            animTrans5.setDuration(1000);
-            animTrans6.setDuration(1000);
-            animScale = new ScaleAnimation(oldXscale, scale, oldXscale, scale , Animation.ABSOLUTE, (float)0.5, Animation.ABSOLUTE, (float)0.5);
-            animScale.setDuration(1000);
-            cricleView.startAnimation(animScale);
-            cricleView2.startAnimation(animScale);
-            cricleView3.startAnimation(animScale);
-            cricleView4.startAnimation(animScale);
-            cricleView5.startAnimation(animScale);
-            cricleView6.startAnimation(animScale);
-            animScale.setFillAfter(true);
-            animTrans.setFillAfter(true);
-            animTrans2.setFillAfter(true);
-            animTrans3.setFillAfter(true);
-            animTrans4.setFillAfter(true);
-            animTrans5.setFillAfter(true);
-            animTrans6.setFillAfter(true);
-            cricleView.startAnimation(animTrans);
-            cricleView2.startAnimation(animTrans2);
-            cricleView3.startAnimation(animTrans3);
-            cricleView4.startAnimation(animTrans4);
-            cricleView5.startAnimation(animTrans5);
-            cricleView6.startAnimation(animTrans6);
-            oldXscale = scale;
-        }
+        animTrans = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*scale));
+        animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView2.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView2.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*scale));
+        animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView3.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView3.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*scale));
+        animTrans4 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView4.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*scale));
+        animTrans5 = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*scale));
+        animTrans6 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView6.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*scale));
+        animTrans.setDuration(1000);
+        animTrans2.setDuration(1000);
+        animTrans3.setDuration(1000);
+        animTrans4.setDuration(1000);
+        animTrans5.setDuration(1000);
+        animTrans6.setDuration(1000);
+        animScale = new ScaleAnimation(oldXscale, scale, oldXscale, scale , Animation.ABSOLUTE, (float)0.5, Animation.ABSOLUTE, (float)0.5);
+        animScale.setDuration(1000);
+        cricleView.startAnimation(animScale);
+        cricleView2.startAnimation(animScale);
+        cricleView3.startAnimation(animScale);
+        cricleView4.startAnimation(animScale);
+        cricleView5.startAnimation(animScale);
+        cricleView6.startAnimation(animScale);
+        animScale.setFillAfter(true);
+        animTrans.setFillAfter(true);
+        animTrans2.setFillAfter(true);
+        animTrans3.setFillAfter(true);
+        animTrans4.setFillAfter(true);
+        animTrans5.setFillAfter(true);
+        animTrans6.setFillAfter(true);
+        cricleView.startAnimation(animTrans);
+        cricleView2.startAnimation(animTrans2);
+        cricleView3.startAnimation(animTrans3);
+        cricleView4.startAnimation(animTrans4);
+        cricleView5.startAnimation(animTrans5);
+        cricleView6.startAnimation(animTrans6);
+        oldXscale = scale;
+    }
     public void startWaitingAnim(){
         anim = ValueAnimator.ofFloat(0.2f, 0.1f);
         anim.setDuration(2000);
@@ -589,5 +663,4 @@ public class ExercisePage extends Activity implements View.OnClickListener, Came
         });
         anim.start();
     }
-
 }
