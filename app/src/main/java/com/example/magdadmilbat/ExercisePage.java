@@ -294,21 +294,22 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return (int) Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
     }
 
-    private static int getFrameRGB(Mat img) {
-        Mat procImg = prepareImage(img);
-        int sensitivity = 22;
-        double[] c; // a circle.
-        Point center; // the circle's center.
-        double[] rgb; // the circle's color.
-        for (int i = 0; i < 3; i++) {
-            c = circles.get(0, i);
-            center = new Point(Math.round(c[0]), Math.round(c[1]));
-            rgb = img.get((int) center.y, (int) center.x);
-            rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball./rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
-            ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
-            Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-        return (int) Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
-    }
+//    private static int getFrameRGB(Mat img) {
+//        Mat procImg = prepareImage(img);
+//        int sensitivity = 22;
+//        double[] c; // a circle.
+//        Point center; // the circle's center.
+//        double[] rgb; // the circle's color.
+//        for (int i = 0; i < 3; i++) {
+//            c = circles.get(0, i);
+//            center = new Point(Math.round(c[0]), Math.round(c[1]));
+//            rgb = img.get((int) center.y, (int) center.x);
+//            rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball./rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
+//            ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
+//            Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+//        }
+//        return (int) Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
+//    }
 
 
     /**
