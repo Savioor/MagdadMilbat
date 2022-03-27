@@ -39,8 +39,6 @@ TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle,orangeTimeText,blueTimeT
         tvRepetition.setText(String.valueOf(intent.getExtras().getString("date")));
         tvTime.setText(String.valueOf(intent.getExtras().getString("time")));
         tvLevel.setText(String.valueOf(intent.getExtras().getString("quality")));
-        blueTimeText.setText(String.valueOf(intent.getExtras().getString("blueAirTime")));
-        orangeTimeText.setText(String.valueOf(intent.getExtras().getString("orangeAirTime")));
         tvblueMaxHeight.setText(String.valueOf(intent.getExtras().getString("blueMaxHeight")));
         tvorangeMaxHeight.setText(String.valueOf(intent.getExtras().getString("orangeMaxHeight")));
     }

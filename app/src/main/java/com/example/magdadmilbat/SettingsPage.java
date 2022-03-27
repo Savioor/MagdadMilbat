@@ -79,6 +79,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         String difficultyOrange = spBreath.getString("difficultyOrange",null);
         String difficultyBlue = spBreath.getString("difficultyBlue",null);
         String duration = spBreath.getString("duration",null);
+        String useOrange = spBreath.getString("orange",null);
 
         //If there are already saved settings,display and update the page
         if(numberOfrepBlue != null){
@@ -98,6 +99,10 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             sbLevelNumberOrange = Integer.parseInt(difficultyOrange);
         }
 
+        if(useOrange != null){
+            orange = Boolean.valueOf(useOrange);
+            b2.setChecked(orange);
+        }
         if(duration != null)
             etDuration.setText(duration);
         else
@@ -145,6 +150,10 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             sbLevel.setEnabled(blue);
             etDuration.setEnabled(blue);
             sv.smoothScrollTo( 0, b1.getTop());
+            if(sbRepNumberBlue == 1 && sbLevelNumberBlue == 1 && orange == true){
+                sbRepNumberBlue = sbRepNumberOrange;
+                sbLevelNumberBlue = sbLevelNumberOrange;
+            }
             sbLevel.setProgress(sbLevelNumberBlue);
             sbRepetition.setProgress(sbRepNumberBlue);
         }

@@ -72,7 +72,8 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {    Button btnBack, btnFeedback;
+public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {
+    Button btnBack, btnFeedback;
     private final int PERMISSIONS_READ_CAMERA=1;
     private final int REQUEST_CODE = 2;
     private static final String TAG = "MyActivity";
@@ -93,7 +94,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
 
-    Camera mCamera;
     static Scalar[][] rgbRange= new Scalar[3][2];
     static double ballArea = Double.MAX_VALUE;
     private JavaCameraView mOpenCvCameraView;
@@ -164,16 +164,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         spBreath = getSharedPreferences("settingsBreath", 0);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.HelloOpenCvView);
-        mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
 
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(this, "Camera permission required.",
-                    Toast.LENGTH_LONG).show();
-        } else {
-            mOpenCvCameraView.setCameraPermissionGranted();
-        }
-        mOpenCvCameraView.setCvCameraViewListener(this);
+        verifyPermissions();
 
         CountDownTimer count = new CountDownTimer(10000, 1000) {
             @Override
@@ -585,27 +577,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
         return img;
     }
-/*
- @Override
- public void surfaceCreated(@NonNull SurfaceHolder holder) {
-     mCamera = Camera.open();
-     mPreviewRunning = true;
-     mCamera.setDisplayOrientation(90);
-     try {
-         mCamera.setPreviewDisplay(holder);
-     } catch (IOException e) {
-         e.printStackTrace();
-     }
-     mCamera.startPreview();
- }
- @Override
- public void surfaceChanged(@NonNull SurfaceHolder holder, int format, int width, int height) {
- }
- @Override
- public void surfaceDestroyed(@NonNull SurfaceHolder holder) {
-
- }
- */
 
     public void breathAnimation(){
         double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);

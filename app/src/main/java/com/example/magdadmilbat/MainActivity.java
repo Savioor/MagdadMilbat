@@ -3,6 +3,7 @@ package com.example.magdadmilbat;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +16,8 @@ import org.opencv.android.OpenCVLoader;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnStartExercise, btnHistory, btnSettings;
-
+    SharedPreferences spSetApp;
+    SharedPreferences spBreath;
     /**
      * on create func - contains three buttons - exercise, history and settings
      */
@@ -27,6 +29,24 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnStartExercise = (Button)findViewById(R.id.btnStartExercise);
         btnHistory = (Button)findViewById(R.id.btnHistory);
         btnSettings = (Button)findViewById(R.id.btnFeedback);
+        spSetApp = getSharedPreferences("spSetApp", 0);
+        spBreath = getSharedPreferences("settingsBreath", 0);
+        String isFirstLaunch = spSetApp.getString("firstLaunch",null);
+        if(isFirstLaunch == null){
+            SharedPreferences.Editor editor2 = spBreath.edit();
+            editor2.putString("numberOfrepBlue", "1");
+            editor2.putString("difficultyBlue", "1");
+            editor2.putString("numberOfrepOrange", "1");
+            editor2.putString("difficultyOrange", "1");
+            editor2.putString("orange", "false");
+            editor2.putString("duration", "5");
+            editor2.putString("date", "1");
+            editor2.putString("hour", "1");
+            editor2.apply();
+            SharedPreferences.Editor editor = spSetApp.edit();
+            editor.putString("firstLaunch", "false");
+            editor.apply();
+        }
 
         btnStartExercise.setOnClickListener(this);
         btnHistory.setOnClickListener(this);
