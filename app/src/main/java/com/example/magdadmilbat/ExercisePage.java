@@ -394,8 +394,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     c = circles.get(0, i);
                     center = new Point(Math.round(c[0]), Math.round(c[1]));
                     rgb = img.get((int) center.y, (int) center.x);
-                    if(i <= 2)
+                    if(i <= 2) {
+                        if(i == 0) greenHeight.add(center.y);
+                        if(i == 1) orangeHeight.add(center.y);
+                        else blueHeight.add(center.y);
                         rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball./rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
+                    }
                     ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
                     Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
                 }
