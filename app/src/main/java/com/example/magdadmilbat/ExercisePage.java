@@ -128,7 +128,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     Runnable r;
     Handler handler1;
     static double framH;
-//    static double fakeHeight;
+    //    static double fakeHeight;
     static boolean isRepEnd= true;
     static double lastOrangeHeight;
     /* --------------------------------------------------------------------------------------------------- */
@@ -325,10 +325,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         }
         framH = frame.height()-300;
 
-        Log.d("testHeight", String.valueOf(orangeHeight.size()));
         if(orangeHeight.size() >1){
             lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-
             if(isRepEnd == false && lastOrangeHeight < 400)
                 isRepEnd =true;
 
@@ -410,12 +408,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return (int)Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
     }
 
+
+
     public static boolean reachedReps(){
         int numOfReps = Integer.parseInt(spBreath.getString("numberOfrep", null));
-        if(numOfReps == greenAirTime.size()){
-            return true;
-        }
-        return false;
+        return numOfReps == greenAirTime.size();
     }
 
     public static int repsSuccess(int color){
