@@ -63,8 +63,8 @@
                     android:id="@+id/cricleView"
                     android:layout_width="120px"
                     android:layout_height="120px"
-                    android:translationX="-35px"
-                    android:translationY="-50px"
+                    android:translationX="0px"
+                    android:translationY="0px"
                     android:alpha="0.75"
                     android:layout_gravity="center"
                     android:background="@drawable/cricleanime" />
@@ -75,15 +75,15 @@
                     android:layout_height="120px"
                     android:alpha="0.75"
                     android:layout_gravity="center"
-                    android:translationX="35px"
-                    android:translationY="-50px"
+                    android:translationX="0px"
+                    android:translationY="0px"
                     android:background="@drawable/cricleanime" />
 
                 <View
                     android:id="@+id/cricleView3"
                     android:layout_width="120px"
                     android:layout_gravity="center"
-                    android:translationX="-60px"
+                    android:translationX="0px"
                     android:translationY="0px"
                     android:layout_height="120px"
                     android:alpha="0.75"
@@ -94,7 +94,7 @@
                     android:layout_gravity="center"
                     android:layout_height="120px"
                     android:alpha="0.75"
-                    android:translationX="60px"
+                    android:translationX="0px"
                     android:translationY="0px"
                     android:background="@drawable/cricleanime" />
                 <View
@@ -103,8 +103,8 @@
                     android:layout_gravity="center"
                     android:layout_height="120px"
                     android:alpha="0.75"
-                    android:translationX="-35px"
-                    android:translationY="50px"
+                    android:translationX="0px"
+                    android:translationY="0px"
                     android:background="@drawable/cricleanime" />
                 <View
                     android:id="@+id/cricleView6"
@@ -112,16 +112,26 @@
                     android:layout_gravity="center"
                     android:layout_height="120px"
                     android:alpha="0.75"
-                    android:translationX="35px"
-                    android:translationY="50px"
+                    android:translationX="0px"
+                    android:translationY="0px"
                     android:background="@drawable/cricleanime" />
             </FrameLayout>
+        <TextView
+            android:id="@+id/remarkstext"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:textColor="@color/white"
+            android:layout_marginTop="13dp"
+            android:text="נשיפה עמוקה..."
+            android:textStyle="bold"
+            android:textSize="19dp" />
 
         <org.opencv.android.JavaCameraView
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:id="@+id/HelloOpenCvView"
-            opencv:show_fps="true"
+            opencv:show_fps="false"
             android:visibility="gone"
             opencv:camera_id="any" />
     </LinearLayout>

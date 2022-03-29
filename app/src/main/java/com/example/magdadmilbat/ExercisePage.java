@@ -121,11 +121,16 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static View cricleView4;
     static View cricleView5;
     static View cricleView6;
+    static TextView remarksText;
     static float oldXscale = 1.0f;
     static double duration = 0.0;
     Thread t;
     Runnable r;
     Handler handler1;
+    static double framH;
+//    static double fakeHeight;
+    static boolean isRepEnd= true;
+    static double lastOrangeHeight;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -161,6 +166,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView4 = findViewById(R.id.cricleView4);
         cricleView5 = findViewById(R.id.cricleView5);
         cricleView6 = findViewById(R.id.cricleView6);
+        remarksText = findViewById(R.id.remarkstext);
         spBreath = getSharedPreferences("settingsBreath", 0);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.HelloOpenCvView);
@@ -184,19 +190,23 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             @Override
             public void run(){
                 duration++;
+//            Random rand = new Random();
+//            double randomValue = 200 + (600 - 200) * rand.nextDouble();
+//            fakeHeight = randomValue;
             }
         },0,1000);
+        startWaitingAnim();
 
-        handler1 = new Handler(){
-            @Override
-            public void handleMessage(Message msg){
-                super.handleMessage(msg);
-                int a = msg.what;
-                if(a == 1){
-                    breathAnimation();
-                }
-            }
-        };
+//        handler1 = new Handler(){
+//            @Override
+//            public void handleMessage(Message msg){
+//                super.handleMessage(msg);
+//                int a = msg.what;
+//                if(a == 1){
+//                    breathAnimation();
+//                }
+//            }
+//        };
     }
 
     /*
@@ -304,7 +314,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP);
 
         frame = resizedFrame;
-
         if(isDone) {
             initialY = getFrameData(frame);
         }
@@ -314,20 +323,33 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             frame = drawLine(frame, new Point(0, frame.height() - 100), new Point(frame.width(), frame.height() - 100));
             frame = drawLine(frame, new Point(0, frame.height() - 300), new Point(frame.width(), frame.height() - 300));
         }
+        framH = frame.height()-300;
 
-        if(orangeHeight.size() >2){
+        Log.d("testHeight", String.valueOf(orangeHeight.size()));
+        if(orangeHeight.size() >1){
+            lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
+
+            if(isRepEnd == false && lastOrangeHeight < 400)
+                isRepEnd =true;
+
             r = new Runnable() {
                 @Override
                 public void run() {
-                    Message msg = new Message();
-                    double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-                    double preOrangeHeight  = orangeHeight.get(orangeHeight.size()-2);
-                    if(Math.abs(preOrangeHeight-lastOrangeHeight) < 0.5)
-                        msg.what = 0;
-                    else
-                        msg.what = 1;
-
-                    handler1.sendMessage(msg);
+                    lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
+                    if(lastOrangeHeight > 400 && isRepEnd){
+                        isRepEnd = false;
+                        breathAnimation();
+                    }
+//                    Message msg = new Message();
+//                    double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
+////                    double preOrangeHeight  = orangeHeight.get(orangeHeight.size()-2);
+//                    double preOrangeHeight = framH;
+//                    if(Math.abs(preOrangeHeight-lastOrangeHeight) < 0.5)
+//                        msg.what = 0;
+//                    else
+//                        msg.what = 1;
+//
+//                    handler1.sendMessage(msg);
                 }
             };
             t= new Thread(r);
@@ -579,57 +601,76 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     }
 
     public void breathAnimation(){
-        double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-        float scale = (float) ((lastOrangeHeight - initialY) / (400 - initialY));
+//        double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
+//        float scale = (float) (Math.abs(lastOrangeHeight - initialY) / (initialY - 200));
 //            Random rand = new Random();
 //            double randomValue = 0 + (400 - 0) * rand.nextDouble();
 //            float scale = (float) ((randomValue - 0) / (400 - 0));
-        animTrans = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*scale));
-        animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView2.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView2.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*scale));
-        animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView3.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView3.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*scale));
-        animTrans4 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView4.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*scale));
-        animTrans5 = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*scale));
-        animTrans6 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView6.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*scale));
+//        animTrans = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*scale));
+//        animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView2.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView2.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*scale));
+//        animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView3.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView3.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*scale));
+//        animTrans4 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView4.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*scale));
+//        animTrans5 = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*scale));
+//        animTrans6 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView6.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*scale));
+        animTrans = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,-35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,-50);
+        animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,-50);
+        animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,-60,Animation.ABSOLUTE,0,Animation.ABSOLUTE,0);
+        animTrans4 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,60,Animation.ABSOLUTE,0,Animation.ABSOLUTE,0);
+        animTrans5 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,-35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,50);
+        animTrans6 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,50);
         animTrans.setDuration(1000);
         animTrans2.setDuration(1000);
         animTrans3.setDuration(1000);
         animTrans4.setDuration(1000);
         animTrans5.setDuration(1000);
         animTrans6.setDuration(1000);
-        animScale = new ScaleAnimation(oldXscale, scale, oldXscale, scale , Animation.ABSOLUTE, (float)0.5, Animation.ABSOLUTE, (float)0.5);
-        animScale.setDuration(1000);
-        cricleView.startAnimation(animScale);
-        cricleView2.startAnimation(animScale);
-        cricleView3.startAnimation(animScale);
-        cricleView4.startAnimation(animScale);
-        cricleView5.startAnimation(animScale);
-        cricleView6.startAnimation(animScale);
-        animScale.setFillAfter(true);
-        animTrans.setFillAfter(true);
-        animTrans2.setFillAfter(true);
-        animTrans3.setFillAfter(true);
-        animTrans4.setFillAfter(true);
-        animTrans5.setFillAfter(true);
-        animTrans6.setFillAfter(true);
+//        animScale = new ScaleAnimation(oldXscale, scale, oldXscale, scale , Animation.ABSOLUTE, (float)0.5, Animation.ABSOLUTE, (float)0.5);
+//        animScale.setDuration(1000);
+//        cricleView.startAnimation(animScale);
+//        cricleView2.startAnimation(animScale);
+//        cricleView3.startAnimation(animScale);
+//        cricleView4.startAnimation(animScale);
+//        cricleView5.startAnimation(animScale);
+//        cricleView6.startAnimation(animScale);
+//        animScale.setFillAfter(true);
+//        animTrans.setFillAfter(true);
+//        animTrans2.setFillAfter(true);
+//        animTrans3.setFillAfter(true);
+//        animTrans4.setFillAfter(true);
+//        animTrans5.setFillAfter(true);
+//        animTrans6.setFillAfter(true);
+        animTrans.setRepeatMode(Animation.REVERSE);
+        animTrans2.setRepeatMode(Animation.REVERSE);
+        animTrans3.setRepeatMode(Animation.REVERSE);
+        animTrans4.setRepeatMode(Animation.REVERSE);
+        animTrans5.setRepeatMode(Animation.REVERSE);
+        animTrans6.setRepeatMode(Animation.REVERSE);
+        animTrans.setRepeatCount(1);
+        animTrans2.setRepeatCount(1);
+        animTrans3.setRepeatCount(1);
+        animTrans4.setRepeatCount(1);
+        animTrans5.setRepeatCount(1);
+        animTrans6.setRepeatCount(1);
+
         cricleView.startAnimation(animTrans);
         cricleView2.startAnimation(animTrans2);
         cricleView3.startAnimation(animTrans3);
         cricleView4.startAnimation(animTrans4);
         cricleView5.startAnimation(animTrans5);
         cricleView6.startAnimation(animTrans6);
-        oldXscale = scale;
+//        oldXscale = scale;
     }
     public void startWaitingAnim(){
-        anim = ValueAnimator.ofFloat(0.2f, 0.1f);
-        anim.setDuration(2000);
+        anim = ValueAnimator.ofFloat(0.4f, 1.0f);
+        anim.setDuration(1000);
         anim.setRepeatMode(ValueAnimator.REVERSE);
         anim.setRepeatCount(ValueAnimator.INFINITE);
         anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 float scale = Float.parseFloat(animation.getAnimatedValue().toString());
-                cricleView.setScaleX(scale);
-                cricleView.setScaleY(scale);
+                remarksText.setAlpha(scale);
+                remarksText.setAlpha(scale);
             }
         });
         anim.start();
