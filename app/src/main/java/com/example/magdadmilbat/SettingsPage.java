@@ -150,7 +150,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             sbLevel.setEnabled(blue);
             etDuration.setEnabled(blue);
             sv.smoothScrollTo( 0, b1.getTop());
-            if(sbRepNumberBlue == 1 && sbLevelNumberBlue == 1 && orange == true){
+            if(orange == true){
                 sbRepNumberBlue = sbRepNumberOrange;
                 sbLevelNumberBlue = sbLevelNumberOrange;
             }

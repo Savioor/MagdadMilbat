@@ -131,6 +131,16 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     //    static double fakeHeight;
     static boolean isRepEnd= true;
     static double lastOrangeHeight;
+    static int ballToUse;
+    static int repCounter = 0;
+    static ArrayList<Integer> repDuration = new ArrayList<Integer>();
+    static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
+    static boolean orangeInRange = false;
+    static boolean blueInRange = false;
+    static int blueDuration = 0;
+    static int orangeDuration = 0;
+    static int blueHeightSetting;
+    static int orangeHeightSetting;
     /* --------------------------------------------------------------------------------------------------- */
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -167,11 +177,20 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView5 = findViewById(R.id.cricleView5);
         cricleView6 = findViewById(R.id.cricleView6);
         remarksText = findViewById(R.id.remarkstext);
+        tvRepetition = findViewById(R.id.tvRepetition);
+        tvRepetition.setText(String.valueOf(repCounter));
         spBreath = getSharedPreferences("settingsBreath", 0);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mOpenCvCameraView = (JavaCameraView) findViewById(R.id.HelloOpenCvView);
+        blueHeightSetting = Integer.parseInt(spBreath.getString("difficultyBlue", null));
+        orangeHeightSetting = Integer.parseInt(spBreath.getString("difficultyOrange", null));
 
         verifyPermissions();
+        String orangeChecked = spBreath.getString("orange", null);
+        if(Boolean.valueOf(orangeChecked) == true)
+            ballToUse = 2;
+        else
+            ballToUse = 3;
 
         CountDownTimer count = new CountDownTimer(10000, 1000) {
             @Override
@@ -190,6 +209,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             @Override
             public void run(){
                 duration++;
+
+                if(repsSuccess(ballToUse) > repCounter){
+                    repEnd();
+                }
+
+                if(blueInRange){
+                    blueDuration++;
+                }
+                if(orangeInRange){
+                    orangeDuration++;
+                }
 //            Random rand = new Random();
 //            double randomValue = 200 + (600 - 200) * rand.nextDouble();
 //            fakeHeight = randomValue;
@@ -244,6 +274,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             intent.putExtra("blueRepSuccess",repsSuccess(2));
             intent.putExtra("orangeRepSuccess",repsSuccess(3));
             intent.putExtra("duration",duration);
+            intent.putIntegerArrayListExtra("repDuration",repDuration);
+            intent.putIntegerArrayListExtra("repMaxHeight",repMaxHeight);
             startActivity(intent);
         }
     }
@@ -394,8 +426,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     rgb = img.get((int) center.y, (int) center.x);
                     if(i <= 2) {
                         if(i == 0) greenHeight.add(center.y);
-                        if(i == 1) orangeHeight.add(center.y);
-                        else blueHeight.add(center.y);
+                        if(i == 1){
+                            orangeHeight.add(center.y);
+                            onArrOrangeChange();
+                        } else{
+                            blueHeight.add(center.y);
+                            onArrBlueChange();
+                        }
                         rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball./rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
                     }
                     ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
@@ -599,6 +636,36 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     private Mat drawLine(Mat img, Point p1, Point p2){
         Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
         return img;
+    }
+
+    public void repEnd(){
+        repCounter++;
+        tvRepetition.setText(String.valueOf(repCounter));
+        int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
+        double ballMaxHeight = getMaxHeight(ballToUse);
+        float prec = (float) (Math.abs(ballMaxHeight - initialY) / (initialY - 200));
+        repDuration.add(ballDuration);
+        repMaxHeight.add((int) prec*10);
+        blueHeight.clear();
+        orangeHeight.clear();
+    }
+
+    public static void onArrBlueChange(){
+      double lastBlueHeight = blueHeight.get(blueHeight.size()-1);
+      float prec = (float) (Math.abs(lastBlueHeight - initialY) / (initialY - 200));
+      if(blueHeightSetting > (prec*10) && prec!=0)
+          blueInRange = true;
+       else
+          blueInRange = false;
+    }
+
+    public static void onArrOrangeChange(){
+        double lastOrangeHeight = orangeHeight.get(orangeHeight.size()-1);
+        float prec = (float) (Math.abs(lastOrangeHeight - initialY) / (initialY - 200));
+        if(orangeHeightSetting > (prec*10) && prec!=0)
+            orangeInRange = true;
+        else
+            orangeInRange = false;
     }
 
     public void breathAnimation(){

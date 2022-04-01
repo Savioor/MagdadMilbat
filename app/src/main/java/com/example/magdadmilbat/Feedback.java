@@ -24,6 +24,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.UUID;
 
 
@@ -33,6 +34,8 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     static int greenRepSuccess,blueRepSuccess,orangeRepSuccess;
     TextView greenTimeText,blueTimeText,orangeTimeText;
     static SharedPreferences spBreath ;
+    static ArrayList<Integer> repDuration = new ArrayList<Integer>();
+    static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
     /**
      * on create func - contains  feedback text, return button
      */
@@ -59,9 +62,11 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         blueRepSuccess = intent.getExtras().getInt("blueRepSuccess");
         orangeRepSuccess = intent.getExtras().getInt("orangeRepSuccess");
         greenMaxHeight = intent.getExtras().getDouble("greenMaxHeight");
-        greenTimeText.setText("זמן באוויר (כדור ירוק) : "+greenAirTime);
-        blueTimeText.setText("זמן באוויר (כדור כחול) : "+blueAirTime);
-        blueTimeText.setText("זמן באוויר (כדור כתום) : "+orangeAirTime);
+        repDuration = intent.getExtras().getIntegerArrayList("repDuration");
+        repMaxHeight = intent.getExtras().getIntegerArrayList("repMaxHeight");
+        greenTimeText.setText("משך כל חזרה (בשניות): \n"+convert2str(repDuration));
+        blueTimeText.setText("גובה מקסימלי (באחוזים): \n"+convert2str(repMaxHeight));
+//        blueTimeText.setText("זמן באוויר (כדור כתום) : "+orangeAirTime);
         duration = intent.getExtras().getDouble("duration");
     }
 
@@ -75,6 +80,14 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         double airTimeScore = ((blueAirTime + orangeAirTime)/(duration + duration))*33;
         double repScore = ((blueRepSuccess + orangeRepSuccess)/(numberOfrepBlue + numberOfrepOrange))*34;
        return (int) (heightScore + airTimeScore + repScore);
+    }
+
+    public static String convert2str(ArrayList<Integer> arr){
+        String str = "";
+        for(int i = 0; i< arr.size();i++){
+            str += i+1 + ". " + arr.get(i) +"\n";
+        }
+        return str;
     }
 
     /**
