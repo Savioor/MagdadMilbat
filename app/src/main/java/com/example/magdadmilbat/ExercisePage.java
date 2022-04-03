@@ -359,7 +359,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         if(orangeHeight.size() >1){
             lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-            if(isRepEnd == false && lastOrangeHeight < 400)
+            if(!isRepEnd && lastOrangeHeight < 400)
                 isRepEnd =true;
 
             r = new Runnable() {
@@ -370,16 +370,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                         isRepEnd = false;
                         breathAnimation();
                     }
-//                    Message msg = new Message();
-//                    double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-////                    double preOrangeHeight  = orangeHeight.get(orangeHeight.size()-2);
-//                    double preOrangeHeight = framH;
-//                    if(Math.abs(preOrangeHeight-lastOrangeHeight) < 0.5)
-//                        msg.what = 0;
-//                    else
-//                        msg.what = 1;
-//
-//                    handler1.sendMessage(msg);
+
                 }
             };
             t= new Thread(r);
@@ -407,10 +398,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      */
     private static int getFrameData(Mat img) {
         Mat procImg = prepareImage(img);
-        // procImg = procImg.submat(procImg.height() - 300, procImg.height() - 100, 0, procImg.width());
         Mat circles = new Mat();
         int sensitivity = 22;
-        //Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 80, 95.0, 26.0, 40, 100);
         while(circles.width() < 3) {
             Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
             if (circles.width() == 0) {
@@ -589,31 +578,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return img;
     }
 
-    /*
-        FRONTEND - But, this function checks if we had gotten camera permissions, if we did not, it asks for them,
-        if we did, it updates the camera view accordingly.
-     */
-//    @Override
-//    public void onRequestPermissionsResult(
-//            int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//
-//        // Ensure that this result is for the camera permission request
-//        if (requestCode == PERMISSIONS_READ_CAMERA) {
-//            // Check if the request was granted or denied
-//            if (grantResults.length > 0
-//                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-//                // The request was granted --> tell the camera view
-//                mOpenCvCameraView.setCameraPermissionGranted();
-//            } else {
-//                // The request was denied --> tell the user and exit the application
-//                Toast.makeText(this, "Camera permission required.",
-//                        Toast.LENGTH_LONG).show();
-//                this.finish();
-//            }
-//        } else {
-//            super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        }
-//    }
 
     public double getMaxHeight(int color){
         double maxHeight = 0;
@@ -643,7 +607,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         tvRepetition.setText(String.valueOf(repCounter));
         int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
         double ballMaxHeight = getMaxHeight(ballToUse);
-        float prec = (float) (Math.abs(ballMaxHeight - initialY) / (initialY - 200));
+        float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
         repDuration.add(ballDuration);
         repMaxHeight.add((int) prec*10);
         blueHeight.clear();
@@ -652,7 +616,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     public static void onArrBlueChange(){
       double lastBlueHeight = blueHeight.get(blueHeight.size()-1);
-      float prec = (float) (Math.abs(lastBlueHeight - initialY) / (initialY - 200));
+      float prec = (float) Math.abs((lastBlueHeight - initialY) / (initialY - 200));
       if(blueHeightSetting > (prec*10) && prec!=0)
           blueInRange = true;
        else
@@ -661,7 +625,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     public static void onArrOrangeChange(){
         double lastOrangeHeight = orangeHeight.get(orangeHeight.size()-1);
-        float prec = (float) (Math.abs(lastOrangeHeight - initialY) / (initialY - 200));
+        float prec = (float) Math.abs((lastOrangeHeight - initialY) / (initialY - 200));
         if(orangeHeightSetting > (prec*10) && prec!=0)
             orangeInRange = true;
         else
@@ -669,18 +633,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     }
 
     public void breathAnimation(){
-//        double lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-//        float scale = (float) (Math.abs(lastOrangeHeight - initialY) / (initialY - 200));
-//            Random rand = new Random();
-//            double randomValue = 0 + (400 - 0) * rand.nextDouble();
-//            float scale = (float) ((randomValue - 0) / (400 - 0));
-//        animTrans = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView.getTranslationY()*scale));
-//        animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView2.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView2.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView2.getTranslationY()*scale));
-//        animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView3.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView3.getTranslationX()*scale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView3.getTranslationY()*scale));
-//        animTrans4 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView4.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView4.getTranslationY()*scale));
-//        animTrans5 = new TranslateAnimation(Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*oldXscale),Animation.ABSOLUTE,Math.abs(cricleView5.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView5.getTranslationY()*scale));
-//        animTrans6 = new TranslateAnimation(Animation.ABSOLUTE,-(cricleView6.getTranslationX()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationX()*scale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*oldXscale),Animation.ABSOLUTE,-(cricleView6.getTranslationY()*scale));
-        animTrans = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,-35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,-50);
+    animTrans = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,-35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,-50);
         animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,-50);
         animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,-60,Animation.ABSOLUTE,0,Animation.ABSOLUTE,0);
         animTrans4 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,60,Animation.ABSOLUTE,0,Animation.ABSOLUTE,0);
@@ -692,21 +645,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         animTrans4.setDuration(1000);
         animTrans5.setDuration(1000);
         animTrans6.setDuration(1000);
-//        animScale = new ScaleAnimation(oldXscale, scale, oldXscale, scale , Animation.ABSOLUTE, (float)0.5, Animation.ABSOLUTE, (float)0.5);
-//        animScale.setDuration(1000);
-//        cricleView.startAnimation(animScale);
-//        cricleView2.startAnimation(animScale);
-//        cricleView3.startAnimation(animScale);
-//        cricleView4.startAnimation(animScale);
-//        cricleView5.startAnimation(animScale);
-//        cricleView6.startAnimation(animScale);
-//        animScale.setFillAfter(true);
-//        animTrans.setFillAfter(true);
-//        animTrans2.setFillAfter(true);
-//        animTrans3.setFillAfter(true);
-//        animTrans4.setFillAfter(true);
-//        animTrans5.setFillAfter(true);
-//        animTrans6.setFillAfter(true);
+
         animTrans.setRepeatMode(Animation.REVERSE);
         animTrans2.setRepeatMode(Animation.REVERSE);
         animTrans3.setRepeatMode(Animation.REVERSE);
@@ -726,7 +665,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView4.startAnimation(animTrans4);
         cricleView5.startAnimation(animTrans5);
         cricleView6.startAnimation(animTrans6);
-//        oldXscale = scale;
     }
     public void startWaitingAnim(){
         anim = ValueAnimator.ofFloat(0.4f, 1.0f);
