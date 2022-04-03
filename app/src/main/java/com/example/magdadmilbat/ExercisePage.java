@@ -5,11 +5,15 @@ import org.opencv.core.Size;
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+
 import org.opencv.core.Size;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.animation.ValueAnimator;
+
 import org.opencv.core.Size;
+
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -22,8 +26,11 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.hardware.Camera;
 import android.hardware.Camera.PreviewCallback;
+
 import androidx.core.app.ActivityCompat;
+
 import org.opencv.android.JavaCameraView;
+
 import java.io.IOException;
 
 
@@ -74,13 +81,13 @@ import java.util.TimerTask;
 
 public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {
     Button btnBack, btnFeedback;
-    private final int PERMISSIONS_READ_CAMERA=1;
+    private final int PERMISSIONS_READ_CAMERA = 1;
     private final int REQUEST_CODE = 2;
     private static final String TAG = "MyActivity";
 
     TextView tvRepetition, tvExercise;
 
-    static SharedPreferences spBreath ;
+    static SharedPreferences spBreath;
 
     /* IMAGE PROCESSING VARIABLES */
     static ArrayList<Double> greenHeight = new ArrayList<Double>();
@@ -94,7 +101,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
 
-    static Scalar[][] rgbRange= new Scalar[3][2];
+    static Scalar[][] rgbRange = new Scalar[3][2];
     static double ballArea = Double.MAX_VALUE;
     private JavaCameraView mOpenCvCameraView;
     private SurfaceHolder mSurfaceHolder;
@@ -129,7 +136,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     Handler handler1;
     static double framH;
     //    static double fakeHeight;
-    static boolean isRepEnd= true;
+    static boolean isRepEnd = true;
     static double lastOrangeHeight;
     static int ballToUse;
     static int repCounter = 0;
@@ -147,14 +154,14 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
-                case LoaderCallbackInterface.SUCCESS:
-                {
+                case LoaderCallbackInterface.SUCCESS: {
                     mOpenCvCameraView.enableView();
-                } break;
-                default:
-                {
+                }
+                break;
+                default: {
                     super.onManagerConnected(status);
-                } break;
+                }
+                break;
             }
         }
     };
@@ -187,7 +194,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         verifyPermissions();
         String orangeChecked = spBreath.getString("orange", null);
-        if(Boolean.valueOf(orangeChecked) == true)
+        if (Boolean.valueOf(orangeChecked) == true)
             ballToUse = 2;
         else
             ballToUse = 3;
@@ -205,26 +212,26 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         };
         count.start();
 
-        new Timer().scheduleAtFixedRate(new TimerTask(){
+        new Timer().scheduleAtFixedRate(new TimerTask() {
             @Override
-            public void run(){
+            public void run() {
                 duration++;
 
-                if(repsSuccess(ballToUse) > repCounter){
+                if (repsSuccess(ballToUse) > repCounter) {
                     repEnd();
                 }
 
-                if(blueInRange){
+                if (blueInRange) {
                     blueDuration++;
                 }
-                if(orangeInRange){
+                if (orangeInRange) {
                     orangeDuration++;
                 }
 //            Random rand = new Random();
 //            double randomValue = 200 + (600 - 200) * rand.nextDouble();
 //            fakeHeight = randomValue;
             }
-        },0,1000);
+        }, 0, 1000);
         startWaitingAnim();
 
 //        handler1 = new Handler(){
@@ -245,12 +252,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     @Override
     protected void onResume() {
         super.onResume();
-        if (OpenCVLoader.initDebug())
-        {
+        if (OpenCVLoader.initDebug()) {
             mLoaderCallback.onManagerConnected((BaseLoaderCallback.SUCCESS));
-        }
-        else
-        {
+        } else {
             OpenCVLoader.initAsync(OpenCVLoader.OPENCV_VERSION, this, mLoaderCallback);
         }
     }
@@ -264,33 +268,33 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         if (view == btnFeedback) {
             Intent intent = new Intent(this, Feedback.class);
-            intent.putExtra("greenAirTime",getOverallTime(1));
-            intent.putExtra("blueAirTime",getOverallTime(2));
-            intent.putExtra("orangeAirTime",getOverallTime(3));
-            intent.putExtra("greenMaxHeight",getMaxHeight(1));
-            intent.putExtra("blueMaxHeight",getMaxHeight(2));
-            intent.putExtra("orangeMaxHeight",getMaxHeight(3));
-            intent.putExtra("greenRepSuccess",repsSuccess(1));
-            intent.putExtra("blueRepSuccess",repsSuccess(2));
-            intent.putExtra("orangeRepSuccess",repsSuccess(3));
-            intent.putExtra("duration",duration);
-            intent.putIntegerArrayListExtra("repDuration",repDuration);
-            intent.putIntegerArrayListExtra("repMaxHeight",repMaxHeight);
+            intent.putExtra("greenAirTime", getOverallTime(1));
+            intent.putExtra("blueAirTime", getOverallTime(2));
+            intent.putExtra("orangeAirTime", getOverallTime(3));
+            intent.putExtra("greenMaxHeight", getMaxHeight(1));
+            intent.putExtra("blueMaxHeight", getMaxHeight(2));
+            intent.putExtra("orangeMaxHeight", getMaxHeight(3));
+            intent.putExtra("greenRepSuccess", repsSuccess(1));
+            intent.putExtra("blueRepSuccess", repsSuccess(2));
+            intent.putExtra("orangeRepSuccess", repsSuccess(3));
+            intent.putExtra("duration", duration);
+            intent.putIntegerArrayListExtra("repDuration", repDuration);
+            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
             startActivity(intent);
         }
     }
+
     private void verifyPermissions() {
         Log.d(TAG, "verifyPermissions: asking user for permission");
         String[] permissions = {Manifest.permission.CAMERA};
 
-        if(ContextCompat.checkSelfPermission(this.getApplicationContext(),
+        if (ContextCompat.checkSelfPermission(this.getApplicationContext(),
                 permissions[0]) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ExercisePage.this,
                     permissions, REQUEST_CODE);
             Toast.makeText(this, "Camera permission required.",
                     Toast.LENGTH_LONG).show();
-        }
-        else{
+        } else {
             // here the open camera code must be
             mOpenCvCameraView.setCameraPermissionGranted();
             mOpenCvCameraView.setVisibility(CameraBridgeViewBase.VISIBLE);
@@ -304,8 +308,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         if (mOpenCvCameraView != null)
             mOpenCvCameraView.disableView();
@@ -334,6 +337,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     /**
      * Gets each camera frame and handles it accordingly.
+     *
      * @param inputFrame the current frame.
      * @return the frame after it's marked.
      */
@@ -342,49 +346,111 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         Mat frame = inputFrame.rgba(); // we get the frame in rgb.
         Mat resizedFrame = new Mat();
         Point center = new Point(frame.width() / 2, frame.height() / 2);
-        Mat rotationMatrix = Imgproc.getRotationMatrix2D(center,90, 1);
+        Mat rotationMatrix = Imgproc.getRotationMatrix2D(center, 90, 1);
         Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP);
 
         frame = resizedFrame;
-        if(isDone) {
+        if (isDone) {
             initialY = getFrameData(frame);
+            initialY = 2;
         }
 
         frame = initialY == -1 ? frame : findContoursAndDraw(frame);
-        if(initialY == -1){
-            frame = drawLine(frame, new Point(0, frame.height() - 100), new Point(frame.width(), frame.height() - 100));
-            frame = drawLine(frame, new Point(0, frame.height() - 300), new Point(frame.width(), frame.height() - 300));
-        }
-        framH = frame.height()-300;
 
-        if(orangeHeight.size() >1){
-            lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-            if(!isRepEnd && lastOrangeHeight < 400)
-                isRepEnd =true;
+        int line_upper_bound = 550, line_bottom_bound = 50;
+        int first_line = 10 * frame.width() / 30, second_line = frame.width() / 2, third_line = 19 * frame.width() / 30;
+
+
+        if (initialY == -1) {
+            frame = drawLine(frame, new Point(0, frame.height() - line_upper_bound), new Point(frame.width(), frame.height() - line_upper_bound));
+            frame = drawLine(frame, new Point(0, frame.height() - line_bottom_bound), new Point(frame.width(), frame.height() - line_bottom_bound));
+            frame = drawLine(frame, new Point(0, 600), new Point(frame.width(), 600));
+
+
+            frame = drawLine(frame, new Point(first_line, 0), new Point(first_line, frame.height()));
+            frame = drawLine(frame, new Point(second_line, 0), new Point(second_line, frame.height()));
+            frame = drawLine(frame, new Point(third_line, 0), new Point(third_line, frame.height()));
+        }
+
+//        getColumn(1, frame, first_line,640,140);
+//        getColumn(2, frame, second_line,640,140);
+//        getColumn(3, frame, third_line,640,140);
+//        frame = setMask(frame);
+        framH = frame.height() - 300;
+
+        if (orangeHeight.size() > 1) {
+            lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
+            if (!isRepEnd && lastOrangeHeight < 400)
+                isRepEnd = true;
 
             r = new Runnable() {
                 @Override
                 public void run() {
-                    lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-                    if(lastOrangeHeight > 400 && isRepEnd){
+                    lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
+                    if (lastOrangeHeight > 400 && isRepEnd) {
                         isRepEnd = false;
                         breathAnimation();
                     }
 
                 }
             };
-            t= new Thread(r);
+            t = new Thread(r);
             t.start();
         }
         return frame;
     }
 
+    public static Mat getColumn(int colunmNum, Mat frame, int line, int floor_index, int top_index) {
+
+        double[] arr = new double[frame.height()];
+        int col = line;
+        // red = 0, green = 1, blue = 2
+        int color = colunmNum == 1 ? 1 : colunmNum == 2 ? 0 : colunmNum == 3 ? 2 : 0;
+        double max_rgb_index = floor_index, max_rgb_val = 0;
+        for (int row = floor_index; row > top_index; row--) {
+            arr[row] = frame.get(col, row)[color];
+            if (col == 2) {
+                arr[row] = frame.get(col, row)[0] + frame.get(col, row)[1];
+            }
+            if (arr[row] > max_rgb_val) {
+                max_rgb_index = row;
+                max_rgb_val = arr[row];
+            }
+        }
+
+        if (color == 0)
+            Imgproc.circle(frame, new Point(col, max_rgb_index), (int) 10, new Scalar(255, 0, 0), 5);
+        else if (color == 1)
+            Imgproc.circle(frame, new Point(col, max_rgb_index), (int) 10, new Scalar(0, 255, 0), 5);
+        else
+            Imgproc.circle(frame, new Point(col, max_rgb_index), (int) 10, new Scalar(0, 0, 255), 5);
+        return frame;
+    }
+
+    public static Mat setMask(Mat frame) {
+//        Mat temp= new Mat();
+//        Imgproc.cvtColor(frame,temp,40);
+//        Scalar low= new Scalar(10,0,0);
+//        Scalar high= new Scalar(20,255,255);
+//        Mat mask = new Mat();
+//        inRange(temp,low,high,mask);
+//        frame.setTo(new Scalar(0,0,255),mask);
+
+        //
+
+        Mat hsv = new Mat();
+//        Imgproc.cvtColor(frame,hsv,Imgproc.COLOR_BGR2HSV);
+        Core.inRange(frame, new Scalar(50, 50, 20), new Scalar(120, 150, 160), hsv);
+        return (frame);
+    }
+
     /**
      * This function prepares the image for the HoughCircles algorithm.
+     *
      * @param img the image we prepare.
      * @return the prepared image.
      */
-    public static Mat prepareImage(Mat img){
+    public static Mat prepareImage(Mat img) {
         Mat dest = new Mat(); // Creating a destination Matrix (Image) for the grayscale.
         Imgproc.cvtColor(img, dest, Imgproc.COLOR_RGB2GRAY); // We grayscale the image to get it to binary form
         Imgproc.medianBlur(dest, dest, 3); // We blur the grayscale image using a kernel size of 3.
@@ -393,6 +459,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     /**
      * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
+     *
      * @param img the frame we analyze.
      * @return the initial Y axis position.
      */
@@ -400,7 +467,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         Mat procImg = prepareImage(img);
         Mat circles = new Mat();
         int sensitivity = 22;
-        while(circles.width() < 3) {
+        while (circles.width() < 3) {
             Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
             if (circles.width() == 0) {
                 return -1;
@@ -413,12 +480,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     c = circles.get(0, i);
                     center = new Point(Math.round(c[0]), Math.round(c[1]));
                     rgb = img.get((int) center.y, (int) center.x);
-                    if(i <= 2) {
-                        if(i == 0) greenHeight.add(center.y);
-                        if(i == 1){
+                    if (i <= 2) {
+                        if (i == 0) greenHeight.add(center.y);
+                        if (i == 1) {
                             orangeHeight.add(center.y);
                             onArrOrangeChange();
-                        } else{
+                        } else {
                             blueHeight.add(center.y);
                             onArrBlueChange();
                         }
@@ -431,37 +498,37 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 return -1;
             }
         }
-        return (int)Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
+        return (int) Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
     }
 
 
-
-    public static boolean reachedReps(){
+    public static boolean reachedReps() {
         int numOfReps = Integer.parseInt(spBreath.getString("numberOfrep", null));
         return numOfReps == greenAirTime.size();
     }
 
-    public static int repsSuccess(int color){
+    public static int repsSuccess(int color) {
         int numOfReps = 0;
         ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null;
         numOfReps = temp.size();
-        return  numOfReps;
+        return numOfReps;
     }
 
-    public static int getDifficulty(){
+    public static int getDifficulty() {
         return Integer.parseInt(spBreath.getString("difficulty", null));
     }
 
-    public static int getDuration(){
+    public static int getDuration() {
         return Integer.parseInt(spBreath.getString("duration", null));
     }
 
     /**
      * This function gets an image (which is a singular frame), finds the balls, draws them and returns the frame.
+     *
      * @param img the image to analyze.
      * @return processed image.
      */
-    private static Mat findContoursAndDraw(Mat img){
+    private static Mat findContoursAndDraw(Mat img) {
         /*
          * We divide the frame to 3 separate frames, each representing one ball.
          */
@@ -489,7 +556,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         /*
          * We find the contours of each color.
          */
-        Imgproc.findContours(orange, greenContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+        Imgproc.findContours(orange, orangeContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.findContours(blue, blueContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.findContours(green, greenContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         /* --------------------------------------------------------------------------------------------------------- */
@@ -502,21 +569,44 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
          * We iterate over each of the contours in each color and only mark the contours that can be the balls.
          * We do that by factoring the area of each contour.
          */
+        for (int i = 0; i < orangeContours.size(); i++) {
+            MatOfPoint cnt = orangeContours.get(i);
+            if (Imgproc.contourArea(cnt) > maxArea) {
+                MatOfPoint2f c2f = new MatOfPoint2f(cnt.toArray());
+                Imgproc.minEnclosingCircle(c2f, center, radius);
+                if (radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
+                    Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
+                    double currHeight = Math.abs(center.y - initialY);
+                    orangeHeight.add(currHeight);
+                    if (currHeight > 30) {
+                        if (!orangeInAir) orangeInAir = true;
+                        orangeBallFrames++;
+                    } else {
+                        if (orangeInAir) {
+                            orangeInAir = false;
+                            orangeAirTime.add(orangeBallFrames);
+                            orangeBallFrames = 0;
+                        }
+                    }
+                }
+            }
+        }
+
+
         for (int i = 0; i < greenContours.size(); i++) {
             MatOfPoint cnt = greenContours.get(i);
             if (Imgproc.contourArea(cnt) > maxArea) {
                 MatOfPoint2f c2f = new MatOfPoint2f(cnt.toArray());
                 Imgproc.minEnclosingCircle(c2f, center, radius);
-                if(radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
+                if (radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
                     Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
                     double currHeight = Math.abs(center.y - initialY);
                     greenHeight.add(currHeight);
-                    if(currHeight > 30){
-                        if(!greenInAir) greenInAir = true;
+                    if (currHeight > 30) {
+                        if (!greenInAir) greenInAir = true;
                         greenBallFrames++;
-                    }
-                    else{
-                        if(greenInAir){
+                    } else {
+                        if (greenInAir) {
                             greenInAir = false;
                             greenAirTime.add(greenBallFrames);
                             greenBallFrames = 0;
@@ -531,16 +621,15 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             if (Imgproc.contourArea(cnt) > maxArea) {
                 MatOfPoint2f c2f = new MatOfPoint2f(cnt.toArray());
                 Imgproc.minEnclosingCircle(c2f, center, radius);
-                if(radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
+                if (radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
                     Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
                     double currHeight = Math.abs(center.y - initialY);
                     blueHeight.add(currHeight);
-                    if(currHeight > 30){
-                        if(!blueInAir) blueInAir = true;
+                    if (currHeight > 30) {
+                        if (!blueInAir) blueInAir = true;
                         blueBallFrames++;
-                    }
-                    else{
-                        if(blueInAir){
+                    } else {
+                        if (blueInAir) {
                             blueInAir = false;
                             blueAirTime.add(greenBallFrames);
                             blueBallFrames = 0;
@@ -550,95 +639,74 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             }
         }
 
-        for (int i = 0; i < orangeContours.size(); i++) {
-            MatOfPoint cnt = orangeContours.get(i);
-            if (Imgproc.contourArea(cnt) > maxArea) {
-                MatOfPoint2f c2f = new MatOfPoint2f(cnt.toArray());
-                Imgproc.minEnclosingCircle(c2f, center, radius);
-                if(radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
-                    Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
-                    double currHeight = Math.abs(center.y - initialY);
-                    orangeHeight.add(currHeight);
-                    if(currHeight > 30){
-                        if(!orangeInAir) orangeInAir = true;
-                        orangeBallFrames++;
-                    }
-                    else{
-                        if(orangeInAir){
-                            orangeInAir = false;
-                            orangeAirTime.add(orangeBallFrames);
-                            orangeBallFrames = 0;
-                        }
-                    }
-                }
-            }
-        }
         /* --------------------------------------------------------------------------------------------------------- */
 
         return img;
     }
 
 
-    public double getMaxHeight(int color){
+    public double getMaxHeight(int color) {
         double maxHeight = 0;
         ArrayList<Double> temp = color == 1 ? greenHeight : color == 2 ? blueHeight : color == 3 ? orangeHeight : null;
-        for(int i = 0; i < temp.size(); i++){
+        for (int i = 0; i < temp.size(); i++) {
             double currHeight = temp.get(i);
             maxHeight = maxHeight > currHeight ? maxHeight : currHeight;
         }
         return maxHeight;
     }
-    public double getOverallTime(int color){
+
+    public double getOverallTime(int color) {
         double overAllTime = 0;
         ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null;
-        for(int i = 0; i < temp.size(); i++){
+        for (int i = 0; i < temp.size(); i++) {
             overAllTime += temp.get(i);
         }
         return overAllTime;
 
     }
-    private Mat drawLine(Mat img, Point p1, Point p2){
+
+    private Mat drawLine(Mat img, Point p1, Point p2) {
         Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
         return img;
     }
 
-    public void repEnd(){
+    public void repEnd() {
         repCounter++;
         tvRepetition.setText(String.valueOf(repCounter));
         int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
         double ballMaxHeight = getMaxHeight(ballToUse);
         float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
         repDuration.add(ballDuration);
-        repMaxHeight.add((int) prec*10);
+        repMaxHeight.add((int) prec * 10);
         blueHeight.clear();
         orangeHeight.clear();
     }
 
-    public static void onArrBlueChange(){
-      double lastBlueHeight = blueHeight.get(blueHeight.size()-1);
-      float prec = (float) Math.abs((lastBlueHeight - initialY) / (initialY - 200));
-      if(blueHeightSetting > (prec*10) && prec!=0)
-          blueInRange = true;
-       else
-          blueInRange = false;
+    public static void onArrBlueChange() {
+        double lastBlueHeight = blueHeight.get(blueHeight.size() - 1);
+        float prec = (float) Math.abs((lastBlueHeight - initialY) / (initialY - 200));
+        if (blueHeightSetting > (prec * 10) && prec != 0)
+            blueInRange = true;
+        else
+            blueInRange = false;
     }
 
-    public static void onArrOrangeChange(){
-        double lastOrangeHeight = orangeHeight.get(orangeHeight.size()-1);
+    public static void onArrOrangeChange() {
+        double lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
         float prec = (float) Math.abs((lastOrangeHeight - initialY) / (initialY - 200));
-        if(orangeHeightSetting > (prec*10) && prec!=0)
+        if (orangeHeightSetting > (prec * 10) && prec != 0)
             orangeInRange = true;
         else
             orangeInRange = false;
     }
 
-    public void breathAnimation(){
-    animTrans = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,-35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,-50);
-        animTrans2 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,-50);
-        animTrans3 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,-60,Animation.ABSOLUTE,0,Animation.ABSOLUTE,0);
-        animTrans4 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,60,Animation.ABSOLUTE,0,Animation.ABSOLUTE,0);
-        animTrans5 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,-35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,50);
-        animTrans6 = new TranslateAnimation(Animation.ABSOLUTE,0,Animation.ABSOLUTE,35,Animation.ABSOLUTE,0,Animation.ABSOLUTE,50);
+    public void breathAnimation() {
+        animTrans = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -50);
+        animTrans2 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -50);
+        animTrans3 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -60, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
+        animTrans4 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 60, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
+        animTrans5 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 50);
+        animTrans6 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 50);
         animTrans.setDuration(1000);
         animTrans2.setDuration(1000);
         animTrans3.setDuration(1000);
@@ -666,7 +734,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView5.startAnimation(animTrans5);
         cricleView6.startAnimation(animTrans6);
     }
-    public void startWaitingAnim(){
+
+    public void startWaitingAnim() {
         anim = ValueAnimator.ofFloat(0.4f, 1.0f);
         anim.setDuration(1000);
         anim.setRepeatMode(ValueAnimator.REVERSE);
