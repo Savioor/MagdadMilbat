@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#f2f2f7"
     android:orientation="vertical">
 
 
@@ -14,96 +16,199 @@
         android:background="@drawable/ic_baseline_keyboard_backspace_24"
         android:id="@+id/btnBack"
         />
-
-    <Button
-        android:id="@+id/btnBreath"
-        android:layout_width="wrap_content"
+    <GridLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="50dp"
+        android:columnCount="3">
+        <ImageView
+            android:id="@+id/ivLeft"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layoutDirection="rtl"
+            android:src="@drawable/ic_baseline_chevron_left_24"
+            app:tint="#FF5722" />
+    <ScrollView
+        android:id="@+id/navballs"
+        android:layout_width="160dp"
+        android:layout_height="70dp"
+        android:scrollbars="none"
         android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
-        android:layout_marginRight="5dp"
-        android:text="נשיפה עמוקה" />
+        android:layout_below="@+id/checkbox"
+        android:backgroundTint="@color/white"
+        android:background="@drawable/shaperadius">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:id="@+id/blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/blueBall"
+                android:checked="true"
+                android:enabled="false"
+                android:textColor="#2196F3"
+                android:textSize="20sp"  />
+
+            <CheckBox
+                android:id="@+id/orange"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="@string/orangeBall"
+                android:textColor="#FF5722"
+                android:textSize="20sp"  />
+        </LinearLayout>
+    </ScrollView>
+        <ImageView
+            android:id="@+id/ivRight"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layoutDirection="rtl"
+            android:src="@drawable/ic_baseline_chevron_right_24"
+            app:tint="#2196F3" />
+    </GridLayout>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_marginTop="50dp"
-        android:layout_marginRight="10dp"
-        android:textSize="25sp"
+        android:layout_marginRight="15dp"
+        android:textSize="20sp"
         android:text = "@string/difficulty"
         android:id="@+id/tvLevel"
         />
 
-    <SeekBar
-        android:layout_width="350dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/shaperadius"
+        android:backgroundTint="@color/white"
+        android:orientation="horizontal"
+        android:layout_marginVertical="5dp"
+        android:layout_marginHorizontal="15dp"
         android:layout_gravity="center"
-        android:id="@+id/sbLevel"
-        />
+        android:paddingVertical="13dp"
+        >
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginLeft="20dp"
-        android:text="1"
-        android:id="@+id/tvLevelNumber"
-        />
+        <SeekBar
+            android:layout_width="290dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:id="@+id/sbLevel"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="7dp"
+            android:textStyle="bold"
+            android:textSize="15dp"
+            android:text="1"
+            android:id="@+id/tvLevelNumber"
+            />
+
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_marginTop="15dp"
-        android:layout_marginRight="10dp"
-        android:textSize="25dp"
-        android:text = "מספר חזרות:"
+        android:layout_marginRight="15dp"
+        android:textSize="20dp"
+        android:text ="@string/num_of_reps"
         android:id="@+id/tvRepetition"
         />
-
-    <SeekBar
-        android:layout_width="350dp"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/shaperadius"
+        android:backgroundTint="@color/white"
+        android:orientation="horizontal"
+        android:layout_marginVertical="5dp"
+        android:layout_marginHorizontal="15dp"
         android:layout_gravity="center"
+        android:paddingVertical="13dp"
+        >
+
+        <SeekBar
+        android:layout_width="290dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
         android:id="@+id/sbRepetition"
         />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:layout_marginLeft="20dp"
-        android:text="1"
-        android:id="@+id/tvRepetitionNumber"
-        />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:paddingHorizontal="5dp"
+            android:textSize="15dp"
+            android:textStyle="bold"
+            android:text="1"
+            android:id="@+id/tvRepetitionNumber"
+            />
+
+
+    </LinearLayout>
+
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right"
         android:layout_marginTop="15dp"
-        android:layout_marginRight="10dp"
-        android:textSize="25dp"
-        android:text = "משך חזרה:"
+        android:layout_marginRight="15dp"
+        android:textSize="20dp"
+        android:text = "@string/duration_rep"
         android:id="@+id/tvDuration"
         />
 
-    <EditText
-        android:layout_width="350dp"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@drawable/shaperadius"
+        android:backgroundTint="@color/white"
+        android:layout_marginVertical="5dp"
+        android:layout_marginHorizontal="15dp"
         android:layout_gravity="center"
-        android:hint="משך חזרה (בשניות)"
-        android:id="@+id/etDuration"
-        />
+        >
+        <EditText
+            android:layout_width="350dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:inputType="time"
+            android:padding="8dp"
+            android:background="@android:color/transparent"
+            android:hint="@string/duration_sec"
+            android:id="@+id/etDuration"
+            />
+    </LinearLayout>
+
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:text="save"
+        app:cornerRadius="9dp"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="5dp"
+        android:text="@string/save"
+        android:textSize="17dp"
+        android:textStyle="bold"
         android:id="@+id/btnSave"
         />
+
 
 </LinearLayout>
