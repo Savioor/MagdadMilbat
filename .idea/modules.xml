@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/MagdadMilbat.iml" filepath="$PROJECT_DIR$/.idea/MagdadMilbat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Magdad_Milbat.iml" filepath="$PROJECT_DIR$/.idea/modules/Magdad_Milbat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/Magdad_Milbat.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/Magdad_Milbat.app.iml" />
     </modules>
   </component>
 </project>
