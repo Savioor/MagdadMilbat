@@ -3,11 +3,30 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_camera.xml" value="0.1" />
-        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exercise_page.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exr_choice_screen.xml" value="0.19375" />
-        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/itayb/StudioProjects/MagdadMilbat/app/src/main/res/layout/activity_settings.xml" value="0.36666666666666664" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/drawable-v24/ic_baseline_keyboard_backspace_24.xml" value="0.14947916666666666" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.14947916666666666" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/drawable/circle_shape.xml" value="0.24259259259259258" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/drawable/circular_progress_bar.xml" value="0.19166666666666668" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/drawable/cricleanime.xml" value="0.24166666666666667" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/drawable/ic_launcher_background.xml" value="0.14947916666666666" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/drawable/shaperadius.xml" value="0.14947916666666666" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/drawable/star.xml" value="0.176" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/layout/activity_exercise_details.xml" value="0.25" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/layout/activity_exercise_page.xml" value="0.3827683615819209" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/layout/activity_feedback.xml" value="0.1" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/layout/activity_history_page.xml" value="0.264" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/layout/activity_main.xml" value="0.2223731884057971" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/layout/activity_settings.xml" value="0.264" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/layout/list_item.xml" value="0.1" />
+        <entry key="..\:/MagdadMilbat/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.22870370370370371" />
+        <entry key="..\:/Users/netar/Desktop/school/MagdadMilbat/app/src/main/res/layout/activity_exercise_page.xml" value="0.2" />
+        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exercise_details.xml" value="0.4" />
+        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exercise_page.xml" value="0.1" />
+        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_exr_choice_screen.xml" value="0.264" />
+        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_feedback.xml" value="0.264" />
+        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_history_page.xml" value="0.2691790040376851" />
+        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_main.xml" value="0.1" />
+        <entry key="..\:/Users/t8865555/AndroidStudioProjects/MagdadMilbat/app/src/main/res/layout/activity_settings.xml" value="0.264" />
         <entry key="app/src/main/res/layout/activity_exr_choice_screen.xml" value="0.1859375" />
         <entry key="app/src/main/res/layout/activity_history_page.xml" value="0.33" />
       </map>
@@ -23,7 +42,7 @@
   <component name="VisualizationToolProject">
     <option name="state">
       <ProjectState>
-        <option name="scale" value="0.33" />
+        <option name="scale" value="0.264" />
       </ProjectState>
     </option>
   </component>
