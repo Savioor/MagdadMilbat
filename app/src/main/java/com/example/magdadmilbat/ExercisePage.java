@@ -159,8 +159,16 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
                     } else if (center.x > second_line - radius && center.x < second_line + radius) {
                         orangeHeight.add(center.y);
-                        if (center.y - 1.5 * radius <= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - radius) - LINE_LOWER_BOUND) / 10))) {
+                        if (Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                             orangeAirTime.add(1.0); // TODO: make it a counter.
+                            r = new Runnable() {
+                                @Override
+                                public void run() {
+                                    breathAnimation();
+                                }
+                            };
+                            t = new Thread(r);
+                            t.start();
                         }
 
                         orangeInRange = true;
@@ -170,9 +178,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
                     } else if (center.x > third_line - radius && center.x < third_line + radius) {
                         blueHeight.add(center.y);
-//                        if (center.y < 350) {
-//                            return -1;
-//                        }
                         if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                             blueAirTime.add(1.0);
                         }
@@ -605,25 +610,25 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         frame = initialY == -1 ? frame : findContoursAndDraw(frame); // update the frame according to the initial Y axis value.
         framH = frame.height() - 300;
 
-        if (orangeHeight.size() > 1) {
-            lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
-            if (!isRepEnd && lastOrangeHeight < 400)
-                isRepEnd = true;
-
-            r = new Runnable() {
-                @Override
-                public void run() {
-                    lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
-                    if (lastOrangeHeight > 400 && isRepEnd) {
-                        isRepEnd = false;
-                        breathAnimation();
-                    }
-
-                }
-            };
-            t = new Thread(r);
-            t.start();
-        }
+//        if (orangeHeight.size() > 1) {
+//            lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
+//            if (!isRepEnd && lastOrangeHeight < 400)
+//                isRepEnd = true;
+//
+//            r = new Runnable() {
+//                @Override
+//                public void run() {
+//                    lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
+//                    if (lastOrangeHeight > 400 && isRepEnd) {
+//                        isRepEnd = false;
+//                        breathAnimation();
+//                    }
+//
+//                }
+//            };
+//            t = new Thread(r);
+//            t.start();
+//        }
         return frame;
     }
 
