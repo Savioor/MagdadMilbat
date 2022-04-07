@@ -91,8 +91,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static float oldXscale = 1.0f;
     static double duration = 0.0, framH, lastOrangeHeight;
     static int ballToUse, repCounter = 0, blueDuration = 0, orangeDuration = 0, blueHeightSetting, orangeHeightSetting;
-    Thread t;
-    Runnable r;
+    static Thread t;
+    static Runnable r;
     Handler handler1;
     static boolean isRepEnd = true, orangeInRange = false, blueInRange = false;
     static ArrayList<Integer> repDuration = new ArrayList<Integer>();
@@ -200,74 +200,39 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return -1;
     }
 
-    /*
-        Initialization of variables, properties and checking for permissions.
-     */
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    public static void breathAnimation() {
+        animTrans = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -50);
+        animTrans2 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -50);
+        animTrans3 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -60, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
+        animTrans4 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 60, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
+        animTrans5 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 50);
+        animTrans6 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 50);
+        animTrans.setDuration(1000);
+        animTrans2.setDuration(1000);
+        animTrans3.setDuration(1000);
+        animTrans4.setDuration(1000);
+        animTrans5.setDuration(1000);
+        animTrans6.setDuration(1000);
 
-        initialize();
-        setContentView(R.layout.activity_exercise_page);
-        btnBack = (Button) findViewById(R.id.btnBack);
-        btnBack.setOnClickListener(this);
-        btnFeedback = (Button) findViewById(R.id.btnFeedback);
-        btnFeedback.setOnClickListener(this);
-        cricleView = findViewById(R.id.cricleView);
-        cricleView2 = findViewById(R.id.cricleView2);
-        cricleView3 = findViewById(R.id.cricleView3);
-        cricleView4 = findViewById(R.id.cricleView4);
-        cricleView5 = findViewById(R.id.cricleView5);
-        cricleView6 = findViewById(R.id.cricleView6);
-        remarksText = findViewById(R.id.remarkstext);
-        tvRepetition = findViewById(R.id.tvRepetition);
-        tvRepetition.setText(String.valueOf(repCounter));
-        spBreath = getSharedPreferences("settingsBreath", 0);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        mOpenCvCameraView = (JavaCameraView) findViewById(R.id.HelloOpenCvView);
-        blueHeightSetting = Integer.parseInt(spBreath.getString("difficultyBlue", null));
-        orangeHeightSetting = Integer.parseInt(spBreath.getString("difficultyOrange", null));
+        animTrans.setRepeatMode(Animation.REVERSE);
+        animTrans2.setRepeatMode(Animation.REVERSE);
+        animTrans3.setRepeatMode(Animation.REVERSE);
+        animTrans4.setRepeatMode(Animation.REVERSE);
+        animTrans5.setRepeatMode(Animation.REVERSE);
+        animTrans6.setRepeatMode(Animation.REVERSE);
+        animTrans.setRepeatCount(1);
+        animTrans2.setRepeatCount(1);
+        animTrans3.setRepeatCount(1);
+        animTrans4.setRepeatCount(1);
+        animTrans5.setRepeatCount(1);
+        animTrans6.setRepeatCount(1);
 
-        verifyPermissions();
-        String orangeChecked = spBreath.getString("orange", null);
-//        if (Boolean.parseBoolean(orangeChecked)) {
-//            ballToUse = 2;
-//        } else
-//            ballToUse = 3;
-        ballToUse = 2;
-
-        CountDownTimer count = new CountDownTimer(5000, 1000) {
-            @Override
-            public void onTick(long l) {
-                return;
-            }
-
-            @Override
-            public void onFinish() {
-                isDone = true;
-            }
-        };
-        count.start();
-
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                duration++;
-
-                if (repsSuccess(ballToUse) > repCounter) {
-                    repEnd();
-                }
-
-                if (blueInRange) {
-                    blueDuration++;
-                }
-                if (orangeInRange) {
-                    orangeDuration++;
-                }
-            }
-        }, 0, 1000);
-        startWaitingAnim();
-
+        cricleView.startAnimation(animTrans);
+        cricleView2.startAnimation(animTrans2);
+        cricleView3.startAnimation(animTrans3);
+        cricleView4.startAnimation(animTrans4);
+        cricleView5.startAnimation(animTrans5);
+        cricleView6.startAnimation(animTrans6);
     }
 
     /*
@@ -670,39 +635,74 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         orangeHeight.clear();
     }
 
-    public void breathAnimation() {
-        animTrans = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -50);
-        animTrans2 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -50);
-        animTrans3 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -60, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
-        animTrans4 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 60, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 0);
-        animTrans5 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 50);
-        animTrans6 = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, 50);
-        animTrans.setDuration(1000);
-        animTrans2.setDuration(1000);
-        animTrans3.setDuration(1000);
-        animTrans4.setDuration(1000);
-        animTrans5.setDuration(1000);
-        animTrans6.setDuration(1000);
+    /*
+        Initialization of variables, properties and checking for permissions.
+     */
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
-        animTrans.setRepeatMode(Animation.REVERSE);
-        animTrans2.setRepeatMode(Animation.REVERSE);
-        animTrans3.setRepeatMode(Animation.REVERSE);
-        animTrans4.setRepeatMode(Animation.REVERSE);
-        animTrans5.setRepeatMode(Animation.REVERSE);
-        animTrans6.setRepeatMode(Animation.REVERSE);
-        animTrans.setRepeatCount(1);
-        animTrans2.setRepeatCount(1);
-        animTrans3.setRepeatCount(1);
-        animTrans4.setRepeatCount(1);
-        animTrans5.setRepeatCount(1);
-        animTrans6.setRepeatCount(1);
+        initialize();
+        setContentView(R.layout.activity_exercise_page);
+        btnBack = (Button) findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(this);
+        btnFeedback = (Button) findViewById(R.id.btnFeedback);
+        btnFeedback.setOnClickListener(this);
+        cricleView = findViewById(R.id.cricleView);
+        cricleView2 = findViewById(R.id.cricleView2);
+        cricleView3 = findViewById(R.id.cricleView3);
+        cricleView4 = findViewById(R.id.cricleView4);
+        cricleView5 = findViewById(R.id.cricleView5);
+        cricleView6 = findViewById(R.id.cricleView6);
+        remarksText = findViewById(R.id.remarkstext);
+        tvRepetition = findViewById(R.id.tvRepetition);
+        tvRepetition.setText(String.valueOf(repCounter));
+        spBreath = getSharedPreferences("settingsBreath", 0);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        mOpenCvCameraView = (JavaCameraView) findViewById(R.id.HelloOpenCvView);
+        blueHeightSetting = Integer.parseInt(spBreath.getString("difficultyBlue", null));
+        orangeHeightSetting = Integer.parseInt(spBreath.getString("difficultyOrange", null));
 
-        cricleView.startAnimation(animTrans);
-        cricleView2.startAnimation(animTrans2);
-        cricleView3.startAnimation(animTrans3);
-        cricleView4.startAnimation(animTrans4);
-        cricleView5.startAnimation(animTrans5);
-        cricleView6.startAnimation(animTrans6);
+        verifyPermissions();
+        String orangeChecked = spBreath.getString("orange", null);
+        if (orangeChecked.equals("true")) {
+            ballToUse = 2;
+        } else
+            ballToUse = 3;
+//        ballToUse = 2;
+
+        CountDownTimer count = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long l) {
+                return;
+            }
+
+            @Override
+            public void onFinish() {
+                isDone = true;
+            }
+        };
+        count.start();
+
+        new Timer().scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                duration++;
+
+                if (repsSuccess(ballToUse) > repCounter) {
+                    repEnd();
+                }
+
+                if (blueInRange) {
+                    blueDuration++;
+                }
+                if (orangeInRange) {
+                    orangeDuration++;
+                }
+            }
+        }, 0, 1000);
+        startWaitingAnim();
+
     }
 
     public void startWaitingAnim() {
