@@ -102,6 +102,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
 
     static Scalar[][] rgbRange = new Scalar[3][2];
+    static Scalar[][] hsvRange = new Scalar[3][2];
+
     static double ballArea = Double.MAX_VALUE;
     private JavaCameraView mOpenCvCameraView;
     private SurfaceHolder mSurfaceHolder;
@@ -199,7 +201,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         else
             ballToUse = 3;
 
-        CountDownTimer count = new CountDownTimer(10000, 1000) {
+        CountDownTimer count = new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long l) {
                 return;
@@ -350,15 +352,18 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP);
 
         frame = resizedFrame;
-        if (isDone) {
-            initialY = getFrameData(frame);
-            initialY = 2;
-        }
 
-        frame = initialY == -1 ? frame : findContoursAndDraw(frame);
 
         int line_upper_bound = 550, line_bottom_bound = 50;
         int first_line = 10 * frame.width() / 30, second_line = frame.width() / 2, third_line = 19 * frame.width() / 30;
+
+        if (isDone && initialY == -1) {
+            initialY = getFrameData(frame, first_line, second_line, third_line);
+//            initialY = 2;
+        }
+
+//        frame = initialY == -1 ? frame : findContoursAndDraw(frame);
+//        frame = initialY == -1 ? frame : setMask(frame);
 
 
         if (initialY == -1) {
@@ -370,6 +375,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             frame = drawLine(frame, new Point(first_line, 0), new Point(first_line, frame.height()));
             frame = drawLine(frame, new Point(second_line, 0), new Point(second_line, frame.height()));
             frame = drawLine(frame, new Point(third_line, 0), new Point(third_line, frame.height()));
+        } else {
+//            getColumn(1, frame, first_line, 600, line_bottom_bound);
+            getColumn(2, frame, second_line, 600, line_bottom_bound);
+            getColumn(3, frame, third_line, 600, line_bottom_bound);
+
         }
 
 //        getColumn(1, frame, first_line,640,140);
@@ -397,34 +407,52 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             t = new Thread(r);
             t.start();
         }
+        Mat hsvMat = new Mat();
+        Imgproc.cvtColor(frame, hsvMat, Imgproc.COLOR_RGB2HSV);
+
         return frame;
     }
 
     public static Mat getColumn(int colunmNum, Mat frame, int line, int floor_index, int top_index) {
+        Mat hsvMat = new Mat();
+        Imgproc.cvtColor(frame, hsvMat, Imgproc.COLOR_RGB2HSV);
 
         double[] arr = new double[frame.height()];
         int col = line;
         // red = 0, green = 1, blue = 2
         int color = colunmNum == 1 ? 1 : colunmNum == 2 ? 0 : colunmNum == 3 ? 2 : 0;
-        double max_rgb_index = floor_index, max_rgb_val = 0;
+//        double max_rgb_index = floor_index, max_rgb_val = 0;
+        double min_dist_index = floor_index, min__dist_val = 120000;
+        int sum = 0;
         for (int row = floor_index; row > top_index; row--) {
-            arr[row] = frame.get(col, row)[color];
-            if (col == 2) {
-                arr[row] = frame.get(col, row)[0] + frame.get(col, row)[1];
+            arr[row] = norm(hsvMat.get(col, row), hsvRange[color][0]);
+        }
+
+        for (int row = floor_index; row > top_index; row--) {
+            sum = 0;
+            for (int i =-5; i < 5; i++) {
+                if (arr[row + i] != 0)
+                    sum += arr[row + i];
             }
-            if (arr[row] > max_rgb_val) {
-                max_rgb_index = row;
-                max_rgb_val = arr[row];
+            if (sum < min__dist_val) {
+                min_dist_index = row;
+                min__dist_val =sum;
             }
         }
 
         if (color == 0)
-            Imgproc.circle(frame, new Point(col, max_rgb_index), (int) 10, new Scalar(255, 0, 0), 5);
+            Imgproc.circle(frame, new Point(col, min_dist_index), (int) 10, new Scalar(255, 0, 0), 5);
         else if (color == 1)
-            Imgproc.circle(frame, new Point(col, max_rgb_index), (int) 10, new Scalar(0, 255, 0), 5);
+            Imgproc.circle(frame, new Point(col, min_dist_index), (int) 10, new Scalar(0, 255, 0), 5);
         else
-            Imgproc.circle(frame, new Point(col, max_rgb_index), (int) 10, new Scalar(0, 0, 255), 5);
+            Imgproc.circle(frame, new Point(col, min_dist_index), (int) 10, new Scalar(0, 0, 255), 5);
         return frame;
+    }
+
+    public static double norm(double[] d1, Scalar s1) {
+        return Math.sqrt(Math.pow(d1[0] - s1.val[0], 2) +
+                Math.pow(d1[1] - s1.val[1], 2) +
+                Math.pow(d1[2] - s1.val[2], 2));
     }
 
     public static Mat setMask(Mat frame) {
@@ -438,10 +466,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         //
 
-        Mat hsv = new Mat();
-//        Imgproc.cvtColor(frame,hsv,Imgproc.COLOR_BGR2HSV);
-        Core.inRange(frame, new Scalar(50, 50, 20), new Scalar(120, 150, 160), hsv);
-        return (frame);
+        Mat temp = new Mat();
+        Imgproc.cvtColor(frame, temp, Imgproc.COLOR_RGB2HSV);
+        Scalar low = rgbRange[2][0];
+        Scalar high = rgbRange[2][1];
+
+        Mat mask = new Mat();
+        Mat img = new Mat();
+        Core.inRange(temp, low, high, mask);
+        img.setTo(new Scalar(0, 0, 255), mask);
+
+        return img;
     }
 
     /**
@@ -452,8 +487,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      */
     public static Mat prepareImage(Mat img) {
         Mat dest = new Mat(); // Creating a destination Matrix (Image) for the grayscale.
-        Imgproc.cvtColor(img, dest, Imgproc.COLOR_RGB2GRAY); // We grayscale the image to get it to binary form
+        Imgproc.cvtColor(img, dest, Imgproc.COLOR_RGB2HSV); // We grayscale the image to get it to binary form
         Imgproc.medianBlur(dest, dest, 3); // We blur the grayscale image using a kernel size of 3.
+
         return dest;
     }
 
@@ -463,44 +499,97 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      * @param img the frame we analyze.
      * @return the initial Y axis position.
      */
-    private static int getFrameData(Mat img) {
+    private static int getFrameData(Mat img, int first_line, int second_line, int third_line) {
         Mat procImg = prepareImage(img);
+        Mat hsvMat = new Mat();
+        Imgproc.cvtColor(img, hsvMat, Imgproc.COLOR_RGB2HSV);
+        Scalar hsv;
         Mat circles = new Mat();
-        int sensitivity = 22;
-        while (circles.width() < 3) {
-            Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
-            if (circles.width() == 0) {
-                return -1;
-            }
-            double[] c; // a circle.
-            Point center; // the circle's center.
-            double[] rgb; // the circle's color.
-            try {
-                for (int i = 0; i <= circles.width(); i++) {
-                    c = circles.get(0, i);
-                    center = new Point(Math.round(c[0]), Math.round(c[1]));
-                    rgb = img.get((int) center.y, (int) center.x);
-                    if (i <= 2) {
-                        if (i == 0) greenHeight.add(center.y);
-                        if (i == 1) {
-                            orangeHeight.add(center.y);
-                            onArrOrangeChange();
-                        } else {
-                            blueHeight.add(center.y);
-                            onArrBlueChange();
-                        }
-                        rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball./rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
-                    }
-                    ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                }
-            } catch (NullPointerException e) {
-                return -1;
-            }
+        int sensitivity = 12;
+//        while (circles.width() < 3) {
+        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
+        if (circles.width() == 0) {
+            return -1;
         }
-        return (int) Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
+        int x;
+        x = 2;
+        double[] c; // a circle.
+        Point center; // the circle's center.
+        double[] rgb, rgb_min, hsvArr; // the circle's color.
+        try {
+            for (int i = 0; i < circles.width(); i++) {
+                c = circles.get(0, i);
+                center = new Point(Math.round(c[0]), Math.round(c[1]));
+                int radius = (int) c[2];
+                Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                rgb = img.get((int) center.x, (int) center.y);
+                rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
+
+                hsvArr = hsvMat.get((int) center.x, (int) center.y);
+
+                if (i <= 2) {
+                    if (center.x > first_line - radius && center.x < first_line + radius) {
+                        greenHeight.add(center.y);
+                        rgbRange[0][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
+                        rgbRange[0][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
+
+                        hsvRange[0][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
+                        ;
+//                        hsvRange[0][1] = new Scalar(hsv[0], hsv[1], hsv[2]);
+
+                    } else if (center.x > second_line - radius && center.x < second_line + radius) {
+                        orangeHeight.add(center.y);
+                        orangeInRange = true;
+//                        onArrOrangeChange();
+                        rgbRange[1][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
+                        rgbRange[1][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
+
+                        hsvRange[1][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
+                        ;
+
+                    } else if (center.x > third_line - radius && center.x < third_line + radius) {
+                        blueHeight.add(center.y);
+//                        onArrBlueChange();
+                        blueInRange = true;
+
+                        rgbRange[2][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
+                        rgbRange[2][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
+
+                        hsvRange[2][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
+                        ;
+
+                    }
+                }
+                ballArea = Math.min(ballArea, Math.PI * radius * radius);
+            }
+        } catch (NullPointerException e) {
+            return -1;
+        }
+//        }
+        if (blueInRange && orangeInRange) {
+            return 2;
+        }
+        return -1;// we return the initial Y --> This will be improved.
     }
 
+
+    public static Scalar getAvgHSV(int x, int y, int r, Mat hsvFrame) {
+        double[] temp;
+        int counter = 0, hAvg = 0, sAvg = 0, vAvg = 0;
+        for (int i = 0; i < (int) Math.sqrt(2) * r; i++) {
+            for (int j = 0; j < (int) Math.sqrt(2) * r; j++) {
+                counter++;
+                temp = hsvFrame.get((int) (x - r / Math.sqrt(2) + i), (int) (x - r / Math.sqrt(2) + j));
+                hAvg += temp[0];
+                sAvg += temp[1];
+                vAvg += temp[2];
+            }
+        }
+        hAvg /= counter;
+        sAvg /= counter;
+        vAvg /= counter;
+        return new Scalar(hAvg, sAvg, vAvg);
+    }
 
     public static boolean reachedReps() {
         int numOfReps = Integer.parseInt(spBreath.getString("numberOfrep", null));
@@ -540,7 +629,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         /*
          * Each frame will consist only of the pixels in the color range of each ball.
          */
-        Core.inRange(img, rgbRange[0][0], rgbRange[0][1], green);
+//        Core.inRange(img, rgbRange[0][0], rgbRange[0][1], green);
         Core.inRange(img, rgbRange[1][0], rgbRange[1][1], orange);
         Core.inRange(img, rgbRange[2][0], rgbRange[2][1], blue);
         /* --------------------------------------------------------------------------------------------------------- */
@@ -548,7 +637,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         /*
          * Creating separate contour lists for each of the frames.
          */
-        List<MatOfPoint> greenContours = new ArrayList<MatOfPoint>();
+//        List<MatOfPoint> greenContours = new ArrayList<MatOfPoint>();
         List<MatOfPoint> blueContours = new ArrayList<MatOfPoint>();
         List<MatOfPoint> orangeContours = new ArrayList<MatOfPoint>();
         /* --------------------------------------------------------------------------------------------------------- */
@@ -558,7 +647,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
          */
         Imgproc.findContours(orange, orangeContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         Imgproc.findContours(blue, blueContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
-        Imgproc.findContours(green, greenContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+//        Imgproc.findContours(green, greenContours, new Mat(), Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
         /* --------------------------------------------------------------------------------------------------------- */
 
         double maxArea = ballArea * 0.4;
@@ -592,29 +681,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             }
         }
 
-
-        for (int i = 0; i < greenContours.size(); i++) {
-            MatOfPoint cnt = greenContours.get(i);
-            if (Imgproc.contourArea(cnt) > maxArea) {
-                MatOfPoint2f c2f = new MatOfPoint2f(cnt.toArray());
-                Imgproc.minEnclosingCircle(c2f, center, radius);
-                if (radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
-                    Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
-                    double currHeight = Math.abs(center.y - initialY);
-                    greenHeight.add(currHeight);
-                    if (currHeight > 30) {
-                        if (!greenInAir) greenInAir = true;
-                        greenBallFrames++;
-                    } else {
-                        if (greenInAir) {
-                            greenInAir = false;
-                            greenAirTime.add(greenBallFrames);
-                            greenBallFrames = 0;
-                        }
-                    }
-                }
-            }
-        }
 
         for (int i = 0; i < blueContours.size(); i++) {
             MatOfPoint cnt = blueContours.get(i);
@@ -650,7 +716,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         ArrayList<Double> temp = color == 1 ? greenHeight : color == 2 ? blueHeight : color == 3 ? orangeHeight : null;
         for (int i = 0; i < temp.size(); i++) {
             double currHeight = temp.get(i);
-            maxHeight = maxHeight > currHeight ? maxHeight : currHeight;
+            maxHeight = Math.max(maxHeight, currHeight);
         }
         return maxHeight;
     }
