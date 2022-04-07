@@ -116,12 +116,81 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         }
     };
 
+    /**
+     * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
+     *
+     * @param img the frame we analyze.
+     * @return the initial Y axis position.
+     */
+    private static int getFrameData(Mat img, int first_line, int second_line, int third_line) {
+        Mat procImg = prepareImage(img);
+        Mat circles = new Mat();
+        Mat hsvMat = new Mat();
+        double[] rgb, rgb_min, hsvArr; // the circle's color.
+        double[] c; // a circle.
+        Point center; // the circle's center.
+
+        Imgproc.cvtColor(img, hsvMat, Imgproc.COLOR_RGB2HSV);
+        Scalar hsv;
+        int sensitivity = 12;
+        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
+        if (circles.width() == 0) {
+            return -1;
+        }
+
+        try {
+            for (int i = 0; i < circles.width(); i++) {
+                c = circles.get(0, i);
+                center = new Point(Math.round(c[0]), Math.round(c[1]));
+                int radius = (int) c[2];
+                Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                rgb = img.get((int) center.x, (int) center.y);
+                rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
+
+                hsvArr = hsvMat.get((int) center.x, (int) center.y);
+
+                if (i <= 2) {
+                    if (center.x > first_line - radius && center.x < first_line + radius) {
+                        greenHeight.add(center.y);
+                        rgbRange[0][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
+                        rgbRange[0][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
+                        hsvRange[0][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
+
+                    } else if (center.x > second_line - radius && center.x < second_line + radius) {
+                        orangeHeight.add(center.y);
+                        orangeInRange = true;
+                        rgbRange[1][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
+                        rgbRange[1][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
+                        hsvRange[1][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
+
+                    } else if (center.x > third_line - radius && center.x < third_line + radius) {
+                        blueHeight.add(center.y);
+                        blueInRange = true;
+
+                        rgbRange[2][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
+                        rgbRange[2][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
+                        hsvRange[2][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
+                    }
+                }
+                ballArea = Math.min(ballArea, Math.PI * radius * radius);
+            }
+        } catch (NullPointerException e) {
+            return -1;
+        }
+        if (blueInRange && orangeInRange) {
+            return -1; //TODO: return something else when findContoursAndDraw will work
+        }
+        return -1;
+    }
+
     /*
         Initialization of variables, properties and checking for permissions.
      */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        initialize();
         setContentView(R.layout.activity_exercise_page);
         btnBack = (Button) findViewById(R.id.btnBack);
         btnBack.setOnClickListener(this);
@@ -196,29 +265,46 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         }
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == btnBack) {
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
-        }
+    public void initialize() {
+        /* IMAGE PROCESSING VARIABLES */
+        greenHeight = new ArrayList<Double>();
+        blueHeight = new ArrayList<Double>();
+        orangeHeight = new ArrayList<Double>();
 
-        if (view == btnFeedback) {
-            Intent intent = new Intent(this, Feedback.class);
-            intent.putExtra("greenAirTime", getOverallTime(1));
-            intent.putExtra("blueAirTime", getOverallTime(2));
-            intent.putExtra("orangeAirTime", getOverallTime(3));
-            intent.putExtra("greenMaxHeight", getMaxHeight(1));
-            intent.putExtra("blueMaxHeight", getMaxHeight(2));
-            intent.putExtra("orangeMaxHeight", getMaxHeight(3));
-            intent.putExtra("greenRepSuccess", repsSuccess(1));
-            intent.putExtra("blueRepSuccess", repsSuccess(2));
-            intent.putExtra("orangeRepSuccess", repsSuccess(3));
-            intent.putExtra("duration", duration);
-            intent.putIntegerArrayListExtra("repDuration", repDuration);
-            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
-            startActivity(intent);
-        }
+        greenAirTime = new ArrayList<Double>();
+        blueAirTime = new ArrayList<Double>();
+        orangeAirTime = new ArrayList<Double>();
+
+        greenInAir = false;
+        orangeInAir = false;
+        blueInAir = false;
+
+        rgbRange = new Scalar[3][2];
+        hsvRange = new Scalar[3][2];
+
+        ballArea = Double.MAX_VALUE;
+
+        mPreviewRunning = false;
+
+        initialY = -1;
+        isDone = false;
+        greenBallFrames = 0;
+        blueBallFrames = 0;
+        orangeBallFrames = 0;
+
+        /* ANIMATION VARIABLES */
+        started = false;
+        hasanim = false;
+        oldXscale = 1.0f;
+        duration = 0.0;
+        repCounter = 0;
+        blueDuration = 0;
+        orangeDuration = 0;
+        isRepEnd = true;
+        orangeInRange = false;
+        blueInRange = false;
+        repDuration = new ArrayList<>();
+        repMaxHeight = new ArrayList<>();
     }
 
     private void verifyPermissions() {
@@ -296,8 +382,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         drawLine(frame, new Point(0, height - LINE_UPPER_BOUND), new Point(width, height - LINE_UPPER_BOUND));
         drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, frame.height() - LINE_LOWER_BOUND));
         drawLine(frame, new Point(0, 600), new Point(width, 600));
-        drawLine(frame, new Point(0, height - 100), new Point(width, height - 100));
-        drawLine(frame, new Point(0, height - 300), new Point(width, height - 300));
     }
 
     /**
@@ -315,71 +399,31 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
     }
 
-    /**
-     * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
-     *
-     * @param img the frame we analyze.
-     * @return the initial Y axis position.
-     */
-    private static int getFrameData(Mat img, int first_line, int second_line, int third_line) {
-        Mat procImg = prepareImage(img);
-        Mat circles = new Mat();
-        Mat hsvMat = new Mat();
-        double[] rgb, rgb_min, hsvArr; // the circle's color.
-        double[] c; // a circle.
-        Point center; // the circle's center.
-
-        Imgproc.cvtColor(img, hsvMat, Imgproc.COLOR_RGB2HSV);
-        Scalar hsv;
-        int sensitivity = 12;
-        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
-        if (circles.width() == 0) {
-            return -1;
+    @Override
+    public void onClick(View view) {
+        if (view == btnBack) {
+            Intent intent = new Intent(this, MainActivity.class);
+            finish();
+            startActivity(intent);
         }
 
-        try {
-            for (int i = 0; i < circles.width(); i++) {
-                c = circles.get(0, i);
-                center = new Point(Math.round(c[0]), Math.round(c[1]));
-                int radius = (int) c[2];
-                Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                rgb = img.get((int) center.x, (int) center.y);
-                rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
-
-                hsvArr = hsvMat.get((int) center.x, (int) center.y);
-
-                if (i <= 2) {
-                    if (center.x > first_line - radius && center.x < first_line + radius) {
-                        greenHeight.add(center.y);
-                        rgbRange[0][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
-                        rgbRange[0][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
-                        hsvRange[0][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
-
-                    } else if (center.x > second_line - radius && center.x < second_line + radius) {
-                        orangeHeight.add(center.y);
-                        orangeInRange = true;
-                        rgbRange[1][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
-                        rgbRange[1][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
-                        hsvRange[1][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
-
-                    } else if (center.x > third_line - radius && center.x < third_line + radius) {
-                        blueHeight.add(center.y);
-                        blueInRange = true;
-
-                        rgbRange[2][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
-                        rgbRange[2][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
-                        hsvRange[2][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
-                    }
-                }
-                ballArea = Math.min(ballArea, Math.PI * radius * radius);
-            }
-        } catch (NullPointerException e) {
-            return -1;
+        if (view == btnFeedback) {
+            Intent intent = new Intent(this, Feedback.class);
+            intent.putExtra("greenAirTime", getOverallTime(1));
+            intent.putExtra("blueAirTime", getOverallTime(2));
+            intent.putExtra("orangeAirTime", getOverallTime(3));
+            intent.putExtra("greenMaxHeight", getMaxHeight(1));
+            intent.putExtra("blueMaxHeight", getMaxHeight(2));
+            intent.putExtra("orangeMaxHeight", getMaxHeight(3));
+            intent.putExtra("greenRepSuccess", repsSuccess(1));
+            intent.putExtra("blueRepSuccess", repsSuccess(2));
+            intent.putExtra("orangeRepSuccess", repsSuccess(3));
+            intent.putExtra("duration", duration);
+            intent.putIntegerArrayListExtra("repDuration", repDuration);
+            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
+            finish();
+            startActivity(intent);
         }
-        if (blueInRange && orangeInRange) {
-            return 2;
-        }
-        return -1;
     }
 
     public static boolean reachedReps() {
