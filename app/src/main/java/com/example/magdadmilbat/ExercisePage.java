@@ -159,8 +159,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
                     } else if (center.x > second_line - radius && center.x < second_line + radius) {
                         orangeHeight.add(center.y);
-                        if(center.y - 1.5 * radius <= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - radius) - LINE_LOWER_BOUND) / 10))){
-                            orangeAirTime.add(1); // TODO: make it a counter.
+                        if (center.y - 1.5 * radius <= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - radius) - LINE_LOWER_BOUND) / 10))) {
+                            orangeAirTime.add(1.0); // TODO: make it a counter.
                         }
 
                         orangeInRange = true;
@@ -170,10 +170,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
                     } else if (center.x > third_line - radius && center.x < third_line + radius) {
                         blueHeight.add(center.y);
-                        if(center.y - 1.5 * radius <= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - radius) - LINE_LOWER_BOUND) / 10))){
-                            blueAirTime.add(1);
+//                        if (center.y < 350) {
+//                            return -1;
+//                        }
+                        if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
+                            blueAirTime.add(1.0);
                         }
-                        
+
                         blueInRange = true;
 
                         rgbRange[2][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
@@ -222,10 +225,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         verifyPermissions();
         String orangeChecked = spBreath.getString("orange", null);
-        if (Boolean.valueOf(orangeChecked) == true)
-            ballToUse = 2;
-        else
-            ballToUse = 3;
+//        if (Boolean.parseBoolean(orangeChecked)) {
+//            ballToUse = 2;
+//        } else
+//            ballToUse = 3;
+        ballToUse = 2;
 
         CountDownTimer count = new CountDownTimer(5000, 1000) {
             @Override
@@ -651,7 +655,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     public void repEnd() {
         repCounter++;
-        tvRepetition.setText(String.valueOf(repCounter));
+//        tvRepetition.setText(String.valueOf(repCounter));
         int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
         double ballMaxHeight = getMaxHeight(ballToUse);
         float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
