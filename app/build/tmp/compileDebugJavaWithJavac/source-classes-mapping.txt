@@ -1,0 +1,38 @@
+com/example/magdadmilbat/Details.java
+ com.example.magdadmilbat.Details
+com/example/magdadmilbat/Feedback.java
+ com.example.magdadmilbat.Feedback
+com/example/MagdadMilbat/BuildConfig.java
+ com.example.MagdadMilbat.BuildConfig
+com/example/magdadmilbat/TrainingListAdapter.java
+ com.example.magdadmilbat.TrainingListAdapter
+com/example/magdadmilbat/HistoryPage.java
+ com.example.magdadmilbat.HistoryPage
+ com.example.magdadmilbat.HistoryPage$1
+ com.example.magdadmilbat.HistoryPage$HandleAlertDialogListener
+com/example/magdadmilbat/exercise_details.java
+ com.example.magdadmilbat.exercise_details
+com/example/magdadmilbat/ShowCamera.java
+ com.example.magdadmilbat.ShowCamera
+com/example/magdadmilbat/Ball.java
+ com.example.magdadmilbat.Ball
+com/example/magdadmilbat/ExercisePage.java
+ com.example.magdadmilbat.ExercisePage
+ com.example.magdadmilbat.ExercisePage$1
+ com.example.magdadmilbat.ExercisePage$2
+ com.example.magdadmilbat.ExercisePage$3
+ com.example.magdadmilbat.ExercisePage$4
+ com.example.magdadmilbat.ExercisePage$5
+ com.example.magdadmilbat.ExercisePage$6
+com/example/magdadmilbat/SettingsPage.java
+ com.example.magdadmilbat.SettingsPage
+com/example/magdadmilbat/database/settings/SettingsManager.java
+ com.example.magdadmilbat.database.settings.SettingsManager
+com/example/magdadmilbat/MainActivity.java
+ com.example.magdadmilbat.MainActivity
+com/example/magdadmilbat/Training.java
+ com.example.magdadmilbat.Training
+com/example/magdadmilbat/database/DatabaseManager.java
+ com.example.magdadmilbat.database.DatabaseManager
+com/example/magdadmilbat/database/settings/SettingsProfile.java
+ com.example.magdadmilbat.database.settings.SettingsProfile

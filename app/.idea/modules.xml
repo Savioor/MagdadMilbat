@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1018645564/Magdad_Milbat.iml" filepath="$PROJECT_DIR$/.idea/modules/1018645564/Magdad_Milbat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Magdad_Milbat.app.iml" filepath="$PROJECT_DIR$/.idea/modules/Magdad_Milbat.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1218346152/Magdad_Milbat.openCVLibrary454.iml" filepath="$PROJECT_DIR$/.idea/modules/1218346152/Magdad_Milbat.openCVLibrary454.iml" />
+    </modules>
+  </component>
+</project>

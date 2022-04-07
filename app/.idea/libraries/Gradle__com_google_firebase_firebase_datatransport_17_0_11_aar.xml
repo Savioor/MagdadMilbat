@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="Gradle: com.google.firebase:firebase-datatransport:17.0.11@aar">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/5a2fb86bcf23ec3865c444a6c6b90c90/transformed/jetified-firebase-datatransport-17.0.11/res" />
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-3/690e2aa73dbc2fcfe4473e469d93cd80/transformed/jetified-firebase-datatransport-17.0.11/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/690e2aa73dbc2fcfe4473e469d93cd80/transformed/jetified-firebase-datatransport-17.0.11/AndroidManifest.xml" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-3/690e2aa73dbc2fcfe4473e469d93cd80/transformed/jetified-firebase-datatransport-17.0.11/res" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-datatransport/17.0.11/f646c5ebb9c661adc8e288d5a0e17b8b2c25eb6e/firebase-datatransport-17.0.11-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-datatransport/17.0.11/4365c43fb2842f21242896858349de1530a72c3b/firebase-datatransport-17.0.11-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
