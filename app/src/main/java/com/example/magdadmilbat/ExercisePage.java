@@ -88,7 +88,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static TranslateAnimation animTrans, animTrans2, animTrans3, animTrans4, animTrans5, animTrans6;
     static View cricleView, cricleView2, cricleView3, cricleView4, cricleView5, cricleView6;
     static TextView remarksText;
-
     static float oldXscale = 1.0f;
     static double duration = 0.0, framH, lastOrangeHeight;
     static int ballToUse, repCounter = 0, blueDuration = 0, orangeDuration = 0, blueHeightSetting, orangeHeightSetting;
@@ -129,10 +128,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         double[] rgb, rgb_min, hsvArr; // the circle's color.
         double[] c; // a circle.
         Point center; // the circle's center.
+        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
 
         Imgproc.cvtColor(img, hsvMat, Imgproc.COLOR_RGB2HSV);
         Scalar hsv;
-        int sensitivity = 12;
+        int sensitivity = 15;
+
         Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
         if (circles.width() == 0) {
             return -1;
@@ -158,6 +159,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
                     } else if (center.x > second_line - radius && center.x < second_line + radius) {
                         orangeHeight.add(center.y);
+                        if(center.y - 1.5 * radius <= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - radius) - LINE_LOWER_BOUND) / 10))){
+                            orangeAirTime.add(1); // TODO: make it a counter.
+                        }
+
                         orangeInRange = true;
                         rgbRange[1][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
                         rgbRange[1][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
@@ -165,6 +170,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
                     } else if (center.x > third_line - radius && center.x < third_line + radius) {
                         blueHeight.add(center.y);
+                        if(center.y - 1.5 * radius <= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - radius) - LINE_LOWER_BOUND) / 10))){
+                            blueAirTime.add(1);
+                        }
+                        
                         blueInRange = true;
 
                         rgbRange[2][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
@@ -380,7 +389,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     public static void drawHorizontalLines(Mat frame, int height, int width) {
         final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
         drawLine(frame, new Point(0, height - LINE_UPPER_BOUND), new Point(width, height - LINE_UPPER_BOUND));
-        drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, frame.height() - LINE_LOWER_BOUND));
+        drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, height - LINE_LOWER_BOUND));
         drawLine(frame, new Point(0, 600), new Point(width, 600));
     }
 
