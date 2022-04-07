@@ -83,6 +83,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     Button btnBack, btnFeedback;
     private final int PERMISSIONS_READ_CAMERA = 1;
     private final int REQUEST_CODE = 2;
+    private final int RANGE = 30;
     private static final String TAG = "MyActivity";
 
     TextView tvRepetition, tvExercise;
@@ -98,7 +99,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static ArrayList<Double> blueAirTime = new ArrayList<Double>();
     static ArrayList<Double> orangeAirTime = new ArrayList<Double>();
 
-
     static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
 
     static Scalar[][] rgbRange = new Scalar[3][2];
@@ -108,50 +108,33 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     private JavaCameraView mOpenCvCameraView;
     private SurfaceHolder mSurfaceHolder;
     boolean mPreviewRunning = false;
-    int RANGE = 30;
+
     Mat procImg;
     Mat circles;
     static int initialY = -1;
     boolean isDone = false;
     static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
+
+    /* ANIMATION VARIABLES */
     boolean started = false;
     static boolean hasanim = false;
     static ValueAnimator anim;
     static ScaleAnimation animScale;
-    static TranslateAnimation animTrans;
-    static TranslateAnimation animTrans2;
-    static TranslateAnimation animTrans3;
-    static TranslateAnimation animTrans4;
-    static TranslateAnimation animTrans5;
-    static TranslateAnimation animTrans6;
-    static View cricleView;
-    static View cricleView2;
-    static View cricleView3;
-    static View cricleView4;
-    static View cricleView5;
-    static View cricleView6;
+    static TranslateAnimation animTrans, animTrans2, animTrans3, animTrans4, animTrans5, animTrans6;
+    static View cricleView, circleView2, circleView3, circleView4, circleView5, circleView6;
     static TextView remarksText;
+
     static float oldXscale = 1.0f;
-    static double duration = 0.0;
+    static double duration = 0.0, framH, lastOrangeHeight;
+    static int ballToUse, repCounter = 0, blueDuration = 0, orangeDuration = 0, blueHeightSetting, orangeHeightSetting;
     Thread t;
     Runnable r;
     Handler handler1;
-    static double framH;
-    //    static double fakeHeight;
-    static boolean isRepEnd = true;
-    static double lastOrangeHeight;
-    static int ballToUse;
-    static int repCounter = 0;
+    static boolean isRepEnd = true, orangeInRange = false, blueInRange = false;
     static ArrayList<Integer> repDuration = new ArrayList<Integer>();
     static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
-    static boolean orangeInRange = false;
-    static boolean blueInRange = false;
-    static int blueDuration = 0;
-    static int orangeDuration = 0;
-    static int blueHeightSetting;
-    static int orangeHeightSetting;
-    /* --------------------------------------------------------------------------------------------------- */
 
+    /* --------------------------------------------------------------------------------------------------- */
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
@@ -229,23 +212,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 if (orangeInRange) {
                     orangeDuration++;
                 }
-//            Random rand = new Random();
-//            double randomValue = 200 + (600 - 200) * rand.nextDouble();
-//            fakeHeight = randomValue;
             }
         }, 0, 1000);
         startWaitingAnim();
 
-//        handler1 = new Handler(){
-//            @Override
-//            public void handleMessage(Message msg){
-//                super.handleMessage(msg);
-//                int a = msg.what;
-//                if(a == 1){
-//                    breathAnimation();
-//                }
-//            }
-//        };
     }
 
     /*
@@ -345,41 +315,25 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     public Mat onCameraFrame(JavaCameraView.CvCameraViewFrame inputFrame) {
         Mat frame = inputFrame.rgba(); // we get the frame in rgb.
         Mat resizedFrame = new Mat();
-        Point center = new Point(frame.width() / 2, frame.height() / 2);
-        Mat rotationMatrix = Imgproc.getRotationMatrix2D(center,90, 1);
-        Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP);
+        Point center = new Point(frame.width() / 2, frame.height() / 2); // get the center point.
 
+        Mat rotationMatrix = Imgproc.getRotationMatrix2D(center, 90, 1); // get rotation matrix.
+        Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP); // we rotate the frame.
         frame = resizedFrame;
 
-
-        int line_upper_bound = 550, line_bottom_bound = 50;
-        int first_line = 10 * frame.width() / 30, second_line = frame.width() / 2, third_line = 19 * frame.width() / 30;
-
         if (isDone && initialY == -1) {
+            // if the timer is finished and we have yet to find the balls.
             initialY = getFrameData(frame, first_line, second_line, third_line);
-//            initialY = 2;
         }
-
-//        frame = initialY == -1 ? frame : findContoursAndDraw(frame);
-//        frame = initialY == -1 ? frame : setMask(frame);
-
 
         if (initialY == -1) {
-            frame = drawLine(frame, new Point(0, frame.height() - line_upper_bound), new Point(frame.width(), frame.height() - line_upper_bound));
-            frame = drawLine(frame, new Point(0, frame.height() - line_bottom_bound), new Point(frame.width(), frame.height() - line_bottom_bound));
-            frame = drawLine(frame, new Point(0, 600), new Point(frame.width(), 600));
-
-
-            frame = drawLine(frame, new Point(first_line, 0), new Point(first_line, frame.height()));
-            frame = drawLine(frame, new Point(second_line, 0), new Point(second_line, frame.height()));
-            frame = drawLine(frame, new Point(third_line, 0), new Point(third_line, frame.height()));
+            // if we have yet to find the balls.
+            drawHorizontalLines(frame.height(), frame.width());
+            drawVerticalLines(frame.height(), frame.width);
         }
-        frame = initialY == -1 ? frame : findContoursAndDraw(frame);
-        if(initialY == -1){
-            frame = drawLine(frame, new Point(0, frame.height() - 100), new Point(frame.width(), frame.height() - 100));
-            frame = drawLine(frame, new Point(0, frame.height() - 300), new Point(frame.width(), frame.height() - 300));
-        }
-        framH = frame.height()-300;
+
+        frame = initialY == -1 ? frame : findContoursAndDraw(frame); // update the frame according to the initial Y axis value.
+        framH = frame.height() - 300;
 
         if(orangeHeight.size() >1){
             lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
@@ -416,6 +370,33 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     }
 
     /**
+     * this function draws horizontal lines on the frame.
+     * @param height height of the frame.
+     * @param width width of the frame.
+     */
+    public static void drawHorizontalLines(int height, int width){
+        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
+        frame = drawLine(frame, new Point(0, height - LINE_UPPER_BOUND), new Point(width, height - LINE_UPPER_BOUND));
+        frame = drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, frame.height() - LINE_LOWER_BOUND));
+        frame = drawLine(frame, new Point(0, 600), new Point(width, 600));
+        frame = drawLine(frame, new Point(0, height - 100), new Point(width, height - 100));
+        frame = drawLine(frame, new Point(0, height - 300), new Point(width, height - 300));
+    }
+
+    /**
+     * this function draws vertical lines on the frame.
+     * @param height height of the frame.
+     * @param width width of the frame.
+     */
+    public static void drawVerticalLines(int height, int width){
+        final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
+
+        frame = drawLine(frame, new Point(FIRST_LINE, 0), new Point(FIRST_LINE, height));
+        frame = drawLine(frame, new Point(SECOND_LINE, 0), new Point(SECOND_LINE, height));
+        frame = drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
+    }
+
+    /**
      * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
      * @param img the frame we analyze.
      * @return the initial Y axis position.
@@ -424,6 +405,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         Mat procImg = prepareImage(img);
         Mat circles = new Mat();
         Mat hsvMat = new Mat();
+        double[] rgb, rgb_min, hsvArr; // the circle's color.
+        double[] c; // a circle.
+        Point center; // the circle's center.
+
         Imgproc.cvtColor(img, hsvMat, Imgproc.COLOR_RGB2HSV);
         Scalar hsv;
         int sensitivity = 12;
@@ -431,9 +416,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         if (circles.width() == 0) {
             return -1;
         }
-        double[] c; // a circle.
-        Point center; // the circle's center.
-        double[] rgb, rgb_min, hsvArr; // the circle's color.
+
         try {
             for (int i = 0; i < circles.width(); i++) {
                 c = circles.get(0, i);
@@ -450,34 +433,22 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                         greenHeight.add(center.y);
                         rgbRange[0][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
                         rgbRange[0][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
-
                         hsvRange[0][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
-                        ;
 
                     } else if (center.x > second_line - radius && center.x < second_line + radius) {
                         orangeHeight.add(center.y);
                         orangeInRange = true;
-//                        onArrOrangeChange();
                         rgbRange[1][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
                         rgbRange[1][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
-
                         hsvRange[1][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
-                        ;
-                        //onArrOrangeChange();
 
                     } else if (center.x > third_line - radius && center.x < third_line + radius) {
                         blueHeight.add(center.y);
-//                        onArrBlueChange();
                         blueInRange = true;
 
                         rgbRange[2][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
                         rgbRange[2][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
-
                         hsvRange[2][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
-                        ;
-
-                        //onArrBlueChange();
-
                     }
                 }
                 ballArea = Math.min(ballArea, Math.PI * radius * radius);
@@ -485,13 +456,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         } catch (NullPointerException e) {
             return -1;
         }
-//        }
         if (blueInRange && orangeInRange) {
             return 2;
         }
         return -1;
     }
-
 
 
     public static boolean reachedReps(){
@@ -501,7 +470,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     public static int repsSuccess(int color){
         int numOfReps = 0;
-        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null;
+        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null; // gets the correct array list according to the color.
         numOfReps = temp.size();
         return  numOfReps;
     }
