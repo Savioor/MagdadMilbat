@@ -1,38 +1,5 @@
 package com.example.magdadmilbat;
 
-import org.opencv.core.Size;
-
-import android.Manifest;
-import android.animation.ValueAnimator;
-import android.app.Activity;
-
-import org.opencv.core.Size;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.animation.ValueAnimator;
-
-import org.opencv.core.Size;
-
-import android.os.Handler;
-import android.os.Message;
-import android.util.Log;
-import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
-import android.view.animation.ScaleAnimation;
-import android.view.animation.TranslateAnimation;
-import android.os.CountDownTimer;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
-import android.hardware.Camera;
-import android.hardware.Camera.PreviewCallback;
-
-import androidx.core.app.ActivityCompat;
-
-import org.opencv.android.JavaCameraView;
-
-import java.io.IOException;
-
-
 import android.Manifest;
 import android.animation.ValueAnimator;
 import android.app.Activity;
@@ -40,19 +7,18 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.animation.Animation;
-import android.view.animation.AnimationSet;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.hardware.Camera.PreviewCallback;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
@@ -62,6 +28,7 @@ import com.example.MagdadMilbat.R;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
+import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
@@ -72,10 +39,8 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -121,7 +86,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static ValueAnimator anim;
     static ScaleAnimation animScale;
     static TranslateAnimation animTrans, animTrans2, animTrans3, animTrans4, animTrans5, animTrans6;
-    static View cricleView, circleView2, circleView3, circleView4, circleView5, circleView6;
+    static View cricleView, cricleView2, cricleView3, cricleView4, cricleView5, cricleView6;
     static TextView remarksText;
 
     static float oldXscale = 1.0f;
@@ -135,7 +100,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
 
     /* --------------------------------------------------------------------------------------------------- */
-    private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
+    private final BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
         public void onManagerConnected(int status) {
             switch (status) {
@@ -255,6 +220,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             startActivity(intent);
         }
     }
+
     private void verifyPermissions() {
         Log.d(TAG, "verifyPermissions: asking user for permission");
         String[] permissions = {Manifest.permission.CAMERA};
@@ -307,62 +273,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     }
 
     /**
-     * Gets each camera frame and handles it accordingly.
-     * @param inputFrame the current frame.
-     * @return the frame after it's marked.
-     */
-    @Override
-    public Mat onCameraFrame(JavaCameraView.CvCameraViewFrame inputFrame) {
-        Mat frame = inputFrame.rgba(); // we get the frame in rgb.
-        Mat resizedFrame = new Mat();
-        Point center = new Point(frame.width() / 2, frame.height() / 2); // get the center point.
-
-        Mat rotationMatrix = Imgproc.getRotationMatrix2D(center, 90, 1); // get rotation matrix.
-        Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP); // we rotate the frame.
-        frame = resizedFrame;
-
-        if (isDone && initialY == -1) {
-            // if the timer is finished and we have yet to find the balls.
-            initialY = getFrameData(frame, first_line, second_line, third_line);
-        }
-
-        if (initialY == -1) {
-            // if we have yet to find the balls.
-            drawHorizontalLines(frame.height(), frame.width());
-            drawVerticalLines(frame.height(), frame.width);
-        }
-
-        frame = initialY == -1 ? frame : findContoursAndDraw(frame); // update the frame according to the initial Y axis value.
-        framH = frame.height() - 300;
-
-        if(orangeHeight.size() >1){
-            lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-            if(!isRepEnd && lastOrangeHeight < 400)
-                isRepEnd =true;
-
-            r = new Runnable() {
-                @Override
-                public void run() {
-                    lastOrangeHeight  = orangeHeight.get(orangeHeight.size()-1);
-                    if(lastOrangeHeight > 400 && isRepEnd){
-                        isRepEnd = false;
-                        breathAnimation();
-                    }
-
-                }
-            };
-            t= new Thread(r);
-            t.start();
-        }
-        return frame;
-    }
-
-    /**
      * This function prepares the image for the HoughCircles algorithm.
+     *
      * @param img the image we prepare.
      * @return the prepared image.
      */
-    public static Mat prepareImage(Mat img){
+    public static Mat prepareImage(Mat img) {
         Mat dest = new Mat(); // Creating a destination Matrix (Image) for the grayscale.
         Imgproc.cvtColor(img, dest, Imgproc.COLOR_RGB2GRAY); // We grayscale the image to get it to binary form
         Imgproc.medianBlur(dest, dest, 3); // We blur the grayscale image using a kernel size of 3.
@@ -371,33 +287,37 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     /**
      * this function draws horizontal lines on the frame.
+     *
      * @param height height of the frame.
-     * @param width width of the frame.
+     * @param width  width of the frame.
      */
-    public static void drawHorizontalLines(int height, int width){
+    public static void drawHorizontalLines(Mat frame, int height, int width) {
         final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
-        frame = drawLine(frame, new Point(0, height - LINE_UPPER_BOUND), new Point(width, height - LINE_UPPER_BOUND));
-        frame = drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, frame.height() - LINE_LOWER_BOUND));
-        frame = drawLine(frame, new Point(0, 600), new Point(width, 600));
-        frame = drawLine(frame, new Point(0, height - 100), new Point(width, height - 100));
-        frame = drawLine(frame, new Point(0, height - 300), new Point(width, height - 300));
+        drawLine(frame, new Point(0, height - LINE_UPPER_BOUND), new Point(width, height - LINE_UPPER_BOUND));
+        drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, frame.height() - LINE_LOWER_BOUND));
+        drawLine(frame, new Point(0, 600), new Point(width, 600));
+        drawLine(frame, new Point(0, height - 100), new Point(width, height - 100));
+        drawLine(frame, new Point(0, height - 300), new Point(width, height - 300));
     }
 
     /**
      * this function draws vertical lines on the frame.
-     * @param height height of the frame.
-     * @param width width of the frame.
+     *
+     * @param frame
+     * @param FIRST_LINE
+     * @param SECOND_LINE
+     * @param THIRD_LINE
      */
-    public static void drawVerticalLines(int height, int width){
-        final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
-
-        frame = drawLine(frame, new Point(FIRST_LINE, 0), new Point(FIRST_LINE, height));
-        frame = drawLine(frame, new Point(SECOND_LINE, 0), new Point(SECOND_LINE, height));
-        frame = drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
+    public static void drawVerticalLines(Mat frame, int FIRST_LINE, int SECOND_LINE, int THIRD_LINE) {
+        int height = frame.height(), width = frame.width();
+        drawLine(frame, new Point(FIRST_LINE, 0), new Point(FIRST_LINE, height));
+        drawLine(frame, new Point(SECOND_LINE, 0), new Point(SECOND_LINE, height));
+        drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
     }
 
     /**
      * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
+     *
      * @param img the frame we analyze.
      * @return the initial Y axis position.
      */
@@ -462,33 +382,33 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return -1;
     }
 
-
-    public static boolean reachedReps(){
+    public static boolean reachedReps() {
         int numOfReps = Integer.parseInt(spBreath.getString("numberOfrep", null));
         return numOfReps == greenAirTime.size();
     }
 
-    public static int repsSuccess(int color){
+    public static int repsSuccess(int color) {
         int numOfReps = 0;
         ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null; // gets the correct array list according to the color.
         numOfReps = temp.size();
-        return  numOfReps;
+        return numOfReps;
     }
 
-    public static int getDifficulty(){
+    public static int getDifficulty() {
         return Integer.parseInt(spBreath.getString("difficulty", null));
     }
 
-    public static int getDuration(){
+    public static int getDuration() {
         return Integer.parseInt(spBreath.getString("duration", null));
     }
 
     /**
      * This function gets an image (which is a singular frame), finds the balls, draws them and returns the frame.
+     *
      * @param img the image to analyze.
      * @return processed image.
      */
-    private static Mat findContoursAndDraw(Mat img){
+    private static Mat findContoursAndDraw(Mat img) {
         /*
          * We divide the frame to 3 separate frames, each representing one ball.
          */
@@ -580,58 +500,106 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return img;
     }
 
+    private static void drawLine(Mat img, Point p1, Point p2) {
+        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
+    }
 
-    public double getMaxHeight(int color){
+    public static void onArrBlueChange() {
+        double lastBlueHeight = blueHeight.get(blueHeight.size() - 1);
+        float prec = (float) Math.abs((lastBlueHeight - initialY) / (initialY - 200));
+        blueInRange = blueHeightSetting > (prec * 10) && prec != 0;
+    }
+
+    public static void onArrOrangeChange() {
+        double lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
+        float prec = (float) Math.abs((lastOrangeHeight - initialY) / (initialY - 200));
+        orangeInRange = orangeHeightSetting > (prec * 10) && prec != 0;
+    }
+
+    /**
+     * Gets each camera frame and handles it accordingly.
+     *
+     * @param inputFrame the current frame.
+     * @return the frame after it's marked.
+     */
+    @Override
+    public Mat onCameraFrame(JavaCameraView.CvCameraViewFrame inputFrame) {
+        Mat frame = inputFrame.rgba(); // we get the frame in rgb.
+        Mat resizedFrame = new Mat();
+        Point center = new Point(frame.width() / 2, frame.height() / 2); // get the center point.
+
+        Mat rotationMatrix = Imgproc.getRotationMatrix2D(center, 90, 1); // get rotation matrix.
+        Imgproc.warpAffine(frame, resizedFrame, rotationMatrix, frame.size(), Imgproc.WARP_INVERSE_MAP); // we rotate the frame.
+        frame = resizedFrame;
+
+        final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
+
+        if (isDone && initialY == -1) {
+            // if the timer is finished and we have yet to find the balls.
+            initialY = getFrameData(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
+        }
+
+        if (initialY == -1) {
+            // if we have yet to find the balls.
+            drawHorizontalLines(frame, frame.height(), frame.width());
+            drawVerticalLines(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
+        }
+
+        frame = initialY == -1 ? frame : findContoursAndDraw(frame); // update the frame according to the initial Y axis value.
+        framH = frame.height() - 300;
+
+        if (orangeHeight.size() > 1) {
+            lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
+            if (!isRepEnd && lastOrangeHeight < 400)
+                isRepEnd = true;
+
+            r = new Runnable() {
+                @Override
+                public void run() {
+                    lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
+                    if (lastOrangeHeight > 400 && isRepEnd) {
+                        isRepEnd = false;
+                        breathAnimation();
+                    }
+
+                }
+            };
+            t = new Thread(r);
+            t.start();
+        }
+        return frame;
+    }
+
+    public double getMaxHeight(int color) {
         double maxHeight = 0;
         ArrayList<Double> temp = color == 1 ? greenHeight : color == 2 ? blueHeight : color == 3 ? orangeHeight : null;
-        for(int i = 0; i < temp.size(); i++){
+        for (int i = 0; i < temp.size(); i++) {
             double currHeight = temp.get(i);
             maxHeight = Math.max(maxHeight, currHeight);
         }
         return maxHeight;
     }
-    public double getOverallTime(int color){
+
+    public double getOverallTime(int color) {
         double overAllTime = 0;
         ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null;
-        for(int i = 0; i < temp.size(); i++){
+        for (int i = 0; i < temp.size(); i++) {
             overAllTime += temp.get(i);
         }
         return overAllTime;
 
     }
-    private Mat drawLine(Mat img, Point p1, Point p2){
-        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
-        return img;
-    }
 
-    public void repEnd(){
+    public void repEnd() {
         repCounter++;
         tvRepetition.setText(String.valueOf(repCounter));
         int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
         double ballMaxHeight = getMaxHeight(ballToUse);
         float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
         repDuration.add(ballDuration);
-        repMaxHeight.add((int) prec*10);
+        repMaxHeight.add((int) prec * 10);
         blueHeight.clear();
         orangeHeight.clear();
-    }
-
-    public static void onArrBlueChange(){
-      double lastBlueHeight = blueHeight.get(blueHeight.size()-1);
-      float prec = (float) Math.abs((lastBlueHeight - initialY) / (initialY - 200));
-      if(blueHeightSetting > (prec*10) && prec!=0)
-          blueInRange = true;
-       else
-          blueInRange = false;
-    }
-
-    public static void onArrOrangeChange(){
-        double lastOrangeHeight = orangeHeight.get(orangeHeight.size()-1);
-        float prec = (float) Math.abs((lastOrangeHeight - initialY) / (initialY - 200));
-        if(orangeHeightSetting > (prec*10) && prec!=0)
-            orangeInRange = true;
-        else
-            orangeInRange = false;
     }
 
     public void breathAnimation() {
@@ -668,7 +636,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView5.startAnimation(animTrans5);
         cricleView6.startAnimation(animTrans6);
     }
-    public void startWaitingAnim(){
+
+    public void startWaitingAnim() {
         anim = ValueAnimator.ofFloat(0.4f, 1.0f);
         anim.setDuration(1000);
         anim.setRepeatMode(ValueAnimator.REVERSE);
