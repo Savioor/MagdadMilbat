@@ -615,11 +615,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     }
 
     public double getMaxHeight(int color) {
-        double maxHeight = 0;
+        double startingHeight = 0, maxHeight = 0;
         ArrayList<Double> temp = color == 1 ? greenHeight : color == 2 ? blueHeight : color == 3 ? orangeHeight : null;
+        try {
+            startingHeight = temp.get(0);
+        } catch (Exception ignored) {
+        }
+
+
         for (int i = 0; i < temp.size(); i++) {
             double currHeight = temp.get(i);
-            maxHeight = Math.max(maxHeight, currHeight);
+            maxHeight = Math.max(Math.abs(currHeight - startingHeight), maxHeight);
         }
         return maxHeight;
     }
