@@ -133,6 +133,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         Imgproc.cvtColor(img, hsvMat, Imgproc.COLOR_RGB2HSV);
         Scalar hsv;
         int sensitivity = 15;
+        String orangeChecked = spBreath.getString("orange", null);
 
         Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
         if (circles.width() == 0) {
@@ -161,14 +162,16 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                         orangeHeight.add(center.y);
                         if (Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                             orangeAirTime.add(1.0); // TODO: make it a counter.
-                            r = new Runnable() {
-                                @Override
-                                public void run() {
-                                    breathAnimation();
-                                }
-                            };
-                            t = new Thread(r);
-                            t.start();
+                            if (orangeChecked.equals("true")) {
+                                r = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        breathAnimation();
+                                    }
+                                };
+                                t = new Thread(r);
+                                t.start();
+                            }
                         }
 
                         orangeInRange = true;
@@ -180,6 +183,16 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                         blueHeight.add(center.y);
                         if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                             blueAirTime.add(1.0);
+                            if (orangeChecked.equals("false")) {
+                                r = new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        breathAnimation();
+                                    }
+                                };
+                                t = new Thread(r);
+                                t.start();
+                            }
                         }
 
                         blueInRange = true;
