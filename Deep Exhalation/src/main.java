@@ -10,6 +10,7 @@ import org.opencv.videoio.Videoio;
 import javax.swing.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -17,8 +18,8 @@ import java.util.Vector;
 public class main {
     private static final String filename = "src/thirdvid.mp4";
 
-    static Scalar[][] hsvRange= new Scalar[3][2];
-    static Scalar[][] rgbRange= new Scalar[3][2];
+    static Scalar[][] hsvRange = new Scalar[3][2];
+    static Scalar[][] rgbRange = new Scalar[3][2];
     static double ballArea;
 
     /* IMAGE PROCESSING VARIABLES */
@@ -37,29 +38,30 @@ public class main {
     static boolean started = false;
     static int initialY = 0;
 
-    public static void main(String[] args){
+    public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME); // Loading the OpenCV library.
-        int numOfFrames = 0;
-        int RANGE = 30;
-        Mat procImg;
-        Mat circles;
-        int firstBallFramesCounter = 0, secondBallFramesCounter = 0, thirdBallFramesCounter = 0, countOfBalls;
-        Mat img = new Mat();
+        String path = "src/test-img/1.jpg";
+//        int numOfFrames = 0;
+//        int RANGE = 30;
+//        Mat procImg;
+//        Mat circles;
+//        int firstBallFramesCounter = 0, secondBallFramesCounter = 0, thirdBallFramesCounter = 0, countOfBalls;
+//        Mat img = new Mat();
 
-        img = loadImage("src/Screenshot_2.png");
-        final int FIRST_LINE = 10 * img.width() / 30, SECOND_LINE = img.width() / 2, THIRD_LINE = 19 * img.width() / 30;
+//        img = loadImage("src/Screenshot_2.png");
+//        final int FIRST_LINE = 10 * img.width() / 30, SECOND_LINE = img.width() / 2, THIRD_LINE = 19 * img.width() / 30;
+//
+//        drawHorizontalLines(img, img.height(), img.width());
+//        drawVerticalLines(img, FIRST_LINE, SECOND_LINE, THIRD_LINE);
 
-        drawHorizontalLines(img, img.height(), img.width());
-        drawVerticalLines(img, FIRST_LINE, SECOND_LINE, THIRD_LINE);
+//        initialY = getFrameData(img, FIRST_LINE, SECOND_LINE, THIRD_LINE);
 
-        initialY = getFrameData(img, FIRST_LINE, SECOND_LINE, THIRD_LINE);
+//        showImage(img);
 
-        showImage(img);
+
+        processImg();
     }
 
-    private static void drawLine(Mat img, Point p1, Point p2) {
-        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
-    }
 
     /**
      * this function draws horizontal lines on the frame.
@@ -74,7 +76,7 @@ public class main {
         drawLine(frame, new Point(0, 600), new Point(width, 600));
     }
 
-    public static void processVideo(){
+    public static void processVideo() {
         VideoCapture vid = new VideoCapture(filename);
         Mat frame = new Mat();
         JFrame jframe = new JFrame("Video"); // We create a new JFrame object.
@@ -86,7 +88,7 @@ public class main {
         double fps = vid.get(Videoio.CAP_PROP_FPS);
         int initialY = 0;
 
-        while(vid.read(frame)) {
+        while (vid.read(frame)) {
             final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
 
             if (initialY == -1) {
@@ -103,11 +105,12 @@ public class main {
         showImage(frame);
     }
 
-    private static void toHSVImage(Mat frame){
+    private static ArrayList<Mat> toHSVImage(Mat frame) {
         Mat hsvMat = new Mat();
         Imgproc.cvtColor(frame, hsvMat, Imgproc.COLOR_RGB2HSV);
         ArrayList<Mat> lab_list = new ArrayList<>(3);
-        Core.split(hsvMat,lab_list);
+        Core.split(hsvMat, lab_list);
+        return lab_list;
     }
 
     private static void drawLine(Mat img, Point p1, Point p2) {
@@ -132,6 +135,7 @@ public class main {
 
     /**
      * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
+     *
      * @param img the frame we analyze.
      * @return the initial Y axis position.
      */
@@ -204,7 +208,7 @@ public class main {
         return -1;
     }
 
-    private static Mat findContoursAndDraw(Mat img){
+    private static Mat findContoursAndDraw(Mat img) {
         /*
          * We divide the frame to 3 separate frames, each representing one ball.
          */
@@ -250,16 +254,15 @@ public class main {
             if (Imgproc.contourArea(cnt) > maxArea) {
                 MatOfPoint2f c2f = new MatOfPoint2f(cnt.toArray());
                 Imgproc.minEnclosingCircle(c2f, center, radius);
-                if(radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
+                if (radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
                     Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
                     double currHeight = Math.abs(center.y - initialY);
                     greenHeight.add(currHeight);
-                    if(currHeight > 30){
-                        if(!greenInAir) greenInAir = true;
+                    if (currHeight > 30) {
+                        if (!greenInAir) greenInAir = true;
                         greenBallFrames++;
-                    }
-                    else{
-                        if(greenInAir){
+                    } else {
+                        if (greenInAir) {
                             greenInAir = false;
                             greenAirTime.add(greenBallFrames);
                             greenBallFrames = 0;
@@ -274,16 +277,15 @@ public class main {
             if (Imgproc.contourArea(cnt) > maxArea) {
                 MatOfPoint2f c2f = new MatOfPoint2f(cnt.toArray());
                 Imgproc.minEnclosingCircle(c2f, center, radius);
-                if(radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
+                if (radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
                     Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
                     double currHeight = Math.abs(center.y - initialY);
                     blueHeight.add(currHeight);
-                    if(currHeight > 30){
-                        if(!blueInAir) blueInAir = true;
+                    if (currHeight > 30) {
+                        if (!blueInAir) blueInAir = true;
                         blueBallFrames++;
-                    }
-                    else{
-                        if(blueInAir){
+                    } else {
+                        if (blueInAir) {
                             blueInAir = false;
                             blueAirTime.add(greenBallFrames);
                             blueBallFrames = 0;
@@ -298,16 +300,15 @@ public class main {
             if (Imgproc.contourArea(cnt) > maxArea) {
                 MatOfPoint2f c2f = new MatOfPoint2f(cnt.toArray());
                 Imgproc.minEnclosingCircle(c2f, center, radius);
-                if(radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
+                if (radius[0] * radius[0] * Math.PI <= (ballArea * 1.9)) {
                     Imgproc.circle(img, center, (int) radius[0], new Scalar(0, 0, 255), 3, 8, 0);
                     double currHeight = Math.abs(center.y - initialY);
                     orangeHeight.add(currHeight);
-                    if(currHeight > 30){
-                        if(!orangeInAir) orangeInAir = true;
+                    if (currHeight > 30) {
+                        if (!orangeInAir) orangeInAir = true;
                         orangeBallFrames++;
-                    }
-                    else{
-                        if(orangeInAir){
+                    } else {
+                        if (orangeInAir) {
                             orangeInAir = false;
                             orangeAirTime.add(orangeBallFrames);
                             orangeBallFrames = 0;
@@ -321,31 +322,84 @@ public class main {
         return img;
     }
 
+    private static void drawCircles(Mat frame){
+        Mat circles = new Mat();
+        double[] c;
+        Point center;
+        Imgproc.HoughCircles(frame, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, frame.width() / 20, frame.width() / 6);
+        for (int i = 0; i < circles.width(); i++) {
+            c = circles.get(0, i);
+            center = new Point(Math.round(c[0]), Math.round(c[1]));
+            int radius = (int) c[2];
+            Imgproc.circle(frame, center, (int) c[2], new Scalar(255, 0, 0), 5);
+        }
+    }
+
+    public static void processImg() {
+        String path = "src/test-img/";
+        deleteDirectory(new File("src/img-result"));
+        for(int j = 0; j < new File("src/test-img").listFiles().length; j++) {
+            Mat img = loadImage(path + (j + 1) + ".jpg");
+
+            Mat resizeImage = new Mat();
+            int scale_percent = 15;
+            int width = (int) (img.width() * scale_percent / 100);
+            int height = (int) (img.height() * scale_percent / 100);
+
+            Imgproc.resize(img, resizeImage, new Size(width, height));
+            img = resizeImage;
+            int folderNum = new File("src/img-result").listFiles().length + 1;
+            new File("src/img-result/test" + folderNum).mkdir();
+
+            ArrayList<Mat> resultArr = toHSVImage(img);
+//            Imgproc.cvtColor(img, img, Imgproc.COLOR_RGB2GRAY); // We grayscale the image to get it to binary form
+            char[] arr = new char[]{'h', 's', 'v'};
+
+            for (int i = 0; i < arr.length; i++) {
+                drawCircles(resultArr.get(i));
+                Imgcodecs.imwrite("src/img-result/test" + folderNum + "/" + arr[i] + "Core" + ".jpg", resultArr.get(i));
+            }
+        }
+
+    }
+
+    public static void deleteDirectory(File file){
+        for(File subFile : file.listFiles()){
+            if(subFile.isDirectory()){
+                deleteDirectory(subFile);
+            }
+            subFile.delete();
+        }
+    }
+
     /**
      * This function loads the image from the path into a matrix.
+     *
      * @param imagePath the path of the image we load.
      * @return the image represented in a matrix.
      */
     public static Mat loadImage(String imagePath) {
-        Imgcodecs imageCodecs = new Imgcodecs(); // We create an Imgcodecs Object.
-        return imageCodecs.imread(imagePath); // We return a Mat Object representing the image.
+//        Imgcodecs imageCodecs = new Imgcodecs(); // We create an Imgcodecs Object.
+        return Imgcodecs.imread(imagePath); // We return a Mat Object representing the image.
     }
 
     /**
      * This function displays the image in a new window.
+     *
      * @param image the image to display.
      */
-    public static void showImage(Mat image){
+    public static void showImage(Mat image) {
         HighGui.imshow("result", image);
         HighGui.waitKey();
     }
 
     /**
      * This function prepares the image for the HoughCircles algorithm.
+     *
      * @param img the image we prepare.
      * @return the prepared image.
      */
-    public static Mat prepareImage(Mat img){
+    public static Mat prepareImage(Mat img) {
         Mat dest = new Mat(); // Creating a destination Matrix (Image) for the grayscale.
         Imgproc.cvtColor(img, dest, Imgproc.COLOR_RGB2GRAY); // We grayscale the image to get it to binary form
         Imgproc.medianBlur(dest, dest, 3); // We blur the grayscale image using a kernel size of 3.
@@ -354,17 +408,18 @@ public class main {
 
     /**
      * This function converts a matrix to a buffered image.
+     *
      * @param m the matrix we convert.
      */
     public static BufferedImage Mat2BufferedImage(Mat m) {
         int type = BufferedImage.TYPE_BYTE_GRAY;
-        if ( m.channels() > 1 ) {
+        if (m.channels() > 1) {
             type = BufferedImage.TYPE_3BYTE_BGR;
         }
-        int bufferSize = m.channels()*m.cols()*m.rows();
-        byte [] b = new byte[bufferSize];
-        m.get(0,0,b); // get all the pixels
-        BufferedImage image = new BufferedImage(m.cols(),m.rows(), type);
+        int bufferSize = m.channels() * m.cols() * m.rows();
+        byte[] b = new byte[bufferSize];
+        m.get(0, 0, b); // get all the pixels
+        BufferedImage image = new BufferedImage(m.cols(), m.rows(), type);
         final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
         System.arraycopy(b, 0, targetPixels, 0, b.length);
         return image;
