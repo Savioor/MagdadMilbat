@@ -40,26 +40,9 @@ public class main {
 
     public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME); // Loading the OpenCV library.
-        String path = "src/test-img/1.jpg";
-//        int numOfFrames = 0;
-//        int RANGE = 30;
-//        Mat procImg;
-//        Mat circles;
-//        int firstBallFramesCounter = 0, secondBallFramesCounter = 0, thirdBallFramesCounter = 0, countOfBalls;
-//        Mat img = new Mat();
 
-//        img = loadImage("src/Screenshot_2.png");
-//        final int FIRST_LINE = 10 * img.width() / 30, SECOND_LINE = img.width() / 2, THIRD_LINE = 19 * img.width() / 30;
-//
-//        drawHorizontalLines(img, img.height(), img.width());
-//        drawVerticalLines(img, FIRST_LINE, SECOND_LINE, THIRD_LINE);
-
-//        initialY = getFrameData(img, FIRST_LINE, SECOND_LINE, THIRD_LINE);
-
-//        showImage(img);
-
-
-        processImg();
+        processVideo();
+        //processImg();
     }
 
 
@@ -77,8 +60,9 @@ public class main {
     }
 
     public static void processVideo() {
-        VideoCapture vid = new VideoCapture(filename);
-        Mat frame = new Mat();
+        VideoCapture vid = new VideoCapture("src/test_vid/8.mp4");
+        Mat resizeImage = new Mat();
+        Mat img = new Mat();
         JFrame jframe = new JFrame("Video"); // We create a new JFrame object.
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // We inform jframe what to do when we close the program.
         JLabel vidPanel = new JLabel(); // We create a new JLabel object.
@@ -88,21 +72,13 @@ public class main {
         double fps = vid.get(Videoio.CAP_PROP_FPS);
         int initialY = 0;
 
-        while (vid.read(frame)) {
-            final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
+        while (vid.read(img)){
+            ArrayList<Mat> resultArr = toHSVImage(img);
 
-            if (initialY == -1) {
-                // if we have yet to find the balls.
-                drawHorizontalLines(frame, frame.height(), frame.width());
-                drawVerticalLines(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
-            }
-            initialY = getFrameData(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
-
-            ImageIcon result = new ImageIcon(Mat2BufferedImage(frame));
+            ImageIcon result = new ImageIcon(Mat2BufferedImage(resultArr.get(2)));
             vidPanel.setIcon(result);
             vidPanel.repaint();
         }
-        showImage(frame);
     }
 
     private static ArrayList<Mat> toHSVImage(Mat frame) {
@@ -326,7 +302,7 @@ public class main {
         Mat circles = new Mat();
         double[] c;
         Point center;
-        Imgproc.HoughCircles(frame, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, frame.width() / 20, frame.width() / 6);
+        Imgproc.HoughCircles(frame, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 5, 100, 25.0, frame.width() / 20, frame.width() / 6);
         for (int i = 0; i < circles.width(); i++) {
             c = circles.get(0, i);
             center = new Point(Math.round(c[0]), Math.round(c[1]));

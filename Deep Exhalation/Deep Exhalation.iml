@@ -10,31 +10,23 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://C:/Java/opencv/build/java/opencv-454.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../Java/opencv/build/java/opencv-454.jar!/" />
         </CLASSES>
         <JAVADOC />
-        <NATIVE>
-          <root url="file://C:/Java/opencv/build/java/x64" />
-        </NATIVE>
         <SOURCES>
-          <root url="jar://C:/Java/opencv/build/java/opencv-454.jar!/" />
-          <root url="jar://C:/Java/opencv/build/java/opencv-454.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../Java/opencv/build/java/opencv-454.jar!/" />
+          <root url="jar://$MODULE_DIR$/../../../Java/opencv/build/java/opencv-454.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>
     <orderEntry type="module-library">
       <library>
-        <CLASSES>
-          <root url="jar://$USER_HOME$/Downloads/opencv/build/java/opencv-454.jar!/" />
-        </CLASSES>
+        <CLASSES />
         <JAVADOC />
         <NATIVE>
-          <root url="file://$USER_HOME$/Downloads/opencv/build/java/x64" />
+          <root url="file://$MODULE_DIR$/../../../Java/opencv/build/java/x64" />
         </NATIVE>
-        <SOURCES>
-          <root url="jar://$USER_HOME$/Downloads/opencv/build/java/opencv-454.jar!/" />
-          <root url="jar://$USER_HOME$/Downloads/opencv/build/java/opencv-454.jar!/" />
-        </SOURCES>
+        <SOURCES />
       </library>
     </orderEntry>
   </component>
