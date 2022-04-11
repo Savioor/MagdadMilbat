@@ -73,8 +73,7 @@ public class main {
 
          */
 
-
-        frame = loadImage("src/Screenshot_2.png");
+        frame = loadImage("src/old-tests/Screenshot_2.png");
         final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
 
         drawHorizontalLines(frame, frame.height(), frame.width());
@@ -83,6 +82,13 @@ public class main {
         initialY = getFrameData(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
 
         showImage(frame);
+    }
+
+    private static void toHSVImage(Mat frame){
+        Mat hsvMat = new Mat();
+        Imgproc.cvtColor(frame, hsvMat, Imgproc.COLOR_RGB2HSV);
+        ArrayList<Mat> lab_list = new ArrayList<>(3);
+        Core.split(hsvMat,lab_list);
     }
 
     private static void drawLine(Mat img, Point p1, Point p2) {
