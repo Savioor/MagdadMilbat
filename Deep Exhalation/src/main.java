@@ -74,8 +74,8 @@ public class main {
 
         while (vid.read(img)){
             ArrayList<Mat> resultArr = toHSVImage(img);
-
-            ImageIcon result = new ImageIcon(Mat2BufferedImage(resultArr.get(2)));
+            drawCircles(resultArr.get(1));
+            ImageIcon result = new ImageIcon(Mat2BufferedImage(resultArr.get(1)));
             vidPanel.setIcon(result);
             vidPanel.repaint();
         }
@@ -302,7 +302,8 @@ public class main {
         Mat circles = new Mat();
         double[] c;
         Point center;
-        Imgproc.HoughCircles(frame, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 5, 100, 25.0, frame.width() / 20, frame.width() / 6);
+        Imgproc.HoughCircles(frame, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 90, 32.0, frame.width() / 20, frame.width() / 6);
+        //Imgproc.HoughCircles(frame, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30,100, 35.0, frame.width() / 20, frame.width() / 6);
         for (int i = 0; i < circles.width(); i++) {
             c = circles.get(0, i);
             center = new Point(Math.round(c[0]), Math.round(c[1]));
