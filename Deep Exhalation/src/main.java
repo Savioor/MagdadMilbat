@@ -44,7 +44,37 @@ public class main {
         Mat procImg;
         Mat circles;
         int firstBallFramesCounter = 0, secondBallFramesCounter = 0, thirdBallFramesCounter = 0, countOfBalls;
+        Mat img = new Mat();
 
+        img = loadImage("src/Screenshot_2.png");
+        final int FIRST_LINE = 10 * img.width() / 30, SECOND_LINE = img.width() / 2, THIRD_LINE = 19 * img.width() / 30;
+
+        drawHorizontalLines(img, img.height(), img.width());
+        drawVerticalLines(img, FIRST_LINE, SECOND_LINE, THIRD_LINE);
+
+        initialY = getFrameData(img, FIRST_LINE, SECOND_LINE, THIRD_LINE);
+
+        showImage(img);
+    }
+
+    private static void drawLine(Mat img, Point p1, Point p2) {
+        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
+    }
+
+    /**
+     * this function draws horizontal lines on the frame.
+     *
+     * @param height height of the frame.
+     * @param width  width of the frame.
+     */
+    public static void drawHorizontalLines(Mat frame, int height, int width) {
+        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
+        drawLine(frame, new Point(0, height - LINE_UPPER_BOUND), new Point(width, height - LINE_UPPER_BOUND));
+        drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, height - LINE_LOWER_BOUND));
+        drawLine(frame, new Point(0, 600), new Point(width, 600));
+    }
+
+    public static void processVideo(){
         VideoCapture vid = new VideoCapture(filename);
         Mat frame = new Mat();
         JFrame jframe = new JFrame("Video"); // We create a new JFrame object.
@@ -54,33 +84,22 @@ public class main {
         jframe.setSize(2000, 4000); // We set the frame size to 2000x4000
         jframe.setVisible(true); // We make the jframe visible.
         double fps = vid.get(Videoio.CAP_PROP_FPS);
+        int initialY = 0;
 
+        while(vid.read(frame)) {
+            final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
 
-        /* --------------------------------------------------------------------------------------------------- */;
-        /*
-        while(vid.read(img)) {
-            if (numOfFrames == 0) {
-                initialY = getFrameData(img);
+            if (initialY == -1) {
+                // if we have yet to find the balls.
+                drawHorizontalLines(frame, frame.height(), frame.width());
+                drawVerticalLines(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
             }
+            initialY = getFrameData(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
 
-            findContoursAndDraw(img);
-
-            ImageIcon result = new ImageIcon(Mat2BufferedImage(img));
+            ImageIcon result = new ImageIcon(Mat2BufferedImage(frame));
             vidPanel.setIcon(result);
             vidPanel.repaint();
-            numOfFrames++;
         }
-
-         */
-
-        frame = loadImage("src/old-tests/Screenshot_2.png");
-        final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
-
-        drawHorizontalLines(frame, frame.height(), frame.width());
-        drawVerticalLines(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
-
-        initialY = getFrameData(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
-
         showImage(frame);
     }
 
@@ -94,18 +113,7 @@ public class main {
     private static void drawLine(Mat img, Point p1, Point p2) {
         Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
     }
-    /**
-     * this function draws horizontal lines on the frame.
-     *
-     * @param height height of the frame.
-     * @param width  width of the frame.
-     */
-    public static void drawHorizontalLines(Mat frame, int height, int width) {
-        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
-        drawLine(frame, new Point(0, height - LINE_UPPER_BOUND), new Point(width, height - LINE_UPPER_BOUND));
-        drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, height - LINE_LOWER_BOUND));
-        drawLine(frame, new Point(0, 600), new Point(width, 600));
-    }
+
 
     /**
      * this function draws vertical lines on the frame.
