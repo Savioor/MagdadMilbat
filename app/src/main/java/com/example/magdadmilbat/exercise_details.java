@@ -6,13 +6,22 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.MagdadMilbat.R;
 
+import java.util.ArrayList;
+
 public class exercise_details extends AppCompatActivity implements View.OnClickListener {
-TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle,orangeTimeText,blueTimeText,tvblueMaxHeight,tvorangeMaxHeight;
+TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle,orangeTimeText,blueTimeText,tvorangeMaxHeight;
+String repDuration,repMaxHeight;
     Button btnBack;
+    String [] arrRepDuration;
+    String [] arrRepMaxHeight;
+    ArrayList<Repetition> repsList = new ArrayList<>();
+    ListView lvReps;
+    private RepsListAdapter repsadap;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
@@ -28,19 +37,28 @@ TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle,orangeTimeText,blueTimeT
         tvTime = findViewById(R.id.tvTime);
         tvTitle = findViewById(R.id.tvTitle);
         tvRepetition = findViewById(R.id.tvRepetition);
-        blueTimeText = findViewById(R.id.blueAirTime);
-        orangeTimeText = findViewById(R.id.orangeAirTime);
-        tvblueMaxHeight = findViewById(R.id.tvblueMaxHeight);
-        tvorangeMaxHeight = findViewById(R.id.tvorangeMaxHeight);
+        lvReps = (ListView) findViewById(R.id.lvreps);
         btnBack.setOnClickListener(this);
+        repDuration = intent.getExtras().getString("repDuration");
+        repMaxHeight = intent.getExtras().getString("repMaxHeight");
+        buildListReps();
 
         tvDuration.setText(String.valueOf(intent.getExtras().getString("duration")));
         tvTitle.setText(String.valueOf(intent.getExtras().getString("description")));
         tvRepetition.setText(String.valueOf(intent.getExtras().getString("date")));
         tvTime.setText(String.valueOf(intent.getExtras().getString("time")));
         tvLevel.setText(String.valueOf(intent.getExtras().getString("quality")));
-        tvblueMaxHeight.setText(String.valueOf(intent.getExtras().getString("blueMaxHeight")));
-        tvorangeMaxHeight.setText(String.valueOf(intent.getExtras().getString("orangeMaxHeight")));
+    }
+
+    public void buildListReps(){
+        arrRepDuration = repDuration.split(",");
+        arrRepMaxHeight = repMaxHeight.split(",");
+        for(int i = 0;i<arrRepDuration.length;i++){
+            Repetition rep = new Repetition(i+1,arrRepDuration[i],Integer.parseInt(arrRepMaxHeight[i]));
+            repsList.add(rep);
+        }
+        repsadap = new RepsListAdapter(this, R.layout.list_item, repsList);
+        lvReps.setAdapter(repsadap);
     }
 
     @Override

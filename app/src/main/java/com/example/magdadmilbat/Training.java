@@ -7,19 +7,19 @@ public class Training {
     private String exerciseDescription;
     private int trainingQuality;
     private double duration;//duration that the Training take
-    private Ball [] arrBalls;
+    private String repDuration;
+    private String repMaxHeight;
 
 
-    public Training(String date, String time, String exerciseDescription, int trainingQuality, double duration, double greenAirTime,double blueAirTime,double orangeAirTime, double greenMaxHeight, double blueMaxHeight, double orangeMaxHeight, int greenRepSuccess, int blueRepSuccess, int orangeRepSuccessI) {
+
+    public Training(String date, String time, String exerciseDescription, int trainingQuality, double duration,String repDuration,String repMaxHeight) {
         this.date = date;
         this.time = time;
         this.exerciseDescription = exerciseDescription;
         this.trainingQuality = trainingQuality;
         this.duration = duration;
-        this.arrBalls = new Ball[3];
-        this.arrBalls[0] = new Ball(1,greenAirTime,greenRepSuccess,greenMaxHeight);
-        this.arrBalls[1] = new Ball(2,blueAirTime,blueRepSuccess,blueMaxHeight);
-        this.arrBalls[2] = new Ball(3,orangeAirTime,orangeRepSuccessI,orangeMaxHeight);
+        this.repDuration = repDuration;
+        this.repMaxHeight = repMaxHeight;
     }
 
     public String getDate() {
@@ -44,6 +44,22 @@ public class Training {
         return exerciseDescription;
     }
 
+    public String getRepDuration() {
+        return repDuration;
+    }
+
+    public void setRepDuration(String repDuration) {
+        this.repDuration = repDuration;
+    }
+
+    public String getRepMaxHeight() {
+        return repMaxHeight;
+    }
+
+    public void setRepMaxHeight(String repMaxHeight) {
+        this.repMaxHeight = repMaxHeight;
+    }
+
     public void setExerciseDescription(String exerciseDescription) {
         this.exerciseDescription = exerciseDescription;
     }
@@ -54,14 +70,6 @@ public class Training {
 
     public void setWorkmanshipQuality(int trainingQuality) {
         this.trainingQuality = trainingQuality;
-    }
-
-    public Ball[] getArrBalls() {
-        return arrBalls;
-    }
-
-    public void setArrBalls(Ball[] arrBalls) {
-        this.arrBalls = arrBalls;
     }
 
     @Override

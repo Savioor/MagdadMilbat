@@ -187,7 +187,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         verifyPermissions();
         String orangeChecked = spBreath.getString("orange", null);
-        if(Boolean.valueOf(orangeChecked) == true)
+        if(orangeChecked.equals("true"))
             ballToUse = 2;
         else
             ballToUse = 3;
@@ -264,16 +264,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         if (view == btnFeedback) {
             Intent intent = new Intent(this, Feedback.class);
-            intent.putExtra("greenAirTime",getOverallTime(1));
-            intent.putExtra("blueAirTime",getOverallTime(2));
-            intent.putExtra("orangeAirTime",getOverallTime(3));
-            intent.putExtra("greenMaxHeight",getMaxHeight(1));
-            intent.putExtra("blueMaxHeight",getMaxHeight(2));
-            intent.putExtra("orangeMaxHeight",getMaxHeight(3));
-            intent.putExtra("greenRepSuccess",repsSuccess(1));
-            intent.putExtra("blueRepSuccess",repsSuccess(2));
-            intent.putExtra("orangeRepSuccess",repsSuccess(3));
             intent.putExtra("duration",duration);
+            intent.putExtra("repsSuccess",repCounter);
             intent.putIntegerArrayListExtra("repDuration",repDuration);
             intent.putIntegerArrayListExtra("repMaxHeight",repMaxHeight);
             startActivity(intent);
@@ -604,7 +596,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     public void repEnd(){
         repCounter++;
-        tvRepetition.setText(String.valueOf(repCounter));
+//        tvRepetition.setText(String.valueOf(repCounter));
         int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
         double ballMaxHeight = getMaxHeight(ballToUse);
         float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
@@ -612,6 +604,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         repMaxHeight.add((int) prec*10);
         blueHeight.clear();
         orangeHeight.clear();
+        orangeDuration = 0;
+        blueDuration = 0;
     }
 
     public static void onArrBlueChange(){
