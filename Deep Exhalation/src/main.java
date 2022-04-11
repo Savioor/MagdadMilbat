@@ -17,8 +17,10 @@ import java.util.Vector;
 public class main {
     private static final String filename = "src/thirdvid.mp4";
 
+    static Scalar[][] hsvRange= new Scalar[3][2];
     static Scalar[][] rgbRange= new Scalar[3][2];
     static double ballArea;
+
     /* IMAGE PROCESSING VARIABLES */
     static ArrayList<Double> greenHeight = new ArrayList<Double>();
     static ArrayList<Double> blueHeight = new ArrayList<Double>();
@@ -29,7 +31,8 @@ public class main {
     static ArrayList<Double> orangeAirTime = new ArrayList<Double>();
 
 
-    static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
+    static boolean greenInAir = false, orangeInAir = false, blueInAir = false, blueInRange = false;
+    static final int orangeHeightSetting = 1, blueHeightSetting = 1;
     static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
     static boolean started = false;
     static int initialY = 0;
@@ -43,7 +46,7 @@ public class main {
         int firstBallFramesCounter = 0, secondBallFramesCounter = 0, thirdBallFramesCounter = 0, countOfBalls;
 
         VideoCapture vid = new VideoCapture(filename);
-        Mat img = new Mat();
+        Mat frame = new Mat();
         JFrame jframe = new JFrame("Video"); // We create a new JFrame object.
         jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // We inform jframe what to do when we close the program.
         JLabel vidPanel = new JLabel(); // We create a new JLabel object.
@@ -71,14 +74,46 @@ public class main {
          */
 
 
-        img = loadImage("src/Screenshot_9.png");
+        frame = loadImage("src/Screenshot_2.png");
+        final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
 
-        initialY = getFrameData(img);
-        //findContoursAndDraw(img);
-        showImage(img);
+        drawHorizontalLines(frame, frame.height(), frame.width());
+        drawVerticalLines(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
 
+        initialY = getFrameData(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
 
+        showImage(frame);
+    }
 
+    private static void drawLine(Mat img, Point p1, Point p2) {
+        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
+    }
+    /**
+     * this function draws horizontal lines on the frame.
+     *
+     * @param height height of the frame.
+     * @param width  width of the frame.
+     */
+    public static void drawHorizontalLines(Mat frame, int height, int width) {
+        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
+        drawLine(frame, new Point(0, height - LINE_UPPER_BOUND), new Point(width, height - LINE_UPPER_BOUND));
+        drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, height - LINE_LOWER_BOUND));
+        drawLine(frame, new Point(0, 600), new Point(width, 600));
+    }
+
+    /**
+     * this function draws vertical lines on the frame.
+     *
+     * @param frame
+     * @param FIRST_LINE
+     * @param SECOND_LINE
+     * @param THIRD_LINE
+     */
+    public static void drawVerticalLines(Mat frame, int FIRST_LINE, int SECOND_LINE, int THIRD_LINE) {
+        int height = frame.height(), width = frame.width();
+        drawLine(frame, new Point(FIRST_LINE, 0), new Point(FIRST_LINE, height));
+        drawLine(frame, new Point(SECOND_LINE, 0), new Point(SECOND_LINE, height));
+        drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
     }
 
     /**
@@ -86,33 +121,73 @@ public class main {
      * @param img the frame we analyze.
      * @return the initial Y axis position.
      */
-    private static int getFrameData(Mat img) {
+    private static int getFrameData(Mat img, int first_line, int second_line, int third_line) {
         Mat procImg = prepareImage(img);
-        //procImg = procImg.submat(procImg.height() - 50, procImg.height(), 0, procImg.width());
         Mat circles = new Mat();
-        int sensitivity = 22;
-
-        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 78.0, 28.0, img.width() / 20, img.width() / 6);
-        if(circles.cols() == 0){
-            return -1;
-        }
+        Mat hsvMat = new Mat();
+        double[] rgb, rgb_min, hsvArr; // the circle's color.
+        boolean orangeInRange = false;
         double[] c; // a circle.
         Point center; // the circle's center.
-        double[] rgb; // the circle's color.
+        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
+
+        Imgproc.cvtColor(img, hsvMat, Imgproc.COLOR_RGB2HSV);
+        Scalar hsv;
+        showImage(hsvMat);
+        Imgproc.HoughCircles(procImg, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 95, 55.0, procImg.width() / 20, procImg.width() / 6);
+        if (circles.width() == 0) {
+            return -1;
+        }
+
         try {
-            for (int i = 0; i <= 2; i++) {
+            for (int i = 0; i < circles.width(); i++) {
                 c = circles.get(0, i);
                 center = new Point(Math.round(c[0]), Math.round(c[1]));
-                rgb = img.get((int) center.y, (int) center.x);
-                Imgproc.circle(img, center, (int)c[2], new Scalar(0, 255, 0), 3, 8, 0);
-                rgbRange[i][0] = new Scalar(rgb[0] - sensitivity, rgb[1] - sensitivity, rgb[2] - sensitivity); // we set the lower rgb bound of the ball.
-                rgbRange[i][1] = new Scalar(rgb[0] + sensitivity, rgb[1] + sensitivity, rgb[2] + sensitivity); // we set the higher rgb bound of the ball.
-                ballArea = Math.min(ballArea, Math.PI * c[2] * c[2]);
-            }
-        }catch(NullPointerException e){ return -1; }
-        showImage(img);
+                int radius = (int) c[2];
+                Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                rgb = img.get((int) center.x, (int) center.y);
+                rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
 
-        return (int)Math.round(circles.get(0, 0)[1]); // we return the initial Y --> This will be improved.
+                hsvArr = hsvMat.get((int) center.x, (int) center.y);
+
+                if (i <= 2) {
+                    if (center.x > first_line - radius && center.x < first_line + radius) {
+                        greenHeight.add(center.y);
+                        rgbRange[0][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
+                        rgbRange[0][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
+                        hsvRange[0][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
+
+                    } else if (center.x > second_line - radius && center.x < second_line + radius) {
+                        orangeHeight.add(center.y);
+                        if (Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
+                            orangeAirTime.add(1.0); // TODO: make it a counter.
+                        }
+
+                        orangeInRange = true;
+                        rgbRange[1][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
+                        rgbRange[1][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
+                        hsvRange[1][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
+
+                    } else if (center.x > third_line - radius && center.x < third_line + radius) {
+                        blueHeight.add(center.y);
+                        if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
+                            blueAirTime.add(1.0);
+                        }
+
+                        blueInRange = true;
+
+                        rgbRange[2][0] = new Scalar(rgb[0], rgb[1], rgb[2]);
+                        rgbRange[2][1] = new Scalar(rgb_min[0], rgb_min[1], rgb_min[2]);
+                        hsvRange[2][0] = new Scalar(hsvArr[0], hsvArr[1], hsvArr[2]);
+                    }
+                }
+                ballArea = Math.min(ballArea, Math.PI * radius * radius);
+            }
+        } catch (NullPointerException e) {
+            return -1;
+        }
+        //TODO: return something else when findContoursAndDraw will work
+        return -1;
     }
 
     private static Mat findContoursAndDraw(Mat img){
