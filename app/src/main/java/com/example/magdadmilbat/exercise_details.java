@@ -17,6 +17,7 @@ public class exercise_details extends AppCompatActivity implements View.OnClickL
 TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle,orangeTimeText,blueTimeText,tvorangeMaxHeight;
 String repDuration,repMaxHeight;
     Button btnBack;
+    TextView alertrep;
     String [] arrRepDuration;
     String [] arrRepMaxHeight;
     ArrayList<Repetition> repsList = new ArrayList<>();
@@ -38,6 +39,7 @@ String repDuration,repMaxHeight;
         tvTitle = findViewById(R.id.tvTitle);
         tvRepetition = findViewById(R.id.tvRepetition);
         lvReps = (ListView) findViewById(R.id.lvreps);
+        alertrep = findViewById(R.id.alertrep);
         btnBack.setOnClickListener(this);
         repDuration = intent.getExtras().getString("repDuration");
         repMaxHeight = intent.getExtras().getString("repMaxHeight");
@@ -51,6 +53,11 @@ String repDuration,repMaxHeight;
     }
 
     public void buildListReps(){
+        if(repDuration.length() == 0){
+            alertrep.setText("לא בוצעו חזרות");
+            alertrep.setVisibility(View.VISIBLE);
+            return;
+        }
         arrRepDuration = repDuration.split(",");
         arrRepMaxHeight = repMaxHeight.split(",");
         for(int i = 0;i<arrRepDuration.length;i++){

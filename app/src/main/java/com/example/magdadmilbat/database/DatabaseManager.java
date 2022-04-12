@@ -37,7 +37,7 @@ public static final String TABLE_NAME = "Training";
     /** This function adds the value of the training it receives to the training table **/
     public void addTraining(Training training) {
         String sql = "insert into Training(date, time, exerciseDescription, trainingQuality, duration, repsDuration, repsMaxHeight) " +
-                "values ('"+training.getDate() + "','" + training.getTime() + "','" + training.getExerciseDescription() + "','"+ training.getTrainingQuality() + "','"+ training.getDuration() + "','"+training.getRepDuration()+"',"+training.getRepMaxHeight()+")";
+                "values ('"+training.getDate() + "','" + training.getTime() + "','" + training.getExerciseDescription() + "','"+ training.getTrainingQuality() + "','"+ training.getDuration() + "','"+training.getRepDuration()+"','" +training.getRepMaxHeight()+"')";
         SQLiteDatabase sqLiteDatabase = getWritableDatabase(); // Open connection.
         sqLiteDatabase.execSQL(sql);
         sqLiteDatabase.close(); // Close connection.

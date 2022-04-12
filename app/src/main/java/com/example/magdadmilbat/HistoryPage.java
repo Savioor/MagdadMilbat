@@ -85,6 +85,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
             Intent intentDetails = new Intent(this, exercise_details.class);
             intentDetails.putExtra("quality",String.valueOf(curr.getTrainingQuality()));
             intentDetails.putExtra("date",curr.getDate());
+            intentDetails.putExtra("duration",formatDuration(curr.getDuration()));
             intentDetails.putExtra("description",curr.getExerciseDescription());
             intentDetails.putExtra("time",curr.getTime());
             intentDetails.putExtra("repDuration",curr.getRepDuration());
