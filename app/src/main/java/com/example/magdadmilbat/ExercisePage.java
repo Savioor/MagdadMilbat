@@ -378,18 +378,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         if (view == btnFeedback) {
             Intent intent = new Intent(this, Feedback.class);
-            intent.putExtra("greenAirTime", getOverallTime(1));
-            intent.putExtra("blueAirTime", getOverallTime(2));
-            intent.putExtra("orangeAirTime", getOverallTime(3));
-            intent.putExtra("greenMaxHeight", getMaxHeight(1));
-            intent.putExtra("blueMaxHeight", getMaxHeight(2));
-            intent.putExtra("orangeMaxHeight", getMaxHeight(3));
-            intent.putExtra("greenRepSuccess", repsSuccess(1));
-            intent.putExtra("blueRepSuccess", repsSuccess(2));
-            intent.putExtra("orangeRepSuccess", repsSuccess(3));
-            intent.putExtra("duration", duration);
-            intent.putIntegerArrayListExtra("repDuration", repDuration);
-            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
+            intent.putExtra("duration",duration);
+            intent.putExtra("repsSuccess",repCounter);
+            intent.putIntegerArrayListExtra("repDuration",repDuration);
+            intent.putIntegerArrayListExtra("repMaxHeight",repMaxHeight);
+            startActivity(intent);
             finish();
             startActivity(intent);
         }
@@ -515,9 +508,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         double ballMaxHeight = getMaxHeight(ballToUse);
         float prec = (float) Math.abs((ballMaxHeight - blueHeight.get(0)) / (blueHeight.get(0) - 200));
         repDuration.add(ballDuration);
-        repMaxHeight.add((int) prec * 10);
+        repMaxHeight.add((int) prec*10);
         blueHeight.clear();
         orangeHeight.clear();
+        orangeDuration = 0;
+        blueDuration = 0;
     }
 
     /*
@@ -554,7 +549,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             ballToUse = 2;
         } else
             ballToUse = 3;
-//        ballToUse = 2;
 
         CountDownTimer count = new CountDownTimer(5000, 1000) {
             @Override
