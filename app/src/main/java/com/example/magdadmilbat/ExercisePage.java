@@ -86,7 +86,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static TextView remarksText;
     static float oldXscale = 1.0f;
     static double duration = 0.0, framH, lastOrangeHeight;
-    static int ballToUse, repCounter = 0, blueDuration = 0, orangeDuration = 0, blueHeightSetting, orangeHeightSetting;
+    static int ballToUse, repCounter = 0, blueDuration = 0, orangeDuration = 0, blueHeightSetting, orangeHeightSetting, initialY = 0;
     static Thread t;
     static Runnable r;
     Handler handler1;
@@ -166,6 +166,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     orangeInRange = true;
                 } else if (center.x > third_line - radius && center.x < third_line + radius) {
                     Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                    if(initialY == 0) initialY = center.y;
                     blueHeight.add(center.y);
                     if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                         blueAirTime.add(1.0);
@@ -414,13 +415,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     public static void onArrBlueChange() {
         double lastBlueHeight = blueHeight.get(blueHeight.size() - 1);
-        float prec = (float) Math.abs((lastBlueHeight - blueHeight.get(0)) / (blueHeight.get(0) - 200));
+        float prec = (float) Math.abs((lastBlueHeight - initialY) / (initialY - 200));
         blueInRange = blueHeightSetting > (prec * 10) && prec != 0;
     }
 
     public static void onArrOrangeChange() {
         double lastOrangeHeight = orangeHeight.get(orangeHeight.size() - 1);
-        float prec = (float) Math.abs((lastOrangeHeight - blueHeight.get(0)) / (blueHeight.get(0) - 200));
+        float prec = (float) Math.abs((lastOrangeHeight - initialY) / (initialY - 200));
         orangeInRange = orangeHeightSetting > (prec * 10) && prec != 0;
     }
 
@@ -506,7 +507,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 //        tvRepetition.setText(String.valueOf(repCounter));
         int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
         double ballMaxHeight = getMaxHeight(ballToUse);
-        float prec = (float) Math.abs((ballMaxHeight - blueHeight.get(0)) / (blueHeight.get(0) - 200));
+        float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
         repDuration.add(ballDuration);
         repMaxHeight.add((int) prec*10);
         blueHeight.clear();
