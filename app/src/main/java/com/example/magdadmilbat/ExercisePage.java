@@ -166,7 +166,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     orangeInRange = true;
                 } else if (center.x > third_line - radius && center.x < third_line + radius) {
                     Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    if(initialY == 0) initialY = center.y;
+                    if (initialY == 0)
+                        initialY = (int) center.y;
                     blueHeight.add(center.y);
                     if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                         blueAirTime.add(1.0);
@@ -261,6 +262,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         greenBallFrames = 0;
         blueBallFrames = 0;
         orangeBallFrames = 0;
+
+        initialY = 0;
 
         /* ANIMATION VARIABLES */
         started = false;
