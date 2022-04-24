@@ -9,6 +9,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.View;
@@ -152,14 +153,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     if (Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                         orangeAirTime.add(1.0); // TODO: make it a counter.
                         if (orangeChecked.equals("true")) {
-                            r = new Runnable() {
-                                @Override
-                                public void run() {
-                                    breathAnimation();
-                                }
-                            };
-                            t = new Thread(r);
-                            t.start();
+                            breathAnimation();
                         }
                     }
 
@@ -172,14 +166,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                         blueAirTime.add(1.0);
                         if (orangeChecked.equals("false")) {
-                            r = new Runnable() {
-                                @Override
-                                public void run() {
-                                    breathAnimation();
-                                }
-                            };
-                            t = new Thread(r);
-                            t.start();
+                            breathAnimation();
                         }
                     }
 
@@ -506,17 +493,26 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     }
 
     public void repEnd() {
-        repCounter++;
-//        tvRepetition.setText(String.valueOf(repCounter));
-        int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
-        double ballMaxHeight = getMaxHeight(ballToUse);
-        float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
-        repDuration.add(ballDuration);
-        repMaxHeight.add((int) prec*10);
-        blueHeight.clear();
-        orangeHeight.clear();
-        orangeDuration = 0;
-        blueDuration = 0;
+        r = new Runnable() {
+            @Override
+            public void run() {
+                repCounter++;
+                Message msg = new Message();
+                msg.what = repCounter;
+                handler1.sendMessage(msg);
+                int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
+                double ballMaxHeight = getMaxHeight(ballToUse);
+                float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
+                repDuration.add(ballDuration);
+                repMaxHeight.add((int) prec*10);
+                blueHeight.clear();
+                orangeHeight.clear();
+                orangeDuration = 0;
+                blueDuration = 0;
+            }
+        };
+        t = new Thread(r);
+        t.start();
     }
 
     /*
@@ -586,6 +582,14 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         }, 0, 1000);
         startWaitingAnim();
 
+        handler1 = new Handler(){
+            @Override
+            public void handleMessage(Message msg){
+                super.handleMessage(msg);
+                int a = msg.what;
+                tvRepetition.setText(String.valueOf(a));
+            }
+        };
     }
 
     public void startWaitingAnim() {
