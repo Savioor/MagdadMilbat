@@ -60,11 +60,11 @@ String repDuration,repMaxHeight;
         }
         arrRepDuration = repDuration.split(",");
         arrRepMaxHeight = repMaxHeight.split(",");
-        for(int i = 0;i<arrRepDuration.length;i++){
-            Repetition rep = new Repetition(i+1,arrRepDuration[i],Integer.parseInt(arrRepMaxHeight[i]));
+        for(int i = 1;i<arrRepDuration.length;i++){
+            Repetition rep = new Repetition(i,arrRepDuration[i],Integer.parseInt(arrRepMaxHeight[i]));
             repsList.add(rep);
         }
-        repsadap = new RepsListAdapter(this, R.layout.list_item, repsList);
+        repsadap = new RepsListAdapter(this, R.layout.list_reps_item, repsList);
         lvReps.setAdapter(repsadap);
     }
 
