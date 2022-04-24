@@ -45,7 +45,7 @@ public class TrainingListAdapter  extends ArrayAdapter<Training> {
         TextView tvTime = convertView.findViewById(R.id.textView3);
         ProgressBar pb = convertView.findViewById(R.id.ProgressBar);
 
-        tvQuality.setText("10/" + trainingQuality);
+        tvQuality.setText(trainingQuality+"/10");
         pb.setProgress(Integer.parseInt(trainingQuality));
         tvDate.setText(date);
         tvTime.setText(time);

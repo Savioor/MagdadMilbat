@@ -61,7 +61,7 @@ String repDuration,repMaxHeight;
         arrRepDuration = repDuration.split(",");
         arrRepMaxHeight = repMaxHeight.split(",");
         for(int i = 1;i<arrRepDuration.length;i++){
-            Repetition rep = new Repetition(i,arrRepDuration[i],Integer.parseInt(arrRepMaxHeight[i]));
+            Repetition rep = new Repetition(i,Integer.parseInt(arrRepDuration[i]),Integer.parseInt(arrRepMaxHeight[i]));
             repsList.add(rep);
         }
         repsadap = new RepsListAdapter(this, R.layout.list_reps_item, repsList);

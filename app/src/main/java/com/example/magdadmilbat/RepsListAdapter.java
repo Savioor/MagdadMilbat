@@ -32,7 +32,7 @@ public class RepsListAdapter  extends ArrayAdapter<Repetition> {
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         //get the Reps information
         String repnum = String.valueOf(getItem(position).getNumber());
-        String repduration = getItem(position).getRepduration();
+        String repduration = String.valueOf(getItem(position).getRepduration());
         String maxheight = String.valueOf(getItem(position).getMaxHeight());
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
@@ -41,9 +41,9 @@ public class RepsListAdapter  extends ArrayAdapter<Repetition> {
         TextView tvrepduration = convertView.findViewById(R.id.tvrepduration);
         TextView tvmaxheight = convertView.findViewById(R.id.tvmaxheight);
 
-        tvrepnum.setText(repnum+"חזרה ");
-        tvrepduration.setText(repduration);
-        tvmaxheight.setText(maxheight);
+        tvrepnum.setText("חזרה "+repnum);
+        tvrepduration.setText(repduration+" שניות ");
+        tvmaxheight.setText(maxheight+"%");
         return convertView;
     }
 }

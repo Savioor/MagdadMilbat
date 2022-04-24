@@ -33,7 +33,6 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     static SharedPreferences spBreath ;
     static ArrayList<Integer> repDuration = new ArrayList<Integer>();
     static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
-    static ArrayList<String> repDurationStr;
     /**
      * on create func - contains  feedback text, return button
      */
@@ -56,7 +55,6 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         greenTimeText.setText("משך כל חזרה (בשניות): \n"+convert2str(repDuration));
         blueTimeText.setText("גובה מקסימלי (באחוזים): \n"+convert2str(repMaxHeight));
         duration = intent.getExtras().getDouble("duration");
-        repDurationStr = convertArrInt(repDuration);
     }
 
 //    public static int calculateScore(){
@@ -82,34 +80,8 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     public static String format2db(ArrayList<Integer> arr){
         String str = "";
         for(int i = 0; i<arr.size();i++){
-            str += i == 0 ? "" : "," + arr.get(i);
+            str += "," + arr.get(i);
         }
-        return str;
-    }
-
-
-    public static String format2dbStr(ArrayList<String> arr){
-        String str = "";
-        for(int i = 0; i<arr.size();i++){
-            str += i == 0 ? "" : "," + arr.get(i);
-        }
-        return str;
-    }
-
-
-    public static ArrayList<String> convertArrInt(ArrayList<Integer> arr){
-        ArrayList<String> arrstr = new ArrayList<>();
-        for(int i = 0 ;i<arr.size() ;i++){
-            arrstr.add(formatDuration(arr.get(i)));
-        }
-        return arrstr;
-    }
-
-    public static String formatDuration(int time){
-        String str;
-        int sec = ((time % 864000) % 3600) % 60;
-        int min = ((time % 864000) % 3600) / 60;
-        str =  String.format("%02d",min) + ":" + String.format("%02d",sec);
         return str;
     }
 
@@ -124,7 +96,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
             String timeObj = LocalTime.now()
                     .truncatedTo(ChronoUnit.SECONDS)
                     .format(DateTimeFormatter.ISO_LOCAL_TIME);
-            Training exerciseObj = new Training(dateObj.toString(),timeObj,"נשיפה עמוקה",repsSuccess,duration,format2dbStr(repDurationStr),format2db(repMaxHeight));
+            Training exerciseObj = new Training(dateObj.toString(),timeObj,"נשיפה עמוקה",repsSuccess,duration,format2db(repDuration),format2db(repMaxHeight));
             DatabaseManager dbObj = new DatabaseManager(Feedback.this);
             dbObj.addTraining(exerciseObj);
             Intent intent = new Intent(this, MainActivity.class);

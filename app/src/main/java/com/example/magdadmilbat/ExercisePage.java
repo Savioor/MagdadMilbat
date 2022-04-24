@@ -515,7 +515,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 double ballMaxHeight = getMaxHeight(ballToUse);
                 float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
                 repDuration.add(ballDuration);
-                repMaxHeight.add((int) prec * 10);
+                repMaxHeight.add((int)(((int)(prec*10))*10));
                 blueHeight.clear();
                 orangeHeight.clear();
                 orangeDuration = 0;
@@ -595,7 +595,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         handler1 = new Handler() {
             @Override
-            public void handleMessage(Message msg) {
+            public void handleMessage(Message msg){
                 super.handleMessage(msg);
                 int a = msg.what;
                 tvRepetition.setText(String.valueOf(a));
