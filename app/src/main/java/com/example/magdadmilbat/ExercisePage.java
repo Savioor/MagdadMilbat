@@ -49,6 +49,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     private final int RANGE = 30;
     private static final String TAG = "MyActivity";
 
+    private static boolean isUp = false;
+
     TextView tvRepetition, tvExercise;
 
     static SharedPreferences spBreath;
@@ -150,11 +152,14 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 } else if (center.x > second_line - radius && center.x < second_line + radius) {
                     Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
                     orangeHeight.add(center.y);
-                    if (Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
-                        orangeAirTime.add(1.0); // TODO: make it a counter.
+                    if (!isUp && Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                         if (orangeChecked.equals("true")) {
+                            orangeAirTime.add(1.0); // TODO: make it a counter.
+                            isUp = true;
                             breathAnimation();
                         }
+                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - orangeHeight.get(0)) < radius) {
+                        isUp = false;
                     }
 
                     orangeInRange = true;
@@ -163,11 +168,14 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     if (initialY == 0)
                         initialY = (int) center.y;
                     blueHeight.add(center.y);
-                    if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
-                        blueAirTime.add(1.0);
+                    if (!isUp && (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0)))) {
                         if (orangeChecked.equals("false")) {
                             breathAnimation();
+                            blueAirTime.add(1.0);
+                            isUp = true;
                         }
+                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - blueHeight.get(0)) < radius) {
+                        isUp = false;
                     }
 
                     blueInRange = true;
@@ -224,47 +232,18 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         }
     }
 
-    public void initialize() {
-        /* IMAGE PROCESSING VARIABLES */
-        greenHeight = new ArrayList<Double>();
-        blueHeight = new ArrayList<Double>();
-        orangeHeight = new ArrayList<Double>();
-
-        greenAirTime = new ArrayList<Double>();
-        blueAirTime = new ArrayList<Double>();
-        orangeAirTime = new ArrayList<Double>();
-
-        greenInAir = false;
-        orangeInAir = false;
-        blueInAir = false;
-
-        rgbRange = new Scalar[3][2];
-        hsvRange = new Scalar[3][2];
-
-        ballArea = Double.MAX_VALUE;
-
-        mPreviewRunning = false;
-
-        isDone = false;
-        greenBallFrames = 0;
-        blueBallFrames = 0;
-        orangeBallFrames = 0;
-
-        initialY = 0;
-
-        /* ANIMATION VARIABLES */
-        started = false;
-        hasanim = false;
-        oldXscale = 1.0f;
-        duration = 0.0;
-        repCounter = 0;
-        blueDuration = 0;
-        orangeDuration = 0;
-        isRepEnd = true;
-        orangeInRange = false;
-        blueInRange = false;
-        repDuration = new ArrayList<>();
-        repMaxHeight = new ArrayList<>();
+    /**
+     * this function draws horizontal lines on the frame.
+     *
+     * @param height height of the frame.
+     * @param width  width of the frame.
+     */
+    public static void drawHorizontalLines(Mat frame, int height, int width) {
+        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
+        final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
+        drawLine(frame, new Point(0, height * LINE_UPPER_PERC), new Point(width, height * LINE_UPPER_PERC));
+        drawLine(frame, new Point(0, height * LINE_LOWER_PERC), new Point(width, height * LINE_LOWER_PERC));
+//        drawLine(frame, new Point(0, 600), new Point(width, 600));
     }
 
     private void verifyPermissions() {
@@ -331,17 +310,50 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return dest;
     }
 
-    /**
-     * this function draws horizontal lines on the frame.
-     *
-     * @param height height of the frame.
-     * @param width  width of the frame.
-     */
-    public static void drawHorizontalLines(Mat frame, int height, int width) {
-        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
-        drawLine(frame, new Point(0, height - LINE_UPPER_BOUND), new Point(width, height - LINE_UPPER_BOUND));
-        drawLine(frame, new Point(0, height - LINE_LOWER_BOUND), new Point(width, height - LINE_LOWER_BOUND));
-        drawLine(frame, new Point(0, 600), new Point(width, 600));
+    public void initialize() {
+        /* IMAGE PROCESSING VARIABLES */
+        greenHeight = new ArrayList<Double>();
+        blueHeight = new ArrayList<Double>();
+        orangeHeight = new ArrayList<Double>();
+
+        greenAirTime = new ArrayList<Double>();
+        blueAirTime = new ArrayList<Double>();
+        orangeAirTime = new ArrayList<Double>();
+
+        greenInAir = false;
+        orangeInAir = false;
+        blueInAir = false;
+
+        rgbRange = new Scalar[3][2];
+        hsvRange = new Scalar[3][2];
+
+        ballArea = Double.MAX_VALUE;
+
+        mPreviewRunning = false;
+
+        isUp = false;
+
+
+        isDone = false;
+        greenBallFrames = 0;
+        blueBallFrames = 0;
+        orangeBallFrames = 0;
+
+        initialY = 0;
+
+        /* ANIMATION VARIABLES */
+        started = false;
+        hasanim = false;
+        oldXscale = 1.0f;
+        duration = 0.0;
+        repCounter = 0;
+        blueDuration = 0;
+        orangeDuration = 0;
+        isRepEnd = true;
+        orangeInRange = false;
+        blueInRange = false;
+        repDuration = new ArrayList<>();
+        repMaxHeight = new ArrayList<>();
     }
 
     /**
@@ -369,10 +381,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         if (view == btnFeedback) {
             Intent intent = new Intent(this, Feedback.class);
-            intent.putExtra("duration",duration);
-            intent.putExtra("repsSuccess",repCounter);
-            intent.putIntegerArrayListExtra("repDuration",repDuration);
-            intent.putIntegerArrayListExtra("repMaxHeight",repMaxHeight);
+            intent.putExtra("duration", duration);
+            intent.putExtra("repsSuccess", repCounter);
+            intent.putIntegerArrayListExtra("repDuration", repDuration);
+            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
             startActivity(intent);
             finish();
             startActivity(intent);
@@ -428,7 +440,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         double[] c;
         Point center;
         Imgproc.HoughCircles(frame, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 70, 32.0, 40, 70);
-        //Imgproc.HoughCircles(frame, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30,100, 35.0, frame.width() / 20, frame.width() / 6);
         for (int i = 0; i < circles.width(); i++) {
             c = circles.get(0, i);
             center = new Point(Math.round(c[0]), Math.round(c[1]));
@@ -504,7 +515,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 double ballMaxHeight = getMaxHeight(ballToUse);
                 float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
                 repDuration.add(ballDuration);
-                repMaxHeight.add((int) prec*10);
+                repMaxHeight.add((int) prec * 10);
                 blueHeight.clear();
                 orangeHeight.clear();
                 orangeDuration = 0;
@@ -582,9 +593,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         }, 0, 1000);
         startWaitingAnim();
 
-        handler1 = new Handler(){
+        handler1 = new Handler() {
             @Override
-            public void handleMessage(Message msg){
+            public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 int a = msg.what;
                 tvRepetition.setText(String.valueOf(a));
