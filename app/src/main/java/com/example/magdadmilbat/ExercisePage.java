@@ -132,7 +132,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
 
         double[] rgb, rgb_min, hsvArr; // the circle's color.
-        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
+        final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
+
+        final int LINE_UPPER_BOUND = img.height() - (int) (img.height() * LINE_UPPER_PERC), LINE_LOWER_BOUND = img.height() - (int) (img.height() * LINE_LOWER_PERC);
 
         String orangeChecked = spBreath.getString("orange", null);
 
@@ -147,19 +149,23 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             if (i <= 2) {
                 if (center.x > first_line - radius && center.x < first_line + radius) {
                     Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-
                     greenHeight.add(center.y);
                 } else if (center.x > second_line - radius && center.x < second_line + radius) {
                     Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
                     orangeHeight.add(center.y);
-                    if (!isUp && Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
+                    if (Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
+                        orangeAirTime.add(1.0); // TODO: make it a counter.
                         if (orangeChecked.equals("true")) {
-                            orangeAirTime.add(1.0); // TODO: make it a counter.
-                            isUp = true;
+                            r = new Runnable() {
+                                @Override
+                                public void run() {
+                                    breathAnimation();
+                                }
+                            };
+                            t = new Thread(r);
+                            t.start();
                             breathAnimation();
                         }
-                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - orangeHeight.get(0)) < radius) {
-                        isUp = false;
                     }
 
                     orangeInRange = true;
@@ -168,14 +174,19 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     if (initialY == 0)
                         initialY = (int) center.y;
                     blueHeight.add(center.y);
-                    if (!isUp && (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0)))) {
+                    if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
+                        blueAirTime.add(1.0);
                         if (orangeChecked.equals("false")) {
+                            r = new Runnable() {
+                                @Override
+                                public void run() {
+                                    breathAnimation();
+                                }
+                            };
+                            t = new Thread(r);
+                            t.start();
                             breathAnimation();
-                            blueAirTime.add(1.0);
-                            isUp = true;
                         }
-                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - blueHeight.get(0)) < radius) {
-                        isUp = false;
                     }
 
                     blueInRange = true;
@@ -239,7 +250,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      * @param width  width of the frame.
      */
     public static void drawHorizontalLines(Mat frame, int height, int width) {
-        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
+//        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
         final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
         drawLine(frame, new Point(0, height * LINE_UPPER_PERC), new Point(width, height * LINE_UPPER_PERC));
         drawLine(frame, new Point(0, height * LINE_LOWER_PERC), new Point(width, height * LINE_LOWER_PERC));
@@ -399,7 +410,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     public static int repsSuccess(int color) {
         int numOfReps = 0;
         ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null; // gets the correct array list according to the color.
-        numOfReps = temp.size();
+        try {
+            numOfReps = temp.size();
+        } catch (Exception ignored) {
+        }
         return numOfReps;
     }
 
@@ -515,7 +529,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 double ballMaxHeight = getMaxHeight(ballToUse);
                 float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
                 repDuration.add(ballDuration);
-                repMaxHeight.add((int)(((int)(prec*10))*10));
+                repMaxHeight.add(((int) (prec * 10)) * 10);
                 blueHeight.clear();
                 orangeHeight.clear();
                 orangeDuration = 0;
@@ -595,7 +609,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         handler1 = new Handler() {
             @Override
-            public void handleMessage(Message msg){
+            public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 int a = msg.what;
                 tvRepetition.setText(String.valueOf(a));
