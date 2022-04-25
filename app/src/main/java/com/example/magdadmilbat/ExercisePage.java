@@ -154,8 +154,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
                     orangeHeight.add(center.y);
                     if (Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
-                        orangeAirTime.add(1.0); // TODO: make it a counter.
                         if (orangeChecked.equals("true")) {
+                            if (!isUp)
+                                orangeAirTime.add(1.0); // TODO: make it a counter.
                             r = new Runnable() {
                                 @Override
                                 public void run() {
@@ -166,6 +167,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                             t.start();
                             breathAnimation();
                         }
+                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - orangeHeight.get(0)) < radius) {
+                        isUp = false;
                     }
 
                     orangeInRange = true;
@@ -175,8 +178,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                         initialY = (int) center.y;
                     blueHeight.add(center.y);
                     if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
-                        blueAirTime.add(1.0);
                         if (orangeChecked.equals("false")) {
+                            if (!isUp)
+                                blueAirTime.add(1.0);
                             r = new Runnable() {
                                 @Override
                                 public void run() {
@@ -187,8 +191,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                             t.start();
                             breathAnimation();
                         }
+                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - blueHeight.get(0)) < radius) {
+                        isUp = false;
                     }
-
                     blueInRange = true;
                 }
             }
