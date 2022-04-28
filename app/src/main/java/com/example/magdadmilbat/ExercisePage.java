@@ -6,6 +6,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
+import android.media.AudioManager;
+import android.media.SoundPool;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.Handler;
@@ -96,6 +100,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static boolean isRepEnd = true, orangeInRange = false, blueInRange = false;
     static ArrayList<Integer> repDuration = new ArrayList<Integer>();
     static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
+    static SoundPool sp;
+    static int coin;
 
     /* --------------------------------------------------------------------------------------------------- */
     private final BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
@@ -221,6 +227,18 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         animTrans4.setRepeatCount(1);
         animTrans5.setRepeatCount(1);
         animTrans6.setRepeatCount(1);
+
+        animTrans.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+              playSoundSuccess();
+            }
+
+            @Override
+            public void onAnimationEnd(Animation arg0) {}
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {}});
 
         cricleView.startAnimation(animTrans);
         cricleView2.startAnimation(animTrans2);
@@ -568,6 +586,25 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         blueHeightSetting = Integer.parseInt(spBreath.getString("difficultyBlue", null));
         orangeHeightSetting = Integer.parseInt(spBreath.getString("difficultyOrange", null));
 
+
+        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP)
+        {
+            AudioAttributes aa = new AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_GAME)
+                    .build();
+            sp=new SoundPool.Builder()
+                    .setMaxStreams(10)
+                    .setAudioAttributes(aa)
+                    .build();
+        }
+        else
+        {
+            sp=new SoundPool(10, AudioManager.STREAM_MUSIC,1);
+        }
+        //phase 2 -load files to sp
+        coin = sp.load(this,R.raw.sucssessound,1);
+
         verifyPermissions();
         String orangeChecked = spBreath.getString("orange", null);
         if (orangeChecked.equals("true")) {
@@ -615,6 +652,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 tvRepetition.setText(String.valueOf(a));
             }
         };
+    }
+
+    public static void playSoundSuccess(){
+        sp.play(coin, 1, 1, 0, 0, 1);
     }
 
     public void startWaitingAnim() {
