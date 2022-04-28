@@ -159,21 +159,15 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 } else if (center.x > second_line - radius && center.x < second_line + radius) {
                     Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
                     orangeHeight.add(center.y);
-                    if (Math.abs(center.y - orangeHeight.get(0)) > radius && Math.abs(center.y - orangeHeight.get(0)) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
+                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= (orangeHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                         if (orangeChecked.equals("true")) {
-                            if (!isUp)
+                            if (!isUp) {
                                 orangeAirTime.add(1.0); // TODO: make it a counter.
-                            r = new Runnable() {
-                                @Override
-                                public void run() {
-                                    breathAnimation();
-                                }
-                            };
-                            t = new Thread(r);
-                            t.start();
-                            breathAnimation();
+                                isUp = true;
+                                breathAnimation();
+                            }
                         }
-                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - orangeHeight.get(0)) < radius) {
+                    } else if (orangeChecked.equals("true") && isUp) {
                         isUp = false;
                     }
 
@@ -183,21 +177,16 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     if (initialY == 0)
                         initialY = (int) center.y;
                     blueHeight.add(center.y);
-                    if (Math.abs(center.y - blueHeight.get(0)) > radius && Math.abs(center.y - blueHeight.get(0)) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
+                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= (blueHeightSetting * (Math.abs((LINE_UPPER_BOUND - 2 * radius) - LINE_LOWER_BOUND) / 10.0))) {
                         if (orangeChecked.equals("false")) {
-                            if (!isUp)
+                            if (!isUp) {
                                 blueAirTime.add(1.0);
-                            r = new Runnable() {
-                                @Override
-                                public void run() {
-                                    breathAnimation();
-                                }
-                            };
-                            t = new Thread(r);
-                            t.start();
-                            breathAnimation();
+                                isUp = true;
+                                breathAnimation();
+
+                            }
                         }
-                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - blueHeight.get(0)) < radius) {
+                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
                         isUp = false;
                     }
                     blueInRange = true;
@@ -432,7 +421,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     public static int repsSuccess(int color) {
         int numOfReps = 0;
-        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null; // gets the correct array list according to the color.
+        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 3 ? blueAirTime : color == 2 ? orangeAirTime : null; // gets the correct array list according to the color.
         try {
             numOfReps = temp.size();
         } catch (Exception ignored) {
@@ -516,9 +505,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     public double getMaxHeight(int color) {
         double startingHeight = 0, maxHeight = 0;
-        ArrayList<Double> temp = color == 1 ? greenHeight : color == 2 ? blueHeight : color == 3 ? orangeHeight : null;
+        ArrayList<Double> temp = color == 1 ? greenHeight : color == 3 ? blueHeight : color == 2 ? orangeHeight : null;
         try {
-            startingHeight = temp.get(0);
+            startingHeight = initialY;
         } catch (Exception ignored) {
         }
 
@@ -532,7 +521,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     public double getOverallTime(int color) {
         double overAllTime = 0;
-        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 2 ? blueAirTime : color == 3 ? orangeAirTime : null;
+        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 3 ? blueAirTime : color == 2 ? orangeAirTime : null;
         for (int i = 0; i < temp.size(); i++) {
             overAllTime += temp.get(i);
         }
@@ -548,11 +537,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 Message msg = new Message();
                 msg.what = repCounter;
                 handler1.sendMessage(msg);
-                int ballDuration = ballToUse == 2 ? blueDuration : orangeDuration;
+                int ballDuration = ballToUse == 3 ? blueDuration : orangeDuration;
                 double ballMaxHeight = getMaxHeight(ballToUse);
-                float prec = (float) Math.abs((ballMaxHeight - initialY) / (initialY - 200));
+                float prec = (float) Math.abs((ballMaxHeight) / (initialY - 256));
                 repDuration.add(ballDuration);
-                repMaxHeight.add(((int) (prec * 10)) * 10);
+                repMaxHeight.add(Math.min(((int) (prec * 100)), 100));
                 blueHeight.clear();
                 orangeHeight.clear();
                 orangeDuration = 0;
