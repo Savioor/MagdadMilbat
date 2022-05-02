@@ -6,9 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
@@ -43,14 +41,14 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_page);
-        btnBack = (Button)findViewById(R.id.btnBack);
+        btnBack = findViewById(R.id.btnBack);
         alertTv = findViewById(R.id.alert);
         btnBack.setOnClickListener(this);
         databaseManager = new DatabaseManager(this); //  initialization the database
         sqLiteDatabase = databaseManager.getWritableDatabase();
         sqLiteDatabase.close();
         //databaseManager.addTraining(new Training("18/1/2002", "2:00", "Breathe", 8)); --> Test if the function work and we can show the data on the list
-        lv = (ListView) findViewById(R.id.lvHistory);
+        lv = findViewById(R.id.lvHistory);
         loadHistory();
         lv.setOnItemClickListener(this);
     }
@@ -79,17 +77,17 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         {
             Toast.makeText(this, "There is no training in the list!", Toast.LENGTH_SHORT).show();
         }
-        else
-        {
+        else {
             curr = trainings.get(i);
             Intent intentDetails = new Intent(this, exercise_details.class);
-            intentDetails.putExtra("quality",String.valueOf(curr.getTrainingQuality()));
-            intentDetails.putExtra("date",curr.getDate());
-            intentDetails.putExtra("duration",formatDuration(curr.getDuration()));
-            intentDetails.putExtra("description",curr.getExerciseDescription());
-            intentDetails.putExtra("time",curr.getTime());
-            intentDetails.putExtra("repDuration",curr.getRepDuration());
-            intentDetails.putExtra("repMaxHeight",curr.getRepMaxHeight());
+            intentDetails.putExtra("quality", String.valueOf(curr.getTrainingQuality()));
+            intentDetails.putExtra("date", curr.getDate());
+            intentDetails.putExtra("duration", formatDuration(curr.getDuration()));
+            intentDetails.putExtra("description", curr.getExerciseDescription());
+            intentDetails.putExtra("time", curr.getTime());
+            String time = String.valueOf(Double.parseDouble(curr.getRepDuration()) / 10.0);
+            intentDetails.putExtra("repDuration", time);
+            intentDetails.putExtra("repMaxHeight", curr.getRepMaxHeight());
             startActivity(intentDetails);
         }
     }

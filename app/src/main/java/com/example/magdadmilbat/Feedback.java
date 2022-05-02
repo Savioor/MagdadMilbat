@@ -8,16 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.MagdadMilbat.R;
 import com.example.magdadmilbat.database.DatabaseManager;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
-/**
- * A page that opens on the end of the practice, with a feedback to the user
- */
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -29,32 +25,17 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     Button btnBackMain2;
     static Double duration;
     int repsSuccess;
-    TextView greenTimeText,blueTimeText,orangeTimeText;
-    static SharedPreferences spBreath ;
+    static SharedPreferences spBreath;
+    TextView greenTimeText, blueTimeText, orangeTimeText;
     static ArrayList<Integer> repDuration = new ArrayList<Integer>();
     static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
-    /**
-     * on create func - contains  feedback text, return button
-     */
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_feedback);
 
-        btnBackMain2 = (Button) findViewById(R.id.btnBackMain2);
-
-        btnBackMain2.setOnClickListener(this);
-        Intent intent=getIntent();
-        spBreath = getSharedPreferences("settingsBreath", 0);
-        greenTimeText = findViewById(R.id.greenAirTime);
-        blueTimeText = findViewById(R.id.blueAirTime);
-        orangeTimeText = findViewById(R.id.orangeAirTime);
-        repDuration = intent.getExtras().getIntegerArrayList("repDuration");
-        repMaxHeight = intent.getExtras().getIntegerArrayList("repMaxHeight");
-        repsSuccess = intent.getExtras().getInt("repsSuccess");
-        greenTimeText.setText("משך כל חזרה (בשניות): \n"+convert2str(repDuration));
-        blueTimeText.setText("גובה מקסימלי (באחוזים): \n"+convert2str(repMaxHeight));
-        duration = intent.getExtras().getDouble("duration");
+    public static String convert2str(ArrayList<Integer> arr) {
+        String str = "";
+        for (int i = 0; i < arr.size(); i++) {
+            str += i + 1 + ". " + arr.get(i) + "\n";
+        }
+        return str;
     }
 
 //    public static int calculateScore(){
@@ -69,20 +50,44 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
 //       return (int) (heightScore + airTimeScore + repScore);
 //    }
 
-    public static String convert2str(ArrayList<Integer> arr){
+    public static String convert2strDouble(ArrayList<Integer> arr) {
         String str = "";
-        for(int i = 0; i< arr.size();i++){
-            str += i+1 + ". " + arr.get(i) +"\n";
+        for (int i = 0; i < arr.size(); i++) {
+            str += i + 1 + ". " + arr.get(i) / 10.0 + "\n";
         }
         return str;
     }
 
-    public static String format2db(ArrayList<Integer> arr){
+    public static String format2db(ArrayList<Integer> arr) {
         String str = "";
-        for(int i = 0; i<arr.size();i++){
-            str += "," + arr.get(i);
+        for (int i = 0; i < arr.size(); i++) {
+            str += "," + arr.get(i) / 10;
         }
         return str;
+    }
+
+    /**
+     * on create func - contains  feedback text, return button
+     */
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_feedback);
+
+        btnBackMain2 = findViewById(R.id.btnBackMain2);
+
+        btnBackMain2.setOnClickListener(this);
+        Intent intent = getIntent();
+        spBreath = getSharedPreferences("settingsBreath", 0);
+        greenTimeText = findViewById(R.id.greenAirTime);
+        blueTimeText = findViewById(R.id.blueAirTime);
+        orangeTimeText = findViewById(R.id.orangeAirTime);
+        repDuration = intent.getExtras().getIntegerArrayList("repDuration");
+        repMaxHeight = intent.getExtras().getIntegerArrayList("repMaxHeight");
+        repsSuccess = intent.getExtras().getInt("repsSuccess");
+        greenTimeText.setText("משך כל חזרה (בשניות): \n" + convert2strDouble(repDuration));
+        blueTimeText.setText("גובה מקסימלי (באחוזים): \n" + convert2str(repMaxHeight));
+        duration = intent.getExtras().getDouble("duration");
     }
 
     /**
@@ -96,7 +101,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
             String timeObj = LocalTime.now()
                     .truncatedTo(ChronoUnit.SECONDS)
                     .format(DateTimeFormatter.ISO_LOCAL_TIME);
-            Training exerciseObj = new Training(dateObj.toString(),timeObj,"נשיפה עמוקה",repsSuccess,duration,format2db(repDuration),format2db(repMaxHeight));
+            Training exerciseObj = new Training(dateObj.toString(), timeObj, "נשיפה עמוקה", repsSuccess, duration, format2db(repDuration), format2db(repMaxHeight));
             DatabaseManager dbObj = new DatabaseManager(Feedback.this);
             dbObj.addTraining(exerciseObj);
             Intent intent = new Intent(this, MainActivity.class);

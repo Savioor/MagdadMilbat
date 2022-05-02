@@ -103,6 +103,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static SoundPool sp;
     static int coin;
 
+
+    static long timeBallInAir = 0;
     /* --------------------------------------------------------------------------------------------------- */
     private final BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -164,11 +166,15 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                             if (!isUp) {
                                 orangeAirTime.add(1.0); // TODO: make it a counter.
                                 isUp = true;
+
+                                timeBallInAir = System.currentTimeMillis();
                                 breathAnimation();
                             }
                         }
-                    } else if (orangeChecked.equals("true") && isUp) {
+                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
                         isUp = false;
+                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                        repDuration.add((int) timeBallInAir);
                     }
 
                     orangeInRange = true;
@@ -182,12 +188,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                             if (!isUp) {
                                 blueAirTime.add(1.0);
                                 isUp = true;
+                                timeBallInAir = System.currentTimeMillis();
                                 breathAnimation();
 
                             }
                         }
                     } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
                         isUp = false;
+                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+
+                        repDuration.add((int) timeBallInAir);
+
                     }
                     blueInRange = true;
                 }
@@ -225,14 +236,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         animTrans.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-              playSoundSuccess();
+                playSoundSuccess();
             }
 
             @Override
-            public void onAnimationEnd(Animation arg0) {}
+            public void onAnimationEnd(Animation arg0) {
+            }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {}});
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
 
         cricleView.startAnimation(animTrans);
         cricleView2.startAnimation(animTrans2);
@@ -333,50 +347,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return dest;
     }
 
-    public void initialize() {
-        /* IMAGE PROCESSING VARIABLES */
-        greenHeight = new ArrayList<Double>();
-        blueHeight = new ArrayList<Double>();
-        orangeHeight = new ArrayList<Double>();
-
-        greenAirTime = new ArrayList<Double>();
-        blueAirTime = new ArrayList<Double>();
-        orangeAirTime = new ArrayList<Double>();
-
-        greenInAir = false;
-        orangeInAir = false;
-        blueInAir = false;
-
-        rgbRange = new Scalar[3][2];
-        hsvRange = new Scalar[3][2];
-
-        ballArea = Double.MAX_VALUE;
-
-        mPreviewRunning = false;
-
-        isUp = false;
-
-
-        isDone = false;
-        greenBallFrames = 0;
-        blueBallFrames = 0;
-        orangeBallFrames = 0;
-
-        initialY = 0;
-
-        /* ANIMATION VARIABLES */
-        started = false;
-        hasanim = false;
-        oldXscale = 1.0f;
-        duration = 0.0;
-        repCounter = 0;
-        blueDuration = 0;
-        orangeDuration = 0;
-        isRepEnd = true;
-        orangeInRange = false;
-        blueInRange = false;
-        repDuration = new ArrayList<>();
-        repMaxHeight = new ArrayList<>();
+    public static void playSoundSuccess() {
+        sp.play(coin, 1, 1, 0, 0, 1);
     }
 
     /**
@@ -529,6 +501,55 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     }
 
+    public void initialize() {
+        /* IMAGE PROCESSING VARIABLES */
+        greenHeight = new ArrayList<Double>();
+        blueHeight = new ArrayList<Double>();
+        orangeHeight = new ArrayList<Double>();
+
+        greenAirTime = new ArrayList<Double>();
+        blueAirTime = new ArrayList<Double>();
+        orangeAirTime = new ArrayList<Double>();
+
+        greenInAir = false;
+        orangeInAir = false;
+        blueInAir = false;
+
+        rgbRange = new Scalar[3][2];
+        hsvRange = new Scalar[3][2];
+
+        ballArea = Double.MAX_VALUE;
+
+        mPreviewRunning = false;
+
+        isUp = false;
+
+
+        isDone = false;
+        greenBallFrames = 0;
+        blueBallFrames = 0;
+        orangeBallFrames = 0;
+
+        initialY = 0;
+
+        /* ANIMATION VARIABLES */
+        started = false;
+        hasanim = false;
+        oldXscale = 1.0f;
+        duration = 0.0;
+        repCounter = 0;
+        blueDuration = 0;
+        orangeDuration = 0;
+        isRepEnd = true;
+        orangeInRange = false;
+        blueInRange = false;
+        repDuration = new ArrayList<>();
+        repMaxHeight = new ArrayList<>();
+
+        timeBallInAir = 0;
+
+    }
+
     public void repEnd() {
         r = new Runnable() {
             @Override
@@ -540,7 +561,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 int ballDuration = ballToUse == 3 ? blueDuration : orangeDuration;
                 double ballMaxHeight = getMaxHeight(ballToUse);
                 float prec = (float) Math.abs((ballMaxHeight) / (initialY - 256));
-                repDuration.add(ballDuration);
+//                repDuration.add((int)timeBallInAir);
                 repMaxHeight.add(Math.min(((int) (prec * 100)), 100));
                 blueHeight.clear();
                 orangeHeight.clear();
@@ -581,23 +602,20 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         orangeHeightSetting = Integer.parseInt(spBreath.getString("difficultyOrange", null));
 
 
-        if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.LOLLIPOP)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AudioAttributes aa = new AudioAttributes.Builder()
                     .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                     .setUsage(AudioAttributes.USAGE_GAME)
                     .build();
-            sp=new SoundPool.Builder()
+            sp = new SoundPool.Builder()
                     .setMaxStreams(10)
                     .setAudioAttributes(aa)
                     .build();
-        }
-        else
-        {
-            sp=new SoundPool(10, AudioManager.STREAM_MUSIC,1);
+        } else {
+            sp = new SoundPool(10, AudioManager.STREAM_MUSIC, 1);
         }
         //phase 2 -load files to sp
-        coin = sp.load(this,R.raw.sucssessound,1);
+        coin = sp.load(this, R.raw.sucssessound, 1);
 
         verifyPermissions();
         String orangeChecked = spBreath.getString("orange", null);
@@ -646,10 +664,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 tvRepetition.setText(String.valueOf(a));
             }
         };
-    }
-
-    public static void playSoundSuccess(){
-        sp.play(coin, 1, 1, 0, 0, 1);
     }
 
     public void startWaitingAnim() {
