@@ -2,10 +2,10 @@ package com.example.magdadmilbat;
 
 public class Repetition {
     private int number;
-    private int repDuration;
+    private Double repDuration;
     private int maxHeight;
 
-    public Repetition(int number, int repDuration, int maxHeight) {
+    public Repetition(int number, Double repDuration, int maxHeight) {
         this.number = number;
         this.repDuration = repDuration;
         this.maxHeight = maxHeight;
@@ -19,11 +19,11 @@ public class Repetition {
         this.number = number;
     }
 
-    public int getRepduration() {
+    public Double getRepduration() {
         return repDuration;
     }
 
-    public void setRepduration(int repduration) {
+    public void setRepduration(Double repduration) {
         this.repDuration = repduration;
     }
 

@@ -187,7 +187,7 @@
             android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:inputType="time"
+            android:inputType="numberDecimal"
             android:padding="8dp"
             android:background="@android:color/transparent"
             android:hint="@string/duration_sec"

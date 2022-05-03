@@ -85,8 +85,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
             intentDetails.putExtra("duration", formatDuration(curr.getDuration()));
             intentDetails.putExtra("description", curr.getExerciseDescription());
             intentDetails.putExtra("time", curr.getTime());
-            String time = String.valueOf(Double.parseDouble(curr.getRepDuration()) / 10.0);
-            intentDetails.putExtra("repDuration", time);
+            intentDetails.putExtra("repDuration", curr.getRepDuration());
             intentDetails.putExtra("repMaxHeight", curr.getRepMaxHeight());
             startActivity(intentDetails);
         }

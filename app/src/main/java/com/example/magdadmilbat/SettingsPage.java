@@ -70,7 +70,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         sbLevel.setMin(1);
         sbRepetition.setMin(1);
         sbLevel.setMax(10);
-        sbRepetition.setMax(10);
+        sbRepetition.setMax(50);
 
         // Sets the SharedPreferences "settingsBreath"
         spBreath = getSharedPreferences("settingsBreath", 0);
@@ -106,7 +106,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         if(duration != null)
             etDuration.setText(duration);
         else
-            etDuration.setText("5");
+            etDuration.setText("5.0");
 
     }
 
