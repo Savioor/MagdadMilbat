@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         spSetApp = getSharedPreferences("spSetApp", 0);
         spBreath = getSharedPreferences("settingsBreath", 0);
         String isFirstLaunch = spSetApp.getString("firstLaunch",null);
+        // set default values for application settings
         if(isFirstLaunch == null){
             SharedPreferences.Editor editor2 = spBreath.edit();
             editor2.putString("numberOfrepBlue", "1");

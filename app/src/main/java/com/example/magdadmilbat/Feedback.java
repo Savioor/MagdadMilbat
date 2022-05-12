@@ -27,9 +27,15 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     int repsSuccess;
     static SharedPreferences spBreath;
     TextView greenTimeText, blueTimeText, orangeTimeText;
-    static ArrayList<Integer> repDuration = new ArrayList<Integer>();
-    static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
+    // ArrayList containing the duration of each repetition in the exercise
+    static ArrayList<Integer> repDuration = new ArrayList<>();
+    // ArrayList containing the Max Height of each repetition in the exercise
+    static ArrayList<Integer> repMaxHeight = new ArrayList<>();
 
+    /**
+     * This function gets a ArrayList which contains repetition data of exercise
+     * and returns String that can be display in TextView
+     */
     public static String convert2str(ArrayList<Integer> arr) {
         String str = "";
         for (int i = 0; i < arr.size(); i++) {
@@ -38,18 +44,10 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         return str;
     }
 
-//    public static int calculateScore(){
-//        int numberOfrepOrange = Integer.parseInt(spBreath.getString("numberOfrepOrange",null));
-//        int numberOfrepBlue = Integer.parseInt(spBreath.getString("numberOfrepBlue",null));
-//        int difficultyOrange = Integer.parseInt(spBreath.getString("difficultyOrange",null));
-//        int difficultyBlue = Integer.parseInt(spBreath.getString("difficultyBlue",null));
-//        int duration = Integer.parseInt(spBreath.getString("duration",null));
-//        double heightScore = ((blueMaxHeight + orangeMaxHeight)/(difficultyBlue + difficultyOrange))*33;
-//        double airTimeScore = ((blueAirTime + orangeAirTime)/(duration + duration))*33;
-//        double repScore = ((blueRepSuccess + orangeRepSuccess)/(numberOfrepBlue + numberOfrepOrange))*34;
-//       return (int) (heightScore + airTimeScore + repScore);
-//    }
-
+    /**
+     * This function gets a ArrayList which contains repetition data of exercise
+     * and returns String that can be display in TextView
+     */
     public static String convert2strDouble(ArrayList<Integer> arr) {
         String str = "";
         for (int i = 0; i < arr.size(); i++) {
@@ -58,6 +56,12 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         return str;
     }
 
+    /**
+     * This function gets a ArrayList which contains repetition data of exercise
+     * and returns String that can be stored in database
+     * @param arr contain Integer numbers of repDuration or repMaxHeight
+     * @return the String after format, for example ,1,2,3,4,5
+     */
     public static String format2db(ArrayList<Integer> arr) {
         String str = "";
         for (int i = 0; i < arr.size(); i++) {
@@ -85,6 +89,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         repDuration = intent.getExtras().getIntegerArrayList("repDuration");
         repMaxHeight = intent.getExtras().getIntegerArrayList("repMaxHeight");
         repsSuccess = intent.getExtras().getInt("repsSuccess");
+        // Display on textViews, the exercise data that passed from last exercise
         greenTimeText.setText("משך כל חזרה (בשניות): \n" + convert2strDouble(repDuration));
         blueTimeText.setText("גובה מקסימלי (באחוזים): \n" + convert2str(repMaxHeight));
         duration = intent.getExtras().getDouble("duration");

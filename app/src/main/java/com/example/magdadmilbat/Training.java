@@ -1,13 +1,16 @@
 package com.example.magdadmilbat;
 
 public class Training {
-    //private Date date;
-    private String date;
+    private String date; // date in String format [ dd/mm/yy ]
     private String time; // Training start time
     private String exerciseDescription;
-    private int trainingQuality;
+    private int trainingQuality; // training score
     private double duration;//duration that the Training take
+
+    //duration of each repetition in the exercise
     private String repDuration;
+
+    //Max Height of each repetition in the exercise
     private String repMaxHeight;
 
 

@@ -20,13 +20,18 @@ public static final String TABLE_NAME = "Training";
         createTrainingTable(sqLiteDatabase);
     }
 
-    //The function updates the table
+    /**
+     * The function updates the table
+     */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         sqLiteDatabase.execSQL("drop table Training"); //Deletes the table
         onCreate(sqLiteDatabase); // call to "onCreate" function,that will recreate the table
     }
 
+    /**
+     * this function create new table of Training
+     */
     private void createTrainingTable(SQLiteDatabase sqLiteDatabase)
     {
         String sql = "Create table Training (id integer primary key autoincrement, exerciseDescription text not null," +
@@ -43,6 +48,12 @@ public static final String TABLE_NAME = "Training";
         sqLiteDatabase.close(); // Close connection.
     }
 
+    /**
+     * !!The function needs repair!!
+     * this function delete specific Training from the table
+     * According to the rowid specified
+     * @param rowId the row id in table
+     */
     public void deleteTraining(String rowId){
         SQLiteDatabase sqLiteDatabase = getWritableDatabase(); // Open connection.
         String str_sql = "delete from " + TABLE_NAME + " where " + ID  + " = "  + rowId;

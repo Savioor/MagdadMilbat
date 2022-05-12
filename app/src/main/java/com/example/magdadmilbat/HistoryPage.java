@@ -22,20 +22,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 
 public class HistoryPage extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener {
-    private Intent go;
     private ListView lv;
     private TrainingListAdapter adap;
     private ArrayList<Training> trainings;
-    private Training curr;
     private DatabaseManager databaseManager;
-    private SQLiteDatabase sqLiteDatabase;
     Button btnBack;
     TextView alertTv;
     AlertDialog d;
     int idItem ;
-    ListView lvHistory;
-    ArrayList<Details> details;
-//    DetailsAdapter detailsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,9 +39,8 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         alertTv = findViewById(R.id.alert);
         btnBack.setOnClickListener(this);
         databaseManager = new DatabaseManager(this); //  initialization the database
-        sqLiteDatabase = databaseManager.getWritableDatabase();
+        SQLiteDatabase sqLiteDatabase = databaseManager.getWritableDatabase();
         sqLiteDatabase.close();
-        //databaseManager.addTraining(new Training("18/1/2002", "2:00", "Breathe", 8)); --> Test if the function work and we can show the data on the list
         lv = findViewById(R.id.lvHistory);
         loadHistory();
         lv.setOnItemClickListener(this);
@@ -58,7 +51,9 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
      */
     private void loadHistory() {
         trainings = databaseManager.getAllTraining();
+        // Reverses the order of the list
         Collections.reverse(trainings);
+        // If there is no trainings data, display a relevant message
         if(trainings.isEmpty()){
             alertTv.setText("אין אימונים ברשימה");
             alertTv.setVisibility(View.VISIBLE);
@@ -69,7 +64,11 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         lv.setOnItemLongClickListener(this);
     }
 
-    // checks if training data are empty,And displays a message
+    /**
+     * This func open the exercise details page
+     * All required parameters are transmitted using intent
+     * @param i index of item
+     */
     @SuppressLint("WrongConstant")
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -78,7 +77,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
             Toast.makeText(this, "There is no training in the list!", Toast.LENGTH_SHORT).show();
         }
         else {
-            curr = trainings.get(i);
+            Training curr = trainings.get(i);
             Intent intentDetails = new Intent(this, exercise_details.class);
             intentDetails.putExtra("quality", String.valueOf(curr.getTrainingQuality()));
             intentDetails.putExtra("date", curr.getDate());
@@ -91,36 +90,52 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         }
     }
 
-     //returns to the main page when click on the back button
     @Override
     public void onClick(View view) {
         if (view == btnBack)
         {
+            // returns to the main page when click on the back button
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
     }
 
+    /**
+     * function that show dialog with an option to delete a workout from the list
+     * right button will delete the workout
+     * left button will cancel the operation
+     */
     public void showAlertDialog(){
         AlertDialog.Builder a = new AlertDialog.Builder(this);
         a.setTitle("מחיקת אימון");
         a.setMessage("האם ברצונך למחוק את האימון?");
         a.setCancelable(false);
-        a.setPositiveButton("מחק", new HandleAlertDialogListener()); // ימין
-        a.setNegativeButton("ביטול", new HandleAlertDialogListener()); // שמאל
+        a.setPositiveButton("מחק", new HandleAlertDialogListener()); // right
+        a.setNegativeButton("ביטול", new HandleAlertDialogListener()); // left
         d=a.create();
         d.show();
     }
 
+    /**
+     * This function gets a training duration and makes a string format
+     * @param time Training duration in double
+     * @return String on format minute:second
+     */
+    @SuppressLint("DefaultLocale")
     public static String formatDuration(double time){
         int roundDuration = (int) Math.round(time);
         String str;
+        //Convert units time second and minute
         int sec = ((roundDuration % 864000) % 3600) % 60;
         int min = ((roundDuration % 864000) % 3600) / 60;
         str =  String.format("%02d",min) + ":" + String.format("%02d",sec);
         return str;
     }
 
+    /**
+     * func that displays a dialog run when a long click on an item is detected
+     * @param position of item
+     */
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         idItem = position;
@@ -128,16 +143,19 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         return false;
     }
 
+    /**
+     * Handles events captured from the buttons in the dialog
+     */
     private class HandleAlertDialogListener implements DialogInterface.OnClickListener {
+        /**
+         * @param which the button that clicked
+         */
         @SuppressLint("WrongConstant")
         public void onClick(DialogInterface dialog, int which) {
-            if(which == -2){
+            if(which == -2){ // -2 cancel the operation
                 d.dismiss();
             }
-            if(which == -1){
-//                Toast.makeText(HistoryPage.this,String.valueOf(idItem),2).show();
-//                databaseManager.deleteTraining(String.valueOf(idItem));
-//                loadHistory();
+            if(which == -1){ // -1 cancel the operation
                 trainings.remove(idItem);
                 adap = new TrainingListAdapter(HistoryPage.this, R.layout.list_item, trainings);
                 lv.setAdapter(adap);
