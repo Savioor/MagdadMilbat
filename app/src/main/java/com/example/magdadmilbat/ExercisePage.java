@@ -39,6 +39,7 @@ import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
@@ -93,6 +94,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static TextView remarksText;
     static float oldXscale = 1.0f;
     static double duration = 0.0, framH, lastOrangeHeight;
+    static int requiredTime;
     static int ballToUse, repCounter = 0, blueDuration = 0, orangeDuration = 0, blueHeightSetting, orangeHeightSetting, initialY = 0;
     static Thread t;
     static Runnable r;
@@ -100,6 +102,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static boolean isRepEnd = true, orangeInRange = false, blueInRange = false;
     static ArrayList<Integer> repDuration = new ArrayList<Integer>();
     static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
+    static int goodReputations = 0;
     static SoundPool sp;
     static int coin;
 
@@ -133,17 +136,18 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         double[] c;
         Point center;
         final int H_CORE = 0, S_CORE = 1, V_CORE = 2;
-
-        ArrayList<Mat> resultHSV = toHSVImage(img);
-        Mat sMat = resultHSV.get(S_CORE);
-        Imgproc.HoughCircles(sMat, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 70, 32.0, 40, 70);
-
-
         double[] rgb, rgb_min, hsvArr; // the circle's color.
         final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
 
         final int LINE_UPPER_BOUND = img.height() - (int) (img.height() * LINE_UPPER_PERC), LINE_LOWER_BOUND = img.height() - (int) (img.height() * LINE_LOWER_PERC);
 
+        ArrayList<Mat> resultHSV = toHSVImage(img);
+        Mat sMat = resultHSV.get(S_CORE);
+        Rect rectCrop = new Rect(0, LINE_UPPER_BOUND, img.width(), LINE_LOWER_BOUND - LINE_UPPER_BOUND);
+        sMat = sMat.submat(rectCrop);
+        Imgproc.HoughCircles(sMat, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 70, 32.0, 40, 70);
+
+        
         String orangeChecked = spBreath.getString("orange", null);
 
 
@@ -174,6 +178,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
                         isUp = false;
                         timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                        if(timeBallInAir >= requiredTime) goodReputations++;
                         repDuration.add((int) timeBallInAir);
                     }
 
@@ -196,9 +201,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
                         isUp = false;
                         timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-
+                        if(timeBallInAir >= requiredTime) goodReputations++;
                         repDuration.add((int) timeBallInAir);
-
                     }
                     blueInRange = true;
                 }
@@ -545,8 +549,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         blueInRange = false;
         repDuration = new ArrayList<>();
         repMaxHeight = new ArrayList<>();
-
+        requiredTime = getDuration();
         timeBallInAir = 0;
+
 
     }
 
