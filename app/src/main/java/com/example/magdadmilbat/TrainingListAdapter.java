@@ -37,6 +37,7 @@ public class TrainingListAdapter  extends ArrayAdapter<Training> {
         String trainingQuality = String.valueOf(getItem(position).getTrainingQuality());
         String time = getItem(position).getTime();
         String date = getItem(position).getDate();
+        String target = String.valueOf(getItem(position).getTarget());
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
@@ -45,7 +46,8 @@ public class TrainingListAdapter  extends ArrayAdapter<Training> {
         TextView tvTime = convertView.findViewById(R.id.textView3);
         ProgressBar pb = convertView.findViewById(R.id.ProgressBar);
 
-        tvQuality.setText(trainingQuality+"/10");
+        tvQuality.setText(trainingQuality+ "/" + target);
+        pb.setMax(Integer.parseInt(target));
         pb.setProgress(Integer.parseInt(trainingQuality));
         tvDate.setText(date);
         tvTime.setText(time);
