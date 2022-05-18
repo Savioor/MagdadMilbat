@@ -43,6 +43,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -102,7 +103,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static ArrayList<Integer> repMaxHeight = new ArrayList<Integer>();
     static SoundPool sp;
     static int coin;
-
+    static String [] randomFeed;
 
     static long timeBallInAir = 0;
     /* --------------------------------------------------------------------------------------------------- */
@@ -594,6 +595,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView6 = findViewById(R.id.cricleView6);
         remarksText = findViewById(R.id.remarkstext);
         tvRepetition = findViewById(R.id.tvRepetition);
+        randomFeed = getResources().getStringArray(R.array.feedback);
         String str1 = String.valueOf(repCounter);
         String str2 = "/";
         spBreath = getSharedPreferences("settingsBreath", 0);
@@ -672,6 +674,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 int a = msg.what;
+                generateRandomfeed();
                 String str1 = String.valueOf(a);
                 String str2 = "/";
                 String orangeChecked = spBreath.getString("orange", null);
@@ -688,6 +691,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         };
     }
 
+    public static void generateRandomfeed(){
+        Random random = new Random();
+        int r = random.nextInt((randomFeed.length - 1) - 0);
+        remarksText.setText(randomFeed[r]);
+    }
     public void startWaitingAnim() {
         anim = ValueAnimator.ofFloat(0.4f, 1.0f);
         anim.setDuration(1000);

@@ -22,4 +22,12 @@
     <string name="good_job">עבודה טובה!</string>
     <string name="breath">נשיפה עמוקה...</string>
 
+    <string-array name="feedback">
+        <item>מדהים!</item>
+        <item>לא לשכוח לקחת הפסקות מידי פעם:)</item>
+        <item>רק עוד קצת!</item>
+        <item>עבודה טובה!</item>
+        <item>כל הכבוד!</item>
+    </string-array>
+
 </resources>

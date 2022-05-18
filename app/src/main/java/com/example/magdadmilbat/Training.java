@@ -14,9 +14,10 @@ public class Training {
     private String repMaxHeight;
 
     private int balldata;  // Which ball the data were collected
+    private int target; //The target that was set in training
 
 
-    public Training(String date, String time, String exerciseDescription, int trainingQuality, double duration, String repDuration, String repMaxHeight, int balldata) {
+    public Training(String date, String time, String exerciseDescription, int trainingQuality, double duration, String repDuration, String repMaxHeight, int balldata, int target) {
         this.date = date;
         this.time = time;
         this.exerciseDescription = exerciseDescription;
@@ -25,6 +26,7 @@ public class Training {
         this.repDuration = repDuration;
         this.repMaxHeight = repMaxHeight;
         this.balldata = balldata;
+        this.target = target;
     }
 
     public String getDate() {
@@ -83,6 +85,14 @@ public class Training {
 
     public void setBalldata(int balldata) {
         this.balldata = balldata;
+    }
+
+    public int getTarget() {
+        return target;
+    }
+
+    public void setTarget(int target) {
+        this.target = target;
     }
 
     @Override

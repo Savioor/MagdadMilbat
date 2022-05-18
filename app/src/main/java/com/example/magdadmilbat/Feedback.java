@@ -32,6 +32,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     static ArrayList<Integer> repDuration = new ArrayList<>();
     // ArrayList containing the Max Height of each repetition in the exercise
     static ArrayList<Integer> repMaxHeight = new ArrayList<>();
+    int targetrep;
 
     /**
      * This function gets a ArrayList which contains repetition data of exercise
@@ -107,7 +108,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         balldata = intent.getExtras().getInt("balldata");
 
         String targetBall = balldata == 3 ? "numberOfrepBlue" : balldata == 2 ? "numberOfrepOrange" :null;
-        int targetrep = Integer.parseInt(spBreath.getString(targetBall,null));
+        targetrep = Integer.parseInt(spBreath.getString(targetBall,null));
         if(repsSuccess >= targetrep){
             tvfeed.setText("כל הכבוד!");
             tvsubfeed.setText("הגעת ליעד שהצבת לעצמך!");
@@ -128,7 +129,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
             String timeObj = LocalTime.now()
                     .truncatedTo(ChronoUnit.SECONDS)
                     .format(DateTimeFormatter.ISO_LOCAL_TIME);
-            Training exerciseObj = new Training(dateObj.toString(), timeObj, "נשיפה עמוקה", repsSuccess, duration, formatDouble2db(repDuration), format2db(repMaxHeight),balldata);
+            Training exerciseObj = new Training(dateObj.toString(), timeObj, "נשיפה עמוקה", repsSuccess, duration, formatDouble2db(repDuration), format2db(repMaxHeight),balldata, targetrep);
             DatabaseManager dbObj = new DatabaseManager(Feedback.this);
             dbObj.addTraining(exerciseObj);
             Intent intent = new Intent(this, MainActivity.class);
