@@ -45,8 +45,6 @@ import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {
     Button btnBack, btnFeedback;
@@ -110,7 +108,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static int goodReputations = 0;
     static SoundPool sp;
     static int coin;
-    static String [] randomFeed;
+    static String[] randomFeed;
 
     static boolean detectBlue, detectOrange, detectGreen;
 
@@ -622,6 +620,12 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         t.start();
     }
 
+    public static void generateRandomfeed() {
+        Random random = new Random();
+        int r = random.nextInt((randomFeed.length - 1) - 0);
+        remarksText.setText(randomFeed[r]);
+    }
+
     /*
         Initialization of variables, properties and checking for permissions.
      */
@@ -660,7 +664,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         mOpenCvCameraView = findViewById(R.id.HelloOpenCvView);
         blueHeightSetting = Integer.parseInt(spBreath.getString("difficultyBlue", null));
         orangeHeightSetting = Integer.parseInt(spBreath.getString("difficultyOrange", null));
-
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -711,22 +714,15 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 String orangeChecked = spBreath.getString("orange", null);
                 String str3;
                 if (orangeChecked.equals("true")) {
-                    str3= spBreath.getString("numberOfrepOrange", null);
-                }
-                else
-                {
-                    str3= spBreath.getString("numberOfrepBlue", null);
+                    str3 = spBreath.getString("numberOfrepOrange", null);
+                } else {
+                    str3 = spBreath.getString("numberOfrepBlue", null);
                 }
                 tvRepetition.setText(str1 + str2 + str3);
             }
         };
     }
 
-    public static void generateRandomfeed(){
-        Random random = new Random();
-        int r = random.nextInt((randomFeed.length - 1) - 0);
-        remarksText.setText(randomFeed[r]);
-    }
     public void startWaitingAnim() {
         anim = ValueAnimator.ofFloat(0.4f, 1.0f);
         anim.setDuration(1000);
