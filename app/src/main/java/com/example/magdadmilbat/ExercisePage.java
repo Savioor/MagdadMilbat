@@ -290,6 +290,32 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view == btnBack) {
+            Intent intent = new Intent(this, MainActivity.class);
+            finish();
+            startActivity(intent);
+        }
+
+        if (view == btnFeedback) {
+            Intent intent = new Intent(this, Feedback.class);
+            intent.putExtra("duration", duration);
+            intent.putExtra("repsSuccess", repCounter);
+            intent.putIntegerArrayListExtra("repDuration", repDuration);
+            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
+            intent.putExtra("balldata", ballToUse);
+            startActivity(intent);
+            finish();
+            startActivity(intent);
+        }
+    }
+
+    public static boolean reachedReps() {
+        int numOfReps = Integer.parseInt(spBreath.getString("numberOfrep", null));
+        return numOfReps == greenAirTime.size();
+    }
+
     public static int repsSuccess(int color) {
         int numOfReps = 0;
         ArrayList<Double> temp = color == 1 ? greenAirTime : color == 3 ? blueAirTime : color == 2 ? orangeAirTime : null; // gets the correct array list according to the color.
@@ -300,19 +326,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return numOfReps;
     }
 
-    public static boolean reachedReps() {
-        int numOfReps = Integer.parseInt(spBreath.getString("numberOfrep", null));
-        return numOfReps == greenAirTime.size();
-    }
-
     public static int getDifficulty() {
         return Integer.parseInt(spBreath.getString("difficulty", null));
-    }
-
-    public static void generateRandomfeed() {
-        Random random = new Random();
-        int r = random.nextInt((randomFeed.length - 1) - 0);
-        remarksText.setText(randomFeed[r]);
     }
 
     public static int getDuration() {
@@ -605,25 +620,10 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         t.start();
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == btnBack) {
-            Intent intent = new Intent(this, MainActivity.class);
-            finish();
-            startActivity(intent);
-        }
-
-        if (view == btnFeedback) {
-            Intent intent = new Intent(this, Feedback.class);
-            intent.putExtra("duration", duration);
-            intent.putExtra("repsSuccess", repCounter);
-            intent.putIntegerArrayListExtra("repDuration", repDuration);
-            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
-            intent.putExtra("balldata", ballToUse);
-            startActivity(intent);
-            finish();
-            startActivity(intent);
-        }
+    public static void generateRandomfeed() {
+        Random random = new Random();
+        int r = random.nextInt((randomFeed.length - 1) - 0);
+        remarksText.setText(randomFeed[r]);
     }
 
     /*
