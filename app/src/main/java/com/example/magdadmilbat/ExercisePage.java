@@ -44,6 +44,7 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {
     Button btnBack, btnFeedback;
@@ -107,6 +108,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static int goodReputations = 0;
     static SoundPool sp;
     static int coin;
+    static String[] randomFeed;
 
     static boolean detectBlue, detectOrange, detectGreen;
 
@@ -128,15 +130,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         }
     };
 
-    public static int repsSuccess(int color) {
-        int numOfReps = 0;
-        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 3 ? blueAirTime : color == 2 ? orangeAirTime : null; // gets the correct array list according to the color.
-        try {
-            numOfReps = temp.size();
-        } catch (Exception ignored) {
-        }
-        return numOfReps;
-    }
 
     public static void breathAnimation() {
         animTrans = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -50);
@@ -297,24 +290,14 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == btnBack) {
-            Intent intent = new Intent(this, MainActivity.class);
-            finish();
-            startActivity(intent);
+    public static int repsSuccess(int color) {
+        int numOfReps = 0;
+        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 3 ? blueAirTime : color == 2 ? orangeAirTime : null; // gets the correct array list according to the color.
+        try {
+            numOfReps = temp.size();
+        } catch (Exception ignored) {
         }
-
-        if (view == btnFeedback) {
-            Intent intent = new Intent(this, Feedback.class);
-            intent.putExtra("duration", duration);
-            intent.putExtra("repsSuccess", repCounter);
-            intent.putIntegerArrayListExtra("repDuration", repDuration);
-            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
-            startActivity(intent);
-            finish();
-            startActivity(intent);
-        }
+        return numOfReps;
     }
 
     public static boolean reachedReps() {
@@ -322,18 +305,19 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return numOfReps == greenAirTime.size();
     }
 
+    public static int getDifficulty() {
+        return Integer.parseInt(spBreath.getString("difficulty", null));
+    }
+
+    public static void generateRandomfeed() {
+        Random random = new Random();
+        int r = random.nextInt((randomFeed.length - 1) - 0);
+        remarksText.setText(randomFeed[r]);
+    }
+
     public static int getDuration() {
         String str = spBreath.getString("duration", null);
         return Integer.parseInt(str);
-//        try {
-//            return Integer.parseInt(spBreath.getString("duration", null));
-//        } catch (Exception e) {
-//            return 1;
-//        }
-    }
-
-    public static int getDifficulty() {
-        return Integer.parseInt(spBreath.getString("difficulty", null));
     }
 
     /**
@@ -621,6 +605,27 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         t.start();
     }
 
+    @Override
+    public void onClick(View view) {
+        if (view == btnBack) {
+            Intent intent = new Intent(this, MainActivity.class);
+            finish();
+            startActivity(intent);
+        }
+
+        if (view == btnFeedback) {
+            Intent intent = new Intent(this, Feedback.class);
+            intent.putExtra("duration", duration);
+            intent.putExtra("repsSuccess", repCounter);
+            intent.putIntegerArrayListExtra("repDuration", repDuration);
+            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
+            intent.putExtra("balldata", ballToUse);
+            startActivity(intent);
+            finish();
+            startActivity(intent);
+        }
+    }
+
     /*
         Initialization of variables, properties and checking for permissions.
      */
@@ -643,6 +648,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView6 = findViewById(R.id.cricleView6);
         remarksText = findViewById(R.id.remarkstext);
         tvRepetition = findViewById(R.id.tvRepetition);
+        randomFeed = getResources().getStringArray(R.array.feedback);
         String str1 = String.valueOf(repCounter);
         String str2 = "/";
         spBreath = getSharedPreferences("settingsBreath", 0);
@@ -694,23 +700,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         };
         count.start();
 
-//        new Timer().scheduleAtFixedRate(new TimerTask() {
-//            @Override
-//            public void run() {
-//                duration++;
-//
-//                if (repsSuccess(ballToUse) > repCounter) {
-//                    repEnd();
-//                }
-//
-//                if (blueInRange) {
-//                    blueDuration++;
-//                }
-//                if (orangeInRange) {
-//                    orangeDuration++;
-//                }
-//            }
-//        }, 0, 1000);
         startWaitingAnim();
 
         handler1 = new Handler() {
@@ -719,6 +708,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 int a = msg.what;
+                generateRandomfeed();
                 String str1 = String.valueOf(a);
                 String str2 = "/";
                 String orangeChecked = spBreath.getString("orange", null);
