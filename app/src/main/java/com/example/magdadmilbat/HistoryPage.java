@@ -86,6 +86,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
             intentDetails.putExtra("time", curr.getTime());
             intentDetails.putExtra("repDuration", curr.getRepDuration());
             intentDetails.putExtra("repMaxHeight", curr.getRepMaxHeight());
+            intentDetails.putExtra("balluse", curr.getBalldata());
             startActivity(intentDetails);
         }
     }
@@ -140,7 +141,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
         idItem = position;
         showAlertDialog();
-        return false;
+        return true;
     }
 
     /**

@@ -380,6 +380,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             intent.putExtra("repsSuccess", repCounter);
             intent.putIntegerArrayListExtra("repDuration", repDuration);
             intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
+            intent.putExtra("balldata", ballToUse);
             startActivity(intent);
             finish();
             startActivity(intent);

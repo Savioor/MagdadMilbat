@@ -43,10 +43,18 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:layout_gravity="center"
-          android:layout_marginVertical="50dp"
+          android:layout_marginTop="50dp"
           android:textStyle="bold"
           android:text="@string/good_job"
           android:textSize="40sp" />
+      <TextView
+          android:id="@+id/subfeed"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:layout_gravity="center"
+          android:layout_marginTop="15dp"
+          android:text=""
+          android:textSize="20sp" />
 
       <Button
           android:id="@+id/btnBackMain2"

@@ -14,7 +14,7 @@ import com.example.MagdadMilbat.R;
 import java.util.ArrayList;
 
 public class exercise_details extends AppCompatActivity implements View.OnClickListener {
-TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle;
+TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle, tvballuse;
 String repDuration,repMaxHeight;
     Button btnBack;
     TextView alertrep;
@@ -22,6 +22,7 @@ String repDuration,repMaxHeight;
     String [] arrRepMaxHeight;
     ArrayList<Repetition> repsList = new ArrayList<>();//ArrayList for Repetition
     ListView lvReps;
+    String strballuse ="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ String repDuration,repMaxHeight;
         tvRepetition = findViewById(R.id.tvRepetition);
         lvReps = (ListView) findViewById(R.id.lvreps);
         alertrep = findViewById(R.id.alertrep);
+        tvballuse = findViewById(R.id.balluse);
         btnBack.setOnClickListener(this);
         repDuration = intent.getExtras().getString("repDuration");
         repMaxHeight = intent.getExtras().getString("repMaxHeight");
@@ -51,6 +53,17 @@ String repDuration,repMaxHeight;
         tvRepetition.setText(String.valueOf(intent.getExtras().getString("date")));
         tvTime.setText(String.valueOf(intent.getExtras().getString("time")));
         tvLevel.setText(String.valueOf(intent.getExtras().getString("quality")));
+        int balluse = intent.getExtras().getInt("balluse");
+        if(balluse == 3){
+            strballuse = "כחול";
+            tvballuse.setTextColor(getResources().getColor(R.color.blue));
+        }
+        if(balluse == 2){
+            strballuse = "כתום";
+            tvballuse.setTextColor(getResources().getColor(R.color.orange));
+        }
+        tvballuse.setText("הנתונים מתייחסים לכדור ה"+ strballuse);
+
     }
 
     /**
@@ -67,7 +80,7 @@ String repDuration,repMaxHeight;
         arrRepMaxHeight = repMaxHeight.split(",");
         //Create a new object for each repetition
         for(int i = 1;i<arrRepDuration.length;i++){
-            Repetition rep = new Repetition(i,Double.parseDouble(arrRepDuration[i]) /10.0,Integer.parseInt(arrRepMaxHeight[i]));
+            Repetition rep = new Repetition(i,Double.parseDouble(arrRepDuration[i]),Integer.parseInt(arrRepMaxHeight[i]));
             repsList.add(rep);
         }
         RepsListAdapter repsadap = new RepsListAdapter(this, R.layout.list_reps_item, repsList);

@@ -25,8 +25,9 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     Button btnBackMain2;
     static Double duration;
     int repsSuccess;
+    int balldata;
     static SharedPreferences spBreath;
-    TextView greenTimeText, blueTimeText, orangeTimeText;
+    TextView greenTimeText, blueTimeText, orangeTimeText,tvfeed,tvsubfeed;
     // ArrayList containing the duration of each repetition in the exercise
     static ArrayList<Integer> repDuration = new ArrayList<>();
     // ArrayList containing the Max Height of each repetition in the exercise
@@ -65,7 +66,15 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     public static String format2db(ArrayList<Integer> arr) {
         String str = "";
         for (int i = 0; i < arr.size(); i++) {
-            str += "," + arr.get(i) / 10;
+            str += "," + arr.get(i);
+        }
+        return str;
+    }
+
+    public static String formatDouble2db(ArrayList<Integer> arr) {
+        String str = "";
+        for (int i = 0; i < arr.size(); i++) {
+            str += "," + arr.get(i) / 10.0;
         }
         return str;
     }
@@ -86,6 +95,8 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         greenTimeText = findViewById(R.id.greenAirTime);
         blueTimeText = findViewById(R.id.blueAirTime);
         orangeTimeText = findViewById(R.id.orangeAirTime);
+        tvfeed = findViewById(R.id.feed);
+        tvsubfeed = findViewById(R.id.subfeed);
         repDuration = intent.getExtras().getIntegerArrayList("repDuration");
         repMaxHeight = intent.getExtras().getIntegerArrayList("repMaxHeight");
         repsSuccess = intent.getExtras().getInt("repsSuccess");
@@ -93,6 +104,17 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         greenTimeText.setText("משך כל חזרה (בשניות): \n" + convert2strDouble(repDuration));
         blueTimeText.setText("גובה מקסימלי (באחוזים): \n" + convert2str(repMaxHeight));
         duration = intent.getExtras().getDouble("duration");
+        balldata = intent.getExtras().getInt("balldata");
+
+        String targetBall = balldata == 3 ? "numberOfrepBlue" : balldata == 2 ? "numberOfrepOrange" :null;
+        int targetrep = Integer.parseInt(spBreath.getString(targetBall,null));
+        if(repsSuccess >= targetrep){
+            tvfeed.setText("כל הכבוד!");
+            tvsubfeed.setText("הגעת ליעד שהצבת לעצמך!");
+        }else if (repsSuccess < targetrep){
+            tvfeed.setText("עבודה טובה");
+            tvsubfeed.setText("נסה שוב להגיע ליעד");
+        }
     }
 
     /**
@@ -106,7 +128,7 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
             String timeObj = LocalTime.now()
                     .truncatedTo(ChronoUnit.SECONDS)
                     .format(DateTimeFormatter.ISO_LOCAL_TIME);
-            Training exerciseObj = new Training(dateObj.toString(), timeObj, "נשיפה עמוקה", repsSuccess, duration, format2db(repDuration), format2db(repMaxHeight));
+            Training exerciseObj = new Training(dateObj.toString(), timeObj, "נשיפה עמוקה", repsSuccess, duration, formatDouble2db(repDuration), format2db(repMaxHeight),balldata);
             DatabaseManager dbObj = new DatabaseManager(Feedback.this);
             dbObj.addTraining(exerciseObj);
             Intent intent = new Intent(this, MainActivity.class);
