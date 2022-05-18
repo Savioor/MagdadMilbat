@@ -68,8 +68,8 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         // set the range of the slider (min & max)
         sbLevel.setMin(1);
         sbRepetition.setMin(1);
-        sbLevel.setMax(10);
-        sbRepetition.setMax(50);
+        sbLevel.setMax(3);
+        sbRepetition.setMax(20);
 
         // Sets the SharedPreferences "settingsBreath"
         spBreath = getSharedPreferences("settingsBreath", 0);
@@ -98,14 +98,30 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             sbLevelNumberOrange = Integer.parseInt(difficultyOrange);
         }
 
-        if(useOrange != null){
+        if (useOrange != null) {
             orange = Boolean.valueOf(useOrange);
             b2.setChecked(orange);
         }
-        if(duration != null)
+        if (duration != null)
             etDuration.setText(duration);
         else
             etDuration.setText("5.0");
+
+        if (useOrange.equals("true")) {
+            orangeball = true;
+            blueball = false;
+            sbRepetition.setEnabled(orange);
+            sbLevel.setEnabled(orange);
+            etDuration.setEnabled(orange);
+            sv.post(new Runnable() {
+                @Override
+                public void run() {
+                    sv.smoothScrollTo(0, b2.getTop());//Navigates to the orange ball
+                }
+            });
+            sbLevel.setProgress(sbLevelNumberOrange);
+            sbRepetition.setProgress(sbRepNumberOrange);
+        }
 
     }
 
@@ -169,6 +185,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             sbLevel.setProgress(sbLevelNumberOrange);
             sbRepetition.setProgress(sbRepNumberOrange);
         }
+
     }
 
     /**

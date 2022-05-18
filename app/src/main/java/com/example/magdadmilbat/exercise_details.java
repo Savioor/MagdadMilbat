@@ -1,28 +1,30 @@
 package com.example.magdadmilbat;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.MagdadMilbat.R;
 
 import java.util.ArrayList;
 
 public class exercise_details extends AppCompatActivity implements View.OnClickListener {
-TextView tvDuration,tvTime,tvRepetition,tvLevel,tvTitle, tvballuse;
-String repDuration,repMaxHeight;
+    TextView tvDuration, tvTime, tvRepetition, tvLevel, tvTitle, tvballuse;
+    String repDuration, repMaxHeight;
     Button btnBack;
     TextView alertrep;
-    String [] arrRepDuration;
-    String [] arrRepMaxHeight;
+    String[] arrRepDuration;
+    String[] arrRepMaxHeight;
     ArrayList<Repetition> repsList = new ArrayList<>();//ArrayList for Repetition
     ListView lvReps;
-    String strballuse ="";
+    String strballuse = "";
+    SharedPreferences spBreath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,7 +34,7 @@ String repDuration,repMaxHeight;
         if (getSupportActionBar() != null) {
             getSupportActionBar().hide();
         }
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         btnBack = findViewById(R.id.btnBack);
         tvDuration = findViewById(R.id.tvDuration);
         tvLevel = findViewById(R.id.tvLevel);
@@ -54,23 +56,23 @@ String repDuration,repMaxHeight;
         tvTime.setText(String.valueOf(intent.getExtras().getString("time")));
         tvLevel.setText(String.valueOf(intent.getExtras().getString("quality")));
         int balluse = intent.getExtras().getInt("balluse");
-        if(balluse == 3){
+        if (balluse == 3) {
             strballuse = "כחול";
             tvballuse.setTextColor(getResources().getColor(R.color.blue));
         }
-        if(balluse == 2){
+        if (balluse == 2) {
             strballuse = "כתום";
             tvballuse.setTextColor(getResources().getColor(R.color.orange));
         }
-        tvballuse.setText("הנתונים מתייחסים לכדור ה"+ strballuse);
+        tvballuse.setText("הנתונים מתייחסים לכדור ה" + strballuse);
 
     }
 
     /**
      * function that create list of repetitions and load to selected exercise
      */
-    public void buildListReps(){
-        if(repDuration.length() == 0){
+    public void buildListReps() {
+        if (repDuration.length() == 0) {
             //If there is no repetition data, display a relevant message
             alertrep.setText("לא בוצעו חזרות");
             alertrep.setVisibility(View.VISIBLE);
@@ -79,8 +81,8 @@ String repDuration,repMaxHeight;
         arrRepDuration = repDuration.split(",");
         arrRepMaxHeight = repMaxHeight.split(",");
         //Create a new object for each repetition
-        for(int i = 1;i<arrRepDuration.length;i++){
-            Repetition rep = new Repetition(i,Double.parseDouble(arrRepDuration[i]),Integer.parseInt(arrRepMaxHeight[i]));
+        for (int i = 1; i < arrRepDuration.length; i++) {
+            Repetition rep = new Repetition(i, Double.parseDouble(arrRepDuration[i]), Integer.parseInt(arrRepMaxHeight[i]));
             repsList.add(rep);
         }
         RepsListAdapter repsadap = new RepsListAdapter(this, R.layout.list_reps_item, repsList);
@@ -89,8 +91,7 @@ String repDuration,repMaxHeight;
 
     @Override
     public void onClick(View v) {
-        if (v == btnBack)
-        {
+        if (v == btnBack) {
             //return to HistoryPage
             Intent intent = new Intent(this, HistoryPage.class);
             startActivity(intent);

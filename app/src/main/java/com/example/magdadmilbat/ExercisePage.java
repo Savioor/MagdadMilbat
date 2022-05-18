@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {
+
     Button btnBack, btnFeedback;
     private final int PERMISSIONS_READ_CAMERA = 1;
     private final int REQUEST_CODE = 2;
@@ -95,8 +96,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static View cricleView, cricleView2, cricleView3, cricleView4, cricleView5, cricleView6;
     static TextView remarksText;
     static float oldXscale = 1.0f;
+    static long allExrDuration = 0;
     static double duration = 0.0, framH, lastOrangeHeight;
-    static int requiredTime;
+    static double requiredTime;
     static int ballToUse, repCounter = 0, blueDuration = 0, orangeDuration = 0, blueHeightSetting, orangeHeightSetting, initialY = 0;
     static Thread t;
     static Runnable r;
@@ -108,11 +110,16 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static int goodReputations = 0;
     static SoundPool sp;
     static int coin;
-    static String[] randomFeed;
+
+    static String[] feedbackDown, feedbackUp, feedbackAfterUp, feedbackFinish, feedbackStart;
 
     static boolean detectBlue, detectOrange, detectGreen;
 
     static long timeBallInAir = 0;
+
+    static String repsNumTarget = "";
+
+
     /* --------------------------------------------------------------------------------------------------- */
     private final BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -290,25 +297,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
     }
 
-    @Override
-    public void onClick(View view) {
-        if (view == btnBack) {
-            Intent intent = new Intent(this, MainActivity.class);
-            finish();
-            startActivity(intent);
-        }
-
-        if (view == btnFeedback) {
-            Intent intent = new Intent(this, Feedback.class);
-            intent.putExtra("duration", duration);
-            intent.putExtra("repsSuccess", repCounter);
-            intent.putIntegerArrayListExtra("repDuration", repDuration);
-            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
-            intent.putExtra("balldata", ballToUse);
-            startActivity(intent);
-            finish();
-            startActivity(intent);
-        }
+    public static double getDuration() {
+        String str = spBreath.getString("duration", null);
+        return Double.parseDouble(str);
     }
 
     public static boolean reachedReps() {
@@ -330,117 +321,33 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return Integer.parseInt(spBreath.getString("difficulty", null));
     }
 
-    public static int getDuration() {
-        String str = spBreath.getString("duration", null);
-        return Integer.parseInt(str);
+    public static void showFeedback(String[] feedbackStrings) {
+        Random random = new Random();
+
+        int r = random.nextInt(feedbackStrings.length);
+        remarksText.setText(feedbackStrings[r]);
     }
 
-    /**
-     * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
-     *
-     * @param img the frame we analyze.
-     * @return the initial Y axis position.
-     */
-    private void getFrameData(Mat img, int first_line, int second_line, int third_line) {
-        Mat circles = new Mat();
-        double[] c;
-        Point center;
-        final int H_CORE = 0, S_CORE = 1, V_CORE = 2;
-        double[] rgb, rgb_min, hsvArr; // the circle's color.
-        final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
+    @Override
+    public void onClick(View view) {
+        if (view == btnBack) {
+            Intent intent = new Intent(this, MainActivity.class);
+            finish();
+            startActivity(intent);
+        }
 
-        final int LINE_UPPER_BOUND = (int) (img.height() * LINE_UPPER_PERC), LINE_LOWER_BOUND = (int) (img.height() * LINE_LOWER_PERC);
-
-        ArrayList<Mat> resultHSV = toHSVImage(img);
-        Mat sMat = resultHSV.get(S_CORE);
-        Imgproc.HoughCircles(sMat, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 70, 32.0, 40, 70);
-
-
-        String orangeChecked = spBreath.getString("orange", null);
-        detectBlue = false;
-        detectGreen = false;
-        detectOrange = false;
-        requiredTime = getDuration();
-
-        for (int i = circles.width() - 1; i >= 0; i--) {
-            c = circles.get(0, i);
-            center = new Point(Math.round(c[0]), Math.round(c[1]));
-            int radius = (int) c[2];
-            rgb = img.get((int) center.x, (int) center.y);
-            rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
-
-            if (center.y > LINE_UPPER_BOUND && center.y < LINE_LOWER_BOUND) {
-                if (!detectGreen && center.x > first_line - radius && center.x < first_line + radius) {
-                    detectGreen = true;
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    greenHeight.add(center.y);
-                } else if (!detectOrange && center.x > second_line - radius && center.x < second_line + radius) {
-                    detectOrange = true;
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    orangeHeight.add(center.y);
-                    long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-                        if (orangeChecked.equals("true")) {
-                            if (!isUp) {
-                                isUp = true;
-                                isRepEntirelyComplete = false;
-                                timeBallInAir = System.currentTimeMillis();
-                                breathAnimation();
-
-                            } else if (!isRepEntirelyComplete && temp_timeBallInAir >= requiredTime * 10L) {
-                                playSoundSuccess();
-                                isRepEntirelyComplete = true;
-                                goodReputations++;
-                                orangeAirTime.add(1.0);
-//                                repEnd();
-
-                            }
-                        }
-
-                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
-                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                        repEnd();
-
-                        isUp = false;
-                    }
-
-                    orangeInRange = true;
-                } else if (!detectBlue && center.x > third_line - radius && center.x < third_line + radius) {
-                    detectBlue = true;
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    if (initialY == 0)
-                        initialY = (int) center.y;
-                    blueHeight.add(center.y);
-                    long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-                        if (orangeChecked.equals("false")) {
-                            if (!isUp) {
-                                isUp = true;
-                                isRepEntirelyComplete = false;
-                                timeBallInAir = System.currentTimeMillis();
-                                breathAnimation();
-
-                            } else if (!isRepEntirelyComplete && temp_timeBallInAir >= requiredTime * 10L) {
-                                playSoundSuccess();
-                                isRepEntirelyComplete = true;
-//                                timeBallInAir = temp_timeBallInAir;
-                                goodReputations++;
-                                blueAirTime.add(1.0);
-//                                repEnd();
-
-                            }
-
-                        }
-                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
-                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                        repEnd();
-
-                        isUp = false;
-                    }
-
-                    blueInRange = true;
-                }
-            }
+        if (view == btnFeedback) {
+            allExrDuration = (System.currentTimeMillis() - allExrDuration) / 1000;
+            duration = ((double) allExrDuration);
+            Intent intent = new Intent(this, Feedback.class);
+            intent.putExtra("duration", duration);
+            intent.putExtra("repsSuccess", repCounter);
+            intent.putIntegerArrayListExtra("repDuration", repDuration);
+            intent.putIntegerArrayListExtra("repMaxHeight", repMaxHeight);
+            intent.putExtra("balldata", ballToUse);
+            startActivity(intent);
+            finish();
+            startActivity(intent);
         }
     }
 
@@ -536,6 +443,139 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     }
 
+    /**
+     * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
+     *
+     * @param img the frame we analyze.
+     * @return the initial Y axis position.
+     */
+    private void getFrameData(Mat img, int first_line, int second_line, int third_line) {
+        if (allExrDuration == 0) {
+            allExrDuration = System.currentTimeMillis();
+            screenFeedback(4);
+        }
+
+        Mat circles = new Mat();
+        double[] c;
+        Point center;
+        final int H_CORE = 0, S_CORE = 1, V_CORE = 2;
+        double[] rgb, rgb_min, hsvArr; // the circle's color.
+        final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
+
+        final int LINE_UPPER_BOUND = (int) (img.height() * LINE_UPPER_PERC), LINE_LOWER_BOUND = (int) (img.height() * LINE_LOWER_PERC);
+
+        ArrayList<Mat> resultHSV = toHSVImage(img);
+        Mat sMat = resultHSV.get(S_CORE);
+        Imgproc.HoughCircles(sMat, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 70, 32.0, 40, 70);
+
+
+        String orangeChecked = spBreath.getString("orange", null);
+        detectBlue = false;
+        detectGreen = false;
+        detectOrange = false;
+        requiredTime = getDuration();
+
+        for (int i = circles.width() - 1; i >= 0; i--) {
+            c = circles.get(0, i);
+            center = new Point(Math.round(c[0]), Math.round(c[1]));
+            int radius = (int) c[2];
+            rgb = img.get((int) center.x, (int) center.y);
+            rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
+
+            if (center.y > LINE_UPPER_BOUND && center.y < LINE_LOWER_BOUND) {
+                if (!detectGreen && center.x > first_line - radius && center.x < first_line + radius) {
+                    detectGreen = true;
+                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                    greenHeight.add(center.y);
+                } else if (!detectOrange && center.x > second_line - radius && center.x < second_line + radius) {
+                    detectOrange = true;
+                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                    orangeHeight.add(center.y);
+                    long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+                        if (orangeChecked.equals("true")) {
+                            if (!isUp) {
+                                screenFeedback(1);
+                                isUp = true;
+                                isRepEntirelyComplete = false;
+                                timeBallInAir = System.currentTimeMillis();
+                                breathAnimation();
+
+                            } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
+                                if (repCounter >= Integer.parseInt(repsNumTarget)) {
+                                    screenFeedback(3);
+                                } else {
+                                    screenFeedback(2);
+                                }
+
+                                playSoundSuccess();
+                                isRepEntirelyComplete = true;
+                                goodReputations++;
+                                orangeAirTime.add(1.0);
+
+                            }
+                        }
+
+                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
+                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                        screenFeedback(-1);
+                        if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                            screenFeedback(3);
+                        } else {
+                            screenFeedback(5);
+                        }
+
+                        isUp = false;
+                    }
+
+                    orangeInRange = true;
+                } else if (!detectBlue && center.x > third_line - radius && center.x < third_line + radius) {
+                    detectBlue = true;
+                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                    if (initialY == 0)
+                        initialY = (int) center.y;
+                    blueHeight.add(center.y);
+                    long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+                        if (orangeChecked.equals("false")) {
+                            if (!isUp) {
+                                screenFeedback(1);
+                                isUp = true;
+                                isRepEntirelyComplete = false;
+                                timeBallInAir = System.currentTimeMillis();
+                                breathAnimation();
+
+                            } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
+                                if (repCounter >= Integer.parseInt(repsNumTarget)) {
+                                    screenFeedback(3);
+                                } else {
+                                    screenFeedback(2);
+                                }
+                                playSoundSuccess();
+                                isRepEntirelyComplete = true;
+                                goodReputations++;
+                                blueAirTime.add(1.0);
+                            }
+
+                        }
+                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
+                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                        screenFeedback(-1);
+                        if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                            screenFeedback(3);
+                        } else {
+                            screenFeedback(5);
+                        }
+
+                        isUp = false;
+                    }
+
+                    blueInRange = true;
+                }
+            }
+        }
+    }
+
     public void initialize() {
         /* IMAGE PROCESSING VARIABLES */
         greenHeight = new ArrayList<Double>();
@@ -571,6 +611,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         started = false;
         hasanim = false;
         oldXscale = 1.0f;
+        allExrDuration = 0;
         duration = 0.0;
         repCounter = 0;
         blueDuration = 0;
@@ -588,52 +629,56 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
     }
 
-    public void repEnd() {
+    public void screenFeedback(int choice) {
+        /**
+         * -1 = repEnd
+         * 0 = feedbackDown,
+         * 1 = feedbackUp,
+         * 2 = feedbackAfterUp,
+         * 3= feedbackFinish;
+         */
         r = new Runnable() {
             @Override
             public void run() {
-                if (timeBallInAir >= requiredTime * 10L) repCounter++;
-                Message msg = new Message();
-                msg.what = repCounter;
-                handler1.sendMessage(msg);
-                int ballDuration = ballToUse == 3 ? blueDuration : orangeDuration;
-                double ballMaxHeight = getMaxHeight(ballToUse);
-                float prec = (float) Math.abs((ballMaxHeight) / (initialY - 256));
-//                repDuration.add((int)timeBallInAir);
-                int height = Math.min(((int) (prec * 100)), 100), normalized_height = 0;
-                if (height <= 100 && height >= 75) normalized_height = 100;
-                else if (height <= 75 && height >= 50) normalized_height = 75;
-                else if (height <= 50 && height >= 25) normalized_height = 50;
-                else if (height <= 25 && height >= 0) normalized_height = 25;
+                if (choice == -1) {
+                    if (timeBallInAir >= requiredTime * 10L) repCounter++;
+                    Message msg = new Message();
+                    msg.what = repCounter;
+                    handler1.sendMessage(msg);
+                    int ballDuration = ballToUse == 3 ? blueDuration : orangeDuration;
+                    double ballMaxHeight = getMaxHeight(ballToUse);
+                    float prec = (float) Math.abs((ballMaxHeight) / (initialY - 256));
+                    int height = Math.min(((int) (prec * 100)), 100), normalized_height = 0;
+                    if (height <= 100 && height >= 75) normalized_height = 100;
+                    else if (height <= 75 && height >= 50) normalized_height = 75;
+                    else if (height <= 50 && height >= 25) normalized_height = 50;
+                    else if (height <= 25 && height >= 0) normalized_height = 25;
 
-//                timeBallInAir = 0;
-                repDuration.add((int) timeBallInAir);
-                repMaxHeight.add(normalized_height);
+                    repDuration.add((int) timeBallInAir);
+                    repMaxHeight.add(normalized_height);
 
-                blueHeight.clear();
-                orangeHeight.clear();
-                orangeDuration = 0;
-                blueDuration = 0;
+                    blueHeight.clear();
+                    orangeHeight.clear();
+                    orangeDuration = 0;
+                    blueDuration = 0;
+                } else {
+                    Message msg = new Message();
+                    msg.what = -1;
+                    msg.arg1 = choice;
+                    handler1.sendMessage(msg);
+                }
             }
         };
         t = new Thread(r);
         t.start();
     }
 
-    public static void generateRandomfeed() {
-        Random random = new Random();
-        int r = random.nextInt((randomFeed.length - 1) - 0);
-        remarksText.setText(randomFeed[r]);
-    }
-
     /*
         Initialization of variables, properties and checking for permissions.
      */
     @SuppressLint("HandlerLeak")
-    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         initialize();
         setContentView(R.layout.activity_exercise_page);
         btnBack = findViewById(R.id.btnBack);
@@ -648,23 +693,32 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView6 = findViewById(R.id.cricleView6);
         remarksText = findViewById(R.id.remarkstext);
         tvRepetition = findViewById(R.id.tvRepetition);
-        randomFeed = getResources().getStringArray(R.array.feedback);
+
+        feedbackDown = getResources().getStringArray(R.array.feedbackDown);
+        feedbackUp = getResources().getStringArray(R.array.feedbackUp);
+        feedbackAfterUp = getResources().getStringArray(R.array.feedbackAfterUp);
+        feedbackFinish = getResources().getStringArray(R.array.feedbackFinish);
+        feedbackStart = getResources().getStringArray(R.array.feedbackStart);
         String str1 = String.valueOf(repCounter);
         String str2 = "/";
         spBreath = getSharedPreferences("settingsBreath", 0);
         String orangeChecked = spBreath.getString("orange", null);
-        String str3;
         if (orangeChecked.equals("true")) {
-            str3 = spBreath.getString("numberOfrepOrange", null);
+            repsNumTarget = spBreath.getString("numberOfrepOrange", null);
         } else {
-            str3 = spBreath.getString("numberOfrepBlue", null);
+            repsNumTarget = spBreath.getString("numberOfrepBlue", null);
         }
-        tvRepetition.setText(str1 + str2 + str3);
+        tvRepetition.setText(str1 + str2 + repsNumTarget);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mOpenCvCameraView = findViewById(R.id.HelloOpenCvView);
         blueHeightSetting = Integer.parseInt(spBreath.getString("difficultyBlue", null));
         orangeHeightSetting = Integer.parseInt(spBreath.getString("difficultyOrange", null));
-
+//        new Timer().scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                duration++;
+//            }
+//        }, 0, 1000);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             AudioAttributes aa = new AudioAttributes.Builder()
@@ -708,17 +762,21 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 int a = msg.what;
-                generateRandomfeed();
-                String str1 = String.valueOf(a);
-                String str2 = "/";
-                String orangeChecked = spBreath.getString("orange", null);
-                String str3;
-                if (orangeChecked.equals("true")) {
-                    str3 = spBreath.getString("numberOfrepOrange", null);
+                int arg = msg.arg1;
+                if (a == -1) {
+                    String[] arrfeedback = arg == 5 ? feedbackDown : arg == 1 ? feedbackUp : arg == 2 ? feedbackAfterUp : arg == 3 ? feedbackFinish : feedbackStart;
+                    showFeedback(arrfeedback);
                 } else {
-                    str3 = spBreath.getString("numberOfrepBlue", null);
+                    String str1 = String.valueOf(a);
+                    String str2 = "/";
+                    String orangeChecked = spBreath.getString("orange", null);
+                    if (orangeChecked.equals("true")) {
+                        repsNumTarget = spBreath.getString("numberOfrepOrange", null);
+                    } else {
+                        repsNumTarget = spBreath.getString("numberOfrepBlue", null);
+                    }
+                    tvRepetition.setText(str1 + str2 + repsNumTarget);
                 }
-                tvRepetition.setText(str1 + str2 + str3);
             }
         };
     }
