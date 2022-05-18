@@ -452,7 +452,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     private void getFrameData(Mat img, int first_line, int second_line, int third_line) {
         if (allExrDuration == 0) {
             allExrDuration = System.currentTimeMillis();
-//            screenFeedback(4);
+            screenFeedback(4);
         }
 
         Mat circles = new Mat();
@@ -512,7 +512,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                                 isRepEntirelyComplete = true;
                                 goodReputations++;
                                 orangeAirTime.add(1.0);
-//                                repEnd();
 
                             }
                         }
@@ -520,6 +519,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
                         timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
                         screenFeedback(-1);
+                        if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                            screenFeedback(3);
+                        } else {
+                            screenFeedback(5);
+                        }
 
                         isUp = false;
                     }
@@ -551,13 +555,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                                 isRepEntirelyComplete = true;
                                 goodReputations++;
                                 blueAirTime.add(1.0);
-
                             }
 
                         }
                     } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
                         timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
                         screenFeedback(-1);
+                        if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                            screenFeedback(3);
+                        } else {
+                            screenFeedback(5);
+                        }
 
                         isUp = false;
                     }
@@ -756,7 +764,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 int a = msg.what;
                 int arg = msg.arg1;
                 if (a == -1) {
-                    String[] arrfeedback = arg == 0 ? feedbackDown : arg == 1 ? feedbackUp : arg == 2 ? feedbackAfterUp : arg == 3 ? feedbackFinish : feedbackStart;
+                    String[] arrfeedback = arg == 5 ? feedbackDown : arg == 1 ? feedbackUp : arg == 2 ? feedbackAfterUp : arg == 3 ? feedbackFinish : feedbackStart;
                     showFeedback(arrfeedback);
                 } else {
                     String str1 = String.valueOf(a);
