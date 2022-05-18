@@ -547,7 +547,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         repMaxHeight = new ArrayList<>();
 
         timeBallInAir = 0;
-
     }
 
     public void repEnd() {
@@ -594,8 +593,19 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView6 = findViewById(R.id.cricleView6);
         remarksText = findViewById(R.id.remarkstext);
         tvRepetition = findViewById(R.id.tvRepetition);
-        tvRepetition.setText(String.valueOf(repCounter));
+        String str1 = String.valueOf(repCounter);
+        String str2 = "/";
         spBreath = getSharedPreferences("settingsBreath", 0);
+        String orangeChecked = spBreath.getString("orange", null);
+        String str3;
+        if (orangeChecked.equals("true")) {
+            str3= spBreath.getString("numberOfrepOrange", null);
+        }
+        else
+        {
+            str3= spBreath.getString("numberOfrepBlue", null);
+        }
+        tvRepetition.setText(str1+str2+str3);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mOpenCvCameraView = findViewById(R.id.HelloOpenCvView);
         blueHeightSetting = Integer.parseInt(spBreath.getString("difficultyBlue", null));
@@ -618,7 +628,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         coin = sp.load(this, R.raw.sucssessound, 1);
 
         verifyPermissions();
-        String orangeChecked = spBreath.getString("orange", null);
+//        String orangeChecked = spBreath.getString("orange", null);
         if (orangeChecked.equals("true")) {
             ballToUse = 2;
         } else
@@ -661,7 +671,18 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 int a = msg.what;
-                tvRepetition.setText(String.valueOf(a));
+                String str1 = String.valueOf(a);
+                String str2 = "/";
+                String orangeChecked = spBreath.getString("orange", null);
+                String str3;
+                if (orangeChecked.equals("true")) {
+                    str3= spBreath.getString("numberOfrepOrange", null);
+                }
+                else
+                {
+                    str3= spBreath.getString("numberOfrepBlue", null);
+                }
+                tvRepetition.setText(str1+str2+str3);
             }
         };
     }
