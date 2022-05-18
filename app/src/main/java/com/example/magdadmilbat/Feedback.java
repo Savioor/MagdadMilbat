@@ -110,11 +110,11 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
         String targetBall = balldata == 3 ? "numberOfrepBlue" : balldata == 2 ? "numberOfrepOrange" :null;
         targetrep = Integer.parseInt(spBreath.getString(targetBall,null));
         if(repsSuccess >= targetrep){
-            tvfeed.setText("כל הכבוד!");
+            tvfeed.setText("עבודה מעולה!");
             tvsubfeed.setText("הגעת ליעד שהצבת לעצמך!");
         }else if (repsSuccess < targetrep){
-            tvfeed.setText("עבודה טובה");
-            tvsubfeed.setText("נסה שוב להגיע ליעד");
+            tvfeed.setText("כל הכבוד על המאמץ!");
+            tvsubfeed.setText("פעם הבאה נעמוד ביעד");
         }
     }
 

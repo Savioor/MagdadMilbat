@@ -68,7 +68,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         // set the range of the slider (min & max)
         sbLevel.setMin(1);
         sbRepetition.setMin(1);
-        sbLevel.setMax(3);
+        sbLevel.setMax(10);
         sbRepetition.setMax(50);
 
         // Sets the SharedPreferences "settingsBreath"
