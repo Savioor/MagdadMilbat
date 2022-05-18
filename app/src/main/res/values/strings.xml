@@ -20,14 +20,30 @@
     <string name="duration_rep">משך חזרה</string>
     <string name="save">שמור</string>
     <string name="good_job">עבודה טובה!</string>
-    <string name="breath">נשיפה עמוקה...</string>
+    <string name="breath">צריך לסדר את המעמד...</string>
 
-    <string-array name="feedback">
+    <string-array name="feedbackDown">
         <item>מדהים!</item>
         <item>לא לשכוח לקחת הפסקות מידי פעם:)</item>
         <item>רק עוד קצת!</item>
         <item>עבודה טובה!</item>
         <item>כל הכבוד!</item>
+    </string-array>
+
+    <string-array name="feedbackUp">
+        <item>להשאיר את הכדור!</item>
+    </string-array>
+
+    <string-array name="feedbackAfterUp">
+        <item>סיימת חזרה…</item>
+    </string-array>
+
+    <string-array name="feedbackFinish">
+        <item>סיימת את האימון בהצלחה!</item>
+    </string-array>
+
+    <string-array name="feedbackStart">
+        <item>אפשר להתחיל באימון</item>
     </string-array>
 
 </resources>

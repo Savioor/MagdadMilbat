@@ -29,7 +29,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
     Button btnBack;
     TextView alertTv;
     AlertDialog d;
-    int idItem ;
+    int idItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +47,23 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
     }
 
     /**
+     * This function gets a training duration and makes a string format
+     *
+     * @param time Training duration in double
+     * @return String on format minute:second
+     */
+    @SuppressLint("DefaultLocale")
+    public static String formatDuration(double time) {
+        int roundDuration = (int) Math.round(time);
+        String str;
+        //Convert units time second and minute
+        int sec = ((roundDuration % 864000) % 3600) % 60;
+        int min = ((roundDuration % 864000) % 3600) / 60;
+        str = String.format("%02d", min) + ":" + String.format("%02d", sec);
+        return str;
+    }
+
+    /**
      * populate the history page
      */
     private void loadHistory() {
@@ -54,7 +71,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
         // Reverses the order of the list
         Collections.reverse(trainings);
         // If there is no trainings data, display a relevant message
-        if(trainings.isEmpty()){
+        if (trainings.isEmpty()) {
             alertTv.setText("אין אימונים ברשימה");
             alertTv.setVisibility(View.VISIBLE);
             return;
@@ -67,19 +84,19 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
     /**
      * This func open the exercise details page
      * All required parameters are transmitted using intent
+     *
      * @param i index of item
      */
     @SuppressLint("WrongConstant")
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-        if(trainings.isEmpty())
-        {
+        if (trainings.isEmpty()) {
             Toast.makeText(this, "There is no training in the list!", Toast.LENGTH_SHORT).show();
-        }
-        else {
+        } else {
             Training curr = trainings.get(i);
             Intent intentDetails = new Intent(this, exercise_details.class);
-            int grade = (int)(((1.0*curr.getTrainingQuality())/(1.0*curr.getTarget()))*100.0);
+            int grade = (int) (((1.0 * curr.getTrainingQuality()) / (1.0 * curr.getTarget())) * 100.0);
+            grade = Math.min(grade, 100);
 
             intentDetails.putExtra("quality", String.valueOf(grade));
             intentDetails.putExtra("date", curr.getDate());
@@ -95,8 +112,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
 
     @Override
     public void onClick(View view) {
-        if (view == btnBack)
-        {
+        if (view == btnBack) {
             // returns to the main page when click on the back button
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -108,35 +124,20 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
      * right button will delete the workout
      * left button will cancel the operation
      */
-    public void showAlertDialog(){
+    public void showAlertDialog() {
         AlertDialog.Builder a = new AlertDialog.Builder(this);
         a.setTitle("מחיקת אימון");
         a.setMessage("האם ברצונך למחוק את האימון?");
         a.setCancelable(false);
         a.setPositiveButton("מחק", new HandleAlertDialogListener()); // right
         a.setNegativeButton("ביטול", new HandleAlertDialogListener()); // left
-        d=a.create();
+        d = a.create();
         d.show();
     }
 
     /**
-     * This function gets a training duration and makes a string format
-     * @param time Training duration in double
-     * @return String on format minute:second
-     */
-    @SuppressLint("DefaultLocale")
-    public static String formatDuration(double time){
-        int roundDuration = (int) Math.round(time);
-        String str;
-        //Convert units time second and minute
-        int sec = ((roundDuration % 864000) % 3600) % 60;
-        int min = ((roundDuration % 864000) % 3600) / 60;
-        str =  String.format("%02d",min) + ":" + String.format("%02d",sec);
-        return str;
-    }
-
-    /**
      * func that displays a dialog run when a long click on an item is detected
+     *
      * @param position of item
      */
     @Override
@@ -155,15 +156,15 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
          */
         @SuppressLint("WrongConstant")
         public void onClick(DialogInterface dialog, int which) {
-            if(which == -2){ // -2 cancel the operation
+            if (which == -2) { // -2 cancel the operation
                 d.dismiss();
             }
-            if(which == -1){ // -1 cancel the operation
+            if (which == -1) { // -1 cancel the operation
                 trainings.remove(idItem);
                 adap = new TrainingListAdapter(HistoryPage.this, R.layout.list_item, trainings);
                 lv.setAdapter(adap);
                 d.dismiss();
             }
         }
-}
+    }
 }
