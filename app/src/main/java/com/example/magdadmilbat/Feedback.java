@@ -129,6 +129,9 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
             String timeObj = LocalTime.now()
                     .truncatedTo(ChronoUnit.SECONDS)
                     .format(DateTimeFormatter.ISO_LOCAL_TIME);
+//            String maxs = spBreath.getString("numberOfrepBlue", null);
+//            int max = Integer.parseInt(maxs);
+//            int grade =repsSuccess/max;
             Training exerciseObj = new Training(dateObj.toString(), timeObj, "נשיפה עמוקה", repsSuccess, duration, formatDouble2db(repDuration), format2db(repMaxHeight),balldata, targetrep);
             DatabaseManager dbObj = new DatabaseManager(Feedback.this);
             dbObj.addTraining(exerciseObj);
