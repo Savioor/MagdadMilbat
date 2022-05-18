@@ -2,6 +2,7 @@ package com.example.magdadmilbat;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,8 +44,6 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {
     Button btnBack, btnFeedback;
@@ -82,6 +81,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     Mat circles;
     boolean isDone = false;
     static double greenBallFrames = 0, blueBallFrames = 0, orangeBallFrames = 0;
+
+
+    static boolean isRepEntirelyComplete = false;
 
     /* ANIMATION VARIABLES */
     boolean started = false;
@@ -126,93 +128,14 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         }
     };
 
-    /**
-     * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
-     *
-     * @param img the frame we analyze.
-     * @return the initial Y axis position.
-     */
-    private static void getFrameData(Mat img, int first_line, int second_line, int third_line) {
-        Mat circles = new Mat();
-        double[] c;
-        Point center;
-        final int H_CORE = 0, S_CORE = 1, V_CORE = 2;
-        double[] rgb, rgb_min, hsvArr; // the circle's color.
-        final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
-
-        final int LINE_UPPER_BOUND = (int) (img.height() * LINE_UPPER_PERC), LINE_LOWER_BOUND = (int) (img.height() * LINE_LOWER_PERC);
-
-        ArrayList<Mat> resultHSV = toHSVImage(img);
-        Mat sMat = resultHSV.get(S_CORE);
-        Imgproc.HoughCircles(sMat, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 70, 32.0, 40, 70);
-
-
-        String orangeChecked = spBreath.getString("orange", null);
-        detectBlue = false;
-        detectGreen = false;
-        detectOrange = false;
-
-        for (int i = 0; i < circles.width(); i++) {
-            c = circles.get(0, i);
-            center = new Point(Math.round(c[0]), Math.round(c[1]));
-            int radius = (int) c[2];
-            rgb = img.get((int) center.x, (int) center.y);
-            rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
-
-            if (center.y > LINE_UPPER_BOUND && center.y < LINE_LOWER_BOUND) {
-                if (!detectGreen && center.x > first_line - radius && center.x < first_line + radius) {
-                    detectGreen = true;
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    greenHeight.add(center.y);
-                } else if (!detectOrange && center.x > second_line - radius && center.x < second_line + radius) {
-                    detectOrange = true;
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    orangeHeight.add(center.y);
-                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-                        if (orangeChecked.equals("true")) {
-                            if (!isUp) {
-                                orangeAirTime.add(1.0); // TODO: make it a counter.
-                                isUp = true;
-                                timeBallInAir = System.currentTimeMillis();
-                                breathAnimation();
-                            }
-                        }
-                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
-                        isUp = false;
-                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                        if (timeBallInAir >= requiredTime) goodReputations++;
-                    }
-
-                    orangeInRange = true;
-                } else if (!detectBlue && center.x > third_line - radius && center.x < third_line + radius) {
-                    detectBlue = true;
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    if (initialY == 0)
-                        initialY = (int) center.y;
-                    blueHeight.add(center.y);
-                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-                        if (orangeChecked.equals("false")) {
-                            if (!isUp) {
-                                blueAirTime.add(1.0);
-                                isUp = true;
-                                timeBallInAir = System.currentTimeMillis();
-                                breathAnimation();
-
-                            }
-                        }
-                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
-                        isUp = false;
-                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                        if (timeBallInAir >= requiredTime) {
-                            goodReputations++;
-                        }
-
-
-                    }
-                    blueInRange = true;
-                }
-            }
+    public static int repsSuccess(int color) {
+        int numOfReps = 0;
+        ArrayList<Double> temp = color == 1 ? greenAirTime : color == 3 ? blueAirTime : color == 2 ? orangeAirTime : null; // gets the correct array list according to the color.
+        try {
+            numOfReps = temp.size();
+        } catch (Exception ignored) {
         }
+        return numOfReps;
     }
 
     public static void breathAnimation() {
@@ -245,7 +168,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         animTrans.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
-                playSoundSuccess();
             }
 
             @Override
@@ -291,7 +213,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         drawLine(frame, new Point(0, height * LINE_LOWER_PERC), new Point(width, height * LINE_LOWER_PERC));
 //        drawLine(frame, new Point(0, 600), new Point(width, 600));
     }
-
 
     private void verifyPermissions() {
         Log.d(TAG, "verifyPermissions: asking user for permission");
@@ -401,18 +322,127 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         return numOfReps == greenAirTime.size();
     }
 
-    public static int repsSuccess(int color) {
-        return goodReputations;
-
+    public static int getDuration() {
+        String str = spBreath.getString("duration", null);
+        return Integer.parseInt(str);
+//        try {
+//            return Integer.parseInt(spBreath.getString("duration", null));
+//        } catch (Exception e) {
+//            return 1;
+//        }
     }
 
     public static int getDifficulty() {
         return Integer.parseInt(spBreath.getString("difficulty", null));
     }
 
-    public static int getDuration() {
-//        return Integer.parseInt(spBreath.getString("duration", null));
-        return 2;
+    /**
+     * This function takes the first frame and gets the initial position of the balls. It returns the initial Y axis position.
+     *
+     * @param img the frame we analyze.
+     * @return the initial Y axis position.
+     */
+    private void getFrameData(Mat img, int first_line, int second_line, int third_line) {
+        Mat circles = new Mat();
+        double[] c;
+        Point center;
+        final int H_CORE = 0, S_CORE = 1, V_CORE = 2;
+        double[] rgb, rgb_min, hsvArr; // the circle's color.
+        final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
+
+        final int LINE_UPPER_BOUND = (int) (img.height() * LINE_UPPER_PERC), LINE_LOWER_BOUND = (int) (img.height() * LINE_LOWER_PERC);
+
+        ArrayList<Mat> resultHSV = toHSVImage(img);
+        Mat sMat = resultHSV.get(S_CORE);
+        Imgproc.HoughCircles(sMat, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 70, 32.0, 40, 70);
+
+
+        String orangeChecked = spBreath.getString("orange", null);
+        detectBlue = false;
+        detectGreen = false;
+        detectOrange = false;
+        requiredTime = getDuration();
+
+        for (int i = circles.width() - 1; i >= 0; i--) {
+            c = circles.get(0, i);
+            center = new Point(Math.round(c[0]), Math.round(c[1]));
+            int radius = (int) c[2];
+            rgb = img.get((int) center.x, (int) center.y);
+            rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
+
+            if (center.y > LINE_UPPER_BOUND && center.y < LINE_LOWER_BOUND) {
+                if (!detectGreen && center.x > first_line - radius && center.x < first_line + radius) {
+                    detectGreen = true;
+                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                    greenHeight.add(center.y);
+                } else if (!detectOrange && center.x > second_line - radius && center.x < second_line + radius) {
+                    detectOrange = true;
+                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                    orangeHeight.add(center.y);
+                    long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+                        if (orangeChecked.equals("true")) {
+                            if (!isUp) {
+                                isUp = true;
+                                isRepEntirelyComplete = false;
+                                timeBallInAir = System.currentTimeMillis();
+                                breathAnimation();
+
+                            } else if (!isRepEntirelyComplete && temp_timeBallInAir >= requiredTime * 10L) {
+                                playSoundSuccess();
+                                isRepEntirelyComplete = true;
+                                goodReputations++;
+                                orangeAirTime.add(1.0);
+//                                repEnd();
+
+                            }
+                        }
+
+                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
+                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                        repEnd();
+
+                        isUp = false;
+                    }
+
+                    orangeInRange = true;
+                } else if (!detectBlue && center.x > third_line - radius && center.x < third_line + radius) {
+                    detectBlue = true;
+                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
+                    if (initialY == 0)
+                        initialY = (int) center.y;
+                    blueHeight.add(center.y);
+                    long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+                        if (orangeChecked.equals("false")) {
+                            if (!isUp) {
+                                isUp = true;
+                                isRepEntirelyComplete = false;
+                                timeBallInAir = System.currentTimeMillis();
+                                breathAnimation();
+
+                            } else if (!isRepEntirelyComplete && temp_timeBallInAir >= requiredTime * 10L) {
+                                playSoundSuccess();
+                                isRepEntirelyComplete = true;
+//                                timeBallInAir = temp_timeBallInAir;
+                                goodReputations++;
+                                blueAirTime.add(1.0);
+//                                repEnd();
+
+                            }
+
+                        }
+                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
+                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                        repEnd();
+
+                        isUp = false;
+                    }
+
+                    blueInRange = true;
+                }
+            }
+        }
     }
 
     private static void drawLine(Mat img, Point p1, Point p2) {
@@ -551,10 +581,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         blueInRange = false;
         repDuration = new ArrayList<>();
         repMaxHeight = new ArrayList<>();
-        requiredTime = getDuration();
+        requiredTime = 1;
         timeBallInAir = 0;
 
-        goodReputations = 0;
+        isRepEntirelyComplete = false;
+
 
     }
 
@@ -562,7 +593,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         r = new Runnable() {
             @Override
             public void run() {
-                repCounter++;
+                if (timeBallInAir >= requiredTime * 10L) repCounter++;
                 Message msg = new Message();
                 msg.what = repCounter;
                 handler1.sendMessage(msg);
@@ -576,8 +607,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 else if (height <= 50 && height >= 25) normalized_height = 50;
                 else if (height <= 25 && height >= 0) normalized_height = 25;
 
+//                timeBallInAir = 0;
                 repDuration.add((int) timeBallInAir);
-
                 repMaxHeight.add(normalized_height);
 
                 blueHeight.clear();
@@ -593,6 +624,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     /*
         Initialization of variables, properties and checking for permissions.
      */
+    @SuppressLint("HandlerLeak")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -611,8 +643,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView6 = findViewById(R.id.cricleView6);
         remarksText = findViewById(R.id.remarkstext);
         tvRepetition = findViewById(R.id.tvRepetition);
-        tvRepetition.setText(String.valueOf(repCounter));
+        String str1 = String.valueOf(repCounter);
+        String str2 = "/";
         spBreath = getSharedPreferences("settingsBreath", 0);
+        String orangeChecked = spBreath.getString("orange", null);
+        String str3;
+        if (orangeChecked.equals("true")) {
+            str3 = spBreath.getString("numberOfrepOrange", null);
+        } else {
+            str3 = spBreath.getString("numberOfrepBlue", null);
+        }
+        tvRepetition.setText(str1 + str2 + str3);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         mOpenCvCameraView = findViewById(R.id.HelloOpenCvView);
         blueHeightSetting = Integer.parseInt(spBreath.getString("difficultyBlue", null));
@@ -635,7 +676,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         coin = sp.load(this, R.raw.sucssessound, 1);
 
         verifyPermissions();
-        String orangeChecked = spBreath.getString("orange", null);
+//        String orangeChecked = spBreath.getString("orange", null);
         if (orangeChecked.equals("true")) {
             ballToUse = 2;
         } else
@@ -644,7 +685,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         CountDownTimer count = new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long l) {
-                return;
             }
 
             @Override
@@ -654,31 +694,41 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         };
         count.start();
 
-        new Timer().scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                duration++;
-
-                if (repsSuccess(ballToUse) > repCounter) {
-                    repEnd();
-                }
-
-                if (blueInRange) {
-                    blueDuration++;
-                }
-                if (orangeInRange) {
-                    orangeDuration++;
-                }
-            }
-        }, 0, 1000);
+//        new Timer().scheduleAtFixedRate(new TimerTask() {
+//            @Override
+//            public void run() {
+//                duration++;
+//
+//                if (repsSuccess(ballToUse) > repCounter) {
+//                    repEnd();
+//                }
+//
+//                if (blueInRange) {
+//                    blueDuration++;
+//                }
+//                if (orangeInRange) {
+//                    orangeDuration++;
+//                }
+//            }
+//        }, 0, 1000);
         startWaitingAnim();
 
         handler1 = new Handler() {
+            @SuppressLint("SetTextI18n")
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
                 int a = msg.what;
-                tvRepetition.setText(String.valueOf(a));
+                String str1 = String.valueOf(a);
+                String str2 = "/";
+                String orangeChecked = spBreath.getString("orange", null);
+                String str3;
+                if (orangeChecked.equals("true")) {
+                    str3 = spBreath.getString("numberOfrepOrange", null);
+                } else {
+                    str3 = spBreath.getString("numberOfrepBlue", null);
+                }
+                tvRepetition.setText(str1 + str2 + str3);
             }
         };
     }
