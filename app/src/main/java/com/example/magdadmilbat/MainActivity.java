@@ -14,6 +14,7 @@ import com.example.MagdadMilbat.R;
 // important web-site cheats - https://github.com/quickbirdstudios/opencv-android
 import org.opencv.android.OpenCVLoader;
 
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnStartExercise, btnHistory, btnSettings;
     SharedPreferences spSetApp;
@@ -23,6 +24,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        String DEFAULT_REPS = "10";
+        String DEFAULT_DIFFICULTY = "3";
+        String DEFAULT_TIME = "3";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -35,12 +39,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // set default values for application settings
         if(isFirstLaunch == null){
             SharedPreferences.Editor editor2 = spBreath.edit();
-            editor2.putString("numberOfrepBlue", "1");
-            editor2.putString("difficultyBlue", "1");
-            editor2.putString("numberOfrepOrange", "1");
-            editor2.putString("difficultyOrange", "1");
+            editor2.putString("numberOfrepBlue", DEFAULT_REPS);
+            editor2.putString("difficultyBlue", DEFAULT_DIFFICULTY);
+            editor2.putString("numberOfrepOrange", DEFAULT_REPS);
+            editor2.putString("difficultyOrange", DEFAULT_DIFFICULTY);
             editor2.putString("orange", "false");
-            editor2.putString("duration", "5");
+            editor2.putString("duration", DEFAULT_TIME);
             editor2.putString("date", "1");
             editor2.putString("hour", "1");
             editor2.apply();

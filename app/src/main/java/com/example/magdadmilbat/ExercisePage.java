@@ -235,8 +235,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         animTrans.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation) {
-                playSoundSuccess();
+            public void onAnimationStart(Animation animation){
+            playSoundSuccess();
+            getDuration();
             }
 
             @Override
@@ -407,7 +408,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     }
 
     public static int getDuration() {
-        return Integer.parseInt(spBreath.getString("duration", null));
+        String str = spBreath.getString("duration", null);
+        return Integer.parseInt(str);
     }
 
     private static void drawLine(Mat img, Point p1, Point p2) {
@@ -611,6 +613,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         mOpenCvCameraView = findViewById(R.id.HelloOpenCvView);
         blueHeightSetting = Integer.parseInt(spBreath.getString("difficultyBlue", null));
         orangeHeightSetting = Integer.parseInt(spBreath.getString("difficultyOrange", null));
+
 
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
