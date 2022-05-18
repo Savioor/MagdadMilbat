@@ -41,7 +41,7 @@ public class RepsListAdapter  extends ArrayAdapter<Repetition> {
         TextView tvrepduration = convertView.findViewById(R.id.tvrepduration);
         TextView tvmaxheight = convertView.findViewById(R.id.tvmaxheight);
 
-        tvrepnum.setText("חזרה "+repnum);
+        tvrepnum.setText("חזרה "+repnum); // displays the rep number
         tvrepduration.setText(repduration+" שניות ");
         tvmaxheight.setText(maxheight+"%");
         return convertView;

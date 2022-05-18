@@ -10,12 +10,9 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,13 +26,15 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
     EditText etDuration;
     CheckBox b1,b2;
     ScrollView sv;
-    ImageView ivRight,ivLeft;
+    ImageView ivRight,ivLeft; //Arrows right, and left
     boolean blue = true,orange = false;
     boolean blueball = true , orangeball = false;
     SharedPreferences spBreath;
-    int sbLevelNumberBlue = 1; //difficulty level
-    int sbRepNumberBlue = 1;
+    //difficulty level
+    int sbLevelNumberBlue = 1;
     int sbLevelNumberOrange = 1;
+    // number of repetitions
+    int sbRepNumberBlue = 1;
     int sbRepNumberOrange = 1;
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -110,9 +109,10 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
     }
 
-
-//   * returns to the main page when click on the back button.
-//   * if btnSave clicked ,save the "settingsBreath" on SharedPreferences.
+    /**
+     * returns to the main page when click on the back button.
+     * if btnSave clicked ,save the "settingsBreath" on SharedPreferences.
+     */
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onClick(View view) {
@@ -143,14 +143,15 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             startActivity(intent);
         }
 
+        // navigate between the two balls
         if(view == ivRight){
             blueball = true;
             orangeball = false;
             sbRepetition.setEnabled(blue);
             sbLevel.setEnabled(blue);
             etDuration.setEnabled(blue);
-            sv.smoothScrollTo( 0, b1.getTop());
-            if(orange == true){
+            sv.smoothScrollTo( 0, b1.getTop()); //Navigates to the blue ball
+            if(orange){
                 sbRepNumberBlue = sbRepNumberOrange;
                 sbLevelNumberBlue = sbLevelNumberOrange;
             }
@@ -164,20 +165,24 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
             sbRepetition.setEnabled(orange);
             sbLevel.setEnabled(orange);
             etDuration.setEnabled(orange);
-            sv.smoothScrollTo(0, b2.getTop());
+            sv.smoothScrollTo(0, b2.getTop());//Navigates to the orange ball
             sbLevel.setProgress(sbLevelNumberOrange);
             sbRepetition.setProgress(sbRepNumberOrange);
         }
     }
 
-    //if slider level change, update the difficulty level setting
-    //if slider Repetition change,update the "number Of Repetition" setting
+    /**
+     * if slider level change, update the difficulty level setting
+     * if slider Repetition change,update the "number Of Repetition" setting
+     * @param seekBar the seekbar that Changed
+     * @param i Updated value
+     */
     @Override
     public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
         if (seekBar == sbLevel)
         {
             tvLevelNumber.setText(String.valueOf(i));
-            if(orangeball){
+            if(orangeball){ // Checking which ball to refer to
                 sbLevelNumberOrange = i;
             }else if(blueball){
                 sbLevelNumberBlue = i;
@@ -205,8 +210,14 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
 
     }
 
+    /**
+     * this func run when checkBox change
+     * @param buttonView the checkBox view
+     * @param isChecked if the checkBox is Checked
+     */
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        // If b1 changes, update the values of the blue ball
         if(buttonView == b1){
             blue = isChecked;
             if(blueball){
@@ -215,6 +226,7 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
                 etDuration.setEnabled(blue);
             }
         }
+        // If b1 changes, update the values of the orange ball
         if(buttonView == b2){
             orange = isChecked;
             if(orangeball){

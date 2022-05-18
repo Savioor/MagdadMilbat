@@ -1,9 +1,9 @@
 package com.example.magdadmilbat;
 
 public class Repetition {
-    private int number;
-    private Double repDuration;
-    private int maxHeight;
+    private int number; // index of Repetition
+    private Double repDuration; // The duration the ball was in the air
+    private int maxHeight; // max height of ball in repetition
 
     public Repetition(int number, Double repDuration, int maxHeight) {
         this.number = number;
