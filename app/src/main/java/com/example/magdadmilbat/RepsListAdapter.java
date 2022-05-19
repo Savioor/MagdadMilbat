@@ -34,12 +34,15 @@ public class RepsListAdapter  extends ArrayAdapter<Repetition> {
         String repnum = String.valueOf(getItem(position).getNumber());
         String repduration = String.valueOf(getItem(position).getRepduration());
         String maxheight = String.valueOf(getItem(position).getMaxHeight());
+        boolean target = getItem(position).isTarget();
 
         LayoutInflater inflater = LayoutInflater.from(mContext);
         convertView = inflater.inflate(mResource, parent, false);
         TextView tvrepnum = convertView.findViewById(R.id.tvrepnum);
         TextView tvrepduration = convertView.findViewById(R.id.tvrepduration);
         TextView tvmaxheight = convertView.findViewById(R.id.tvmaxheight);
+        int colorType = target ? convertView.getResources().getColor(R.color.success) : convertView.getResources().getColor(R.color.yellow);
+        convertView.setBackgroundColor(colorType);
 
         tvrepnum.setText("חזרה "+repnum); // displays the rep number
         tvrepduration.setText(repduration+" שניות ");

@@ -4,11 +4,13 @@ public class Repetition {
     private int number; // index of Repetition
     private Double repDuration; // The duration the ball was in the air
     private int maxHeight; // max height of ball in repetition
+    private boolean target;
 
-    public Repetition(int number, Double repDuration, int maxHeight) {
+    public Repetition(int number, Double repDuration, int maxHeight,boolean target) {
         this.number = number;
         this.repDuration = repDuration;
         this.maxHeight = maxHeight;
+        this.target = target;
     }
 
     public int getNumber() {
@@ -33,6 +35,14 @@ public class Repetition {
 
     public void setMaxHeight(int maxHeight) {
         this.maxHeight = maxHeight;
+    }
+
+    public boolean isTarget() {
+        return target;
+    }
+
+    public void setTarget(boolean target) {
+        this.target = target;
     }
 
     @Override

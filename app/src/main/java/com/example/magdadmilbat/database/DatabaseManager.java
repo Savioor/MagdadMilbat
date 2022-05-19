@@ -35,14 +35,14 @@ public static final String TABLE_NAME = "Training";
     private void createTrainingTable(SQLiteDatabase sqLiteDatabase)
     {
         String sql = "Create table Training (id integer primary key autoincrement, exerciseDescription text not null," +
-                " trainingQuality integer not null, date text not null, time text not null, duration double not null, repsDuration text not null, repsMaxHeight text not null, balldata integer not null, target integer not null)";
+                " trainingQuality integer not null, date text not null, time text not null, duration double not null, repsDuration text not null, repsMaxHeight text not null, balldata integer not null, target integer not null, targetDuration double not null)";
         sqLiteDatabase.execSQL(sql);
     }
 
     /** This function adds the value of the training it receives to the training table **/
     public void addTraining(Training training) {
-        String sql = "insert into Training(date, time, exerciseDescription, trainingQuality, duration, repsDuration, repsMaxHeight, balldata, target) " +
-                "values ('"+training.getDate() + "','" + training.getTime() + "','" + training.getExerciseDescription() + "','"+ training.getTrainingQuality() + "','"+ training.getDuration() + "','"+training.getRepDuration()+"','" +training.getRepMaxHeight()+"','"+training.getBalldata()+"','"+training.getTarget()+"')";
+        String sql = "insert into Training(date, time, exerciseDescription, trainingQuality, duration, repsDuration, repsMaxHeight, balldata, target, targetDuration) " +
+                "values ('"+training.getDate() + "','" + training.getTime() + "','" + training.getExerciseDescription() + "','"+ training.getTrainingQuality() + "','"+ training.getDuration() + "','"+training.getRepDuration()+"','" +training.getRepMaxHeight()+"','"+training.getBalldata()+"','"+training.getTarget()+"','"+training.getTargetDuration()+"')";
         SQLiteDatabase sqLiteDatabase = getWritableDatabase(); // Open connection.
         sqLiteDatabase.execSQL(sql);
         sqLiteDatabase.close(); // Close connection.
@@ -78,6 +78,7 @@ public static final String TABLE_NAME = "Training";
         int repsMaxHeightI = cursor.getColumnIndex("repsMaxHeight");
         int balldataI = cursor.getColumnIndex("balldata");
         int targetI = cursor.getColumnIndex("target");
+        int targetDurationI = cursor.getColumnIndex("targetDuration");
         int trainingQuality = cursor.getInt(trainingQualityI);
         double duration = cursor.getDouble(durationI);
         String exerciseDescription = cursor.getString(exerciseDescriptionI);
@@ -87,7 +88,8 @@ public static final String TABLE_NAME = "Training";
         String repsMaxHeight = cursor.getString(repsMaxHeightI);
         int balldata = cursor.getInt(balldataI);
         int target = cursor.getInt(targetI);
-        return new Training(date, time, exerciseDescription, trainingQuality,duration,repsDuration,repsMaxHeight,balldata,target);
+        double targetDuration = cursor.getInt(targetDurationI);
+        return new Training(date, time, exerciseDescription, trainingQuality,duration,repsDuration,repsMaxHeight,balldata,target, targetDuration);
     }
 
 /**

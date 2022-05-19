@@ -106,6 +106,8 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
             intentDetails.putExtra("repDuration", curr.getRepDuration());
             intentDetails.putExtra("repMaxHeight", curr.getRepMaxHeight());
             intentDetails.putExtra("balluse", curr.getBalldata());
+            intentDetails.putExtra("targetDuration", curr.getTargetDuration());
+            intentDetails.putExtra("targetMH", curr.getTarget());
             startActivity(intentDetails);
         }
     }

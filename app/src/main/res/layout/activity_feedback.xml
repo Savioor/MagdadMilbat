@@ -1,71 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/blurry_dark_blue"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="vertical">
+    >
 
-  <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="match_parent">
+    <nl.dionsegijn.konfetti.xml.KonfettiView
+        android:id="@+id/konfettiView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        >
-      <TextView
-          android:id="@+id/greenAirTime"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_marginTop="25dp"
-          android:text=""
-          android:textSize="20sp" />
+        android:gravity="center"
+        android:orientation="vertical">
 
-      <TextView
-          android:id="@+id/blueAirTime"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_marginTop="25dp"
-          android:text=""
-          android:textSize="20sp" />
-      <TextView
-          android:id="@+id/orangeAirTime"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_marginTop="25dp"
-          android:text=""
-          android:textSize="20sp" />
-      <TextView
-          android:id="@+id/feed"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_marginTop="50dp"
-          android:textStyle="bold"
-          android:text="@string/good_job"
-          android:textSize="40sp" />
-      <TextView
-          android:id="@+id/subfeed"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:layout_gravity="center"
-          android:layout_marginTop="15dp"
-          android:text=""
-          android:textSize="20sp" />
+        <RelativeLayout
+            android:layout_width="190dp"
+            android:layout_height="190dp"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center">
 
-      <Button
-          android:id="@+id/btnBackMain2"
-          android:layout_width="277dp"
-          android:layout_height="109dp"
-          android:layout_gravity="center"
-          android:layout_marginTop="75dp"
-          android:text="@string/back"
-          android:textSize="30dp" />
+
+            <ProgressBar
+                android:id="@+id/pbfeedback"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="190dp"
+                android:layout_height="190dp"
+                android:background="@drawable/cricle_shape_2"
+                android:indeterminate="false"
+                android:indeterminateDrawable="@drawable/circular_pb_feedback"
+                android:max="10"
+                android:progress="0"
+                android:progressDrawable="@drawable/circular_pb_feedback" />
+
+            <TextView
+                android:id="@+id/tvprogress"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:layout_weight="66.6"
+                android:gravity="center"
+                android:text="10"
+                android:textSize="20dp"
+                android:textAlignment="center"
+                android:textColor="@color/white"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/feed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="50dp"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:text="@string/good_job"
+            android:textSize="30sp" />
+        <TextView
+            android:id="@+id/subfeed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="20sp" />
+
+        <Button
+            android:id="@+id/btnBackMain2"
+            android:layout_width="match_parent"
+            android:layout_marginHorizontal="60dp"
+            android:paddingVertical="10dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            app:cornerRadius="25dp"
+            android:textStyle="bold"
+            android:layout_marginTop="75dp"
+            android:text="@string/back"
+            android:backgroundTint="#4a7bf8"
+            android:textSize="25dp" />
     </LinearLayout>
-  </ScrollView>
-</LinearLayout>
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
 

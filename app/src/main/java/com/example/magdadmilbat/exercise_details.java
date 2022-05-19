@@ -25,6 +25,8 @@ public class exercise_details extends AppCompatActivity implements View.OnClickL
     ListView lvReps;
     String strballuse = "";
     SharedPreferences spBreath;
+    double targetDuration;
+    int targetMH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class exercise_details extends AppCompatActivity implements View.OnClickL
         btnBack.setOnClickListener(this);
         repDuration = intent.getExtras().getString("repDuration");
         repMaxHeight = intent.getExtras().getString("repMaxHeight");
+        targetDuration = intent.getExtras().getDouble("targetDuration");
+        targetMH = intent.getExtras().getInt("targetMH");
         buildListReps();
 
         //set the data to TextViews that we sent from History page
@@ -80,9 +84,15 @@ public class exercise_details extends AppCompatActivity implements View.OnClickL
         }
         arrRepDuration = repDuration.split(",");
         arrRepMaxHeight = repMaxHeight.split(",");
+        double repD;
+        int repMH;
         //Create a new object for each repetition
         for (int i = 1; i < arrRepDuration.length; i++) {
-            Repetition rep = new Repetition(i, Double.parseDouble(arrRepDuration[i]), Integer.parseInt(arrRepMaxHeight[i]));
+            boolean target = false;
+            repD = Double.parseDouble(arrRepDuration[i]);
+            repMH = Integer.parseInt(arrRepMaxHeight[i]);
+            target = repD >= targetDuration && repMH >= targetMH;
+            Repetition rep = new Repetition(i, repD, repMH,target);
             repsList.add(rep);
         }
         RepsListAdapter repsadap = new RepsListAdapter(this, R.layout.list_reps_item, repsList);
