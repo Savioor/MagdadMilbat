@@ -44,9 +44,9 @@
                 android:layout_weight="66.6"
                 android:gravity="center"
                 android:text="10"
-                android:textSize="20dp"
                 android:textAlignment="center"
                 android:textColor="@color/white"
+                android:textSize="20dp"
                 android:textStyle="bold" />
         </RelativeLayout>
 
