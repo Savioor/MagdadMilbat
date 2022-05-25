@@ -49,14 +49,11 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
-import nl.dionsegijn.konfetti.core.Angle;
-import nl.dionsegijn.konfetti.core.Party;
 import nl.dionsegijn.konfetti.core.PartyFactory;
 import nl.dionsegijn.konfetti.core.Position;
 import nl.dionsegijn.konfetti.core.emitter.Emitter;
 import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
 import nl.dionsegijn.konfetti.core.models.Shape;
-import nl.dionsegijn.konfetti.core.models.Size;
 import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {
@@ -514,7 +511,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                                 isUp = true;
                                 isRepEntirelyComplete = false;
                                 timeBallInAir = System.currentTimeMillis();
-                                breathAnimation();
 
                             } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
                                 if (repCounter >= Integer.parseInt(repsNumTarget)) {
@@ -522,8 +518,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                                 } else {
                                     screenFeedback(2);
                                 }
-
                                 playSoundSuccess();
+                                breathAnimation();
                                 isRepEntirelyComplete = true;
                                 goodReputations++;
                                 orangeAirTime.add(1.0);
@@ -558,7 +554,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                                 isUp = true;
                                 isRepEntirelyComplete = false;
                                 timeBallInAir = System.currentTimeMillis();
-                                breathAnimation();
 
                             } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
                                 if (repCounter >= Integer.parseInt(repsNumTarget)) {
@@ -567,6 +562,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                                     screenFeedback(2);
                                 }
                                 playSoundSuccess();
+                                breathAnimation();
+
                                 isRepEntirelyComplete = true;
                                 goodReputations++;
                                 blueAirTime.add(1.0);
