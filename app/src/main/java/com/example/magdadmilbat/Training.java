@@ -1,6 +1,7 @@
 package com.example.magdadmilbat;
 
 public class Training {
+    private int id;
     private String date; // date in String format [ dd/mm/yy ]
     private String time; // Training start time
     private String exerciseDescription;
@@ -18,7 +19,8 @@ public class Training {
     private double targetDuration; //The target duration that was set in training
 
 
-    public Training(String date, String time, String exerciseDescription, int trainingQuality, double duration, String repDuration, String repMaxHeight, int balldata, int target, double targetDuration) {
+    public Training(int id, String date, String time, String exerciseDescription, int trainingQuality, double duration, String repDuration, String repMaxHeight, int balldata, int target, double targetDuration) {
+        this.id = id;
         this.date = date;
         this.time = time;
         this.exerciseDescription = exerciseDescription;
@@ -29,6 +31,14 @@ public class Training {
         this.balldata = balldata;
         this.target = target;
         this.targetDuration = targetDuration;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getDate() {

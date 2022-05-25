@@ -1,12 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:opencv="http://schemas.android.com/apk/res-auto"
+    android:background="@color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/black"
-    android:orientation="vertical">
+    >
 
+    <nl.dionsegijn.konfetti.xml.KonfettiView
+        android:id="@+id/konfettiView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    >
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,68 +64,68 @@
         android:layout_height="match_parent" >
 
 
-            <FrameLayout
-                android:layout_width="150dp"
-                android:layout_height="150dp"
-                >
+        <FrameLayout
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            >
 
-                <View
-                    android:id="@+id/cricleView"
-                    android:layout_width="120px"
-                    android:layout_height="120px"
-                    android:translationX="0px"
-                    android:translationY="0px"
-                    android:alpha="0.75"
-                    android:layout_gravity="center"
-                    android:background="@drawable/cricleanime" />
+            <View
+                android:id="@+id/cricleView"
+                android:layout_width="120px"
+                android:layout_height="120px"
+                android:translationX="0px"
+                android:translationY="0px"
+                android:alpha="0.75"
+                android:layout_gravity="center"
+                android:background="@drawable/cricleanime" />
 
-                <View
-                    android:id="@+id/cricleView2"
-                    android:layout_width="120px"
-                    android:layout_height="120px"
-                    android:alpha="0.75"
-                    android:layout_gravity="center"
-                    android:translationX="0px"
-                    android:translationY="0px"
-                    android:background="@drawable/cricleanime" />
+            <View
+                android:id="@+id/cricleView2"
+                android:layout_width="120px"
+                android:layout_height="120px"
+                android:alpha="0.75"
+                android:layout_gravity="center"
+                android:translationX="0px"
+                android:translationY="0px"
+                android:background="@drawable/cricleanime" />
 
-                <View
-                    android:id="@+id/cricleView3"
-                    android:layout_width="120px"
-                    android:layout_gravity="center"
-                    android:translationX="0px"
-                    android:translationY="0px"
-                    android:layout_height="120px"
-                    android:alpha="0.75"
-                    android:background="@drawable/cricleanime" />
-                <View
-                    android:id="@+id/cricleView4"
-                    android:layout_width="120px"
-                    android:layout_gravity="center"
-                    android:layout_height="120px"
-                    android:alpha="0.75"
-                    android:translationX="0px"
-                    android:translationY="0px"
-                    android:background="@drawable/cricleanime" />
-                <View
-                    android:id="@+id/cricleView5"
-                    android:layout_width="120px"
-                    android:layout_gravity="center"
-                    android:layout_height="120px"
-                    android:alpha="0.75"
-                    android:translationX="0px"
-                    android:translationY="0px"
-                    android:background="@drawable/cricleanime" />
-                <View
-                    android:id="@+id/cricleView6"
-                    android:layout_width="120px"
-                    android:layout_gravity="center"
-                    android:layout_height="120px"
-                    android:alpha="0.75"
-                    android:translationX="0px"
-                    android:translationY="0px"
-                    android:background="@drawable/cricleanime" />
-            </FrameLayout>
+            <View
+                android:id="@+id/cricleView3"
+                android:layout_width="120px"
+                android:layout_gravity="center"
+                android:translationX="0px"
+                android:translationY="0px"
+                android:layout_height="120px"
+                android:alpha="0.75"
+                android:background="@drawable/cricleanime" />
+            <View
+                android:id="@+id/cricleView4"
+                android:layout_width="120px"
+                android:layout_gravity="center"
+                android:layout_height="120px"
+                android:alpha="0.75"
+                android:translationX="0px"
+                android:translationY="0px"
+                android:background="@drawable/cricleanime" />
+            <View
+                android:id="@+id/cricleView5"
+                android:layout_width="120px"
+                android:layout_gravity="center"
+                android:layout_height="120px"
+                android:alpha="0.75"
+                android:translationX="0px"
+                android:translationY="0px"
+                android:background="@drawable/cricleanime" />
+            <View
+                android:id="@+id/cricleView6"
+                android:layout_width="120px"
+                android:layout_gravity="center"
+                android:layout_height="120px"
+                android:alpha="0.75"
+                android:translationX="0px"
+                android:translationY="0px"
+                android:background="@drawable/cricleanime" />
+        </FrameLayout>
         <TextView
             android:id="@+id/remarkstext"
             android:layout_width="wrap_content"
@@ -146,5 +156,7 @@
         android:layout_marginTop="-64dp"
         android:layout_marginStart="8dp"
         />
-
 </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

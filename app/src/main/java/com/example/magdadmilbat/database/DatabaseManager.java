@@ -12,8 +12,9 @@ import java.util.ArrayList;
 public class DatabaseManager extends SQLiteOpenHelper {
 public static final String TABLE_NAME = "Training";
     public static final String ID = "ID";
+    public static final int DB_VERSION = 4;
     public DatabaseManager(Context context) {
-        super(context, "MyDatabase", null, 1); // 1 = version.
+        super(context, "MyDatabase", null, DB_VERSION); //version.
     }
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
@@ -25,7 +26,7 @@ public static final String TABLE_NAME = "Training";
      */
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
-        sqLiteDatabase.execSQL("drop table Training"); //Deletes the table
+        sqLiteDatabase.execSQL("drop table if exists Training"); //Deletes the table
         onCreate(sqLiteDatabase); // call to "onCreate" function,that will recreate the table
     }
 
@@ -69,6 +70,7 @@ public static final String TABLE_NAME = "Training";
 **/
     private Training getTraining(Cursor cursor)
     {
+        int idI = cursor.getColumnIndex("id");
         int dateI = cursor.getColumnIndex("date");
         int timeI = cursor.getColumnIndex("time");
         int durationI = cursor.getColumnIndex("duration");
@@ -79,6 +81,7 @@ public static final String TABLE_NAME = "Training";
         int balldataI = cursor.getColumnIndex("balldata");
         int targetI = cursor.getColumnIndex("target");
         int targetDurationI = cursor.getColumnIndex("targetDuration");
+        int id = cursor.getInt(idI);
         int trainingQuality = cursor.getInt(trainingQualityI);
         double duration = cursor.getDouble(durationI);
         String exerciseDescription = cursor.getString(exerciseDescriptionI);
@@ -89,7 +92,7 @@ public static final String TABLE_NAME = "Training";
         int balldata = cursor.getInt(balldataI);
         int target = cursor.getInt(targetI);
         double targetDuration = cursor.getInt(targetDurationI);
-        return new Training(date, time, exerciseDescription, trainingQuality,duration,repsDuration,repsMaxHeight,balldata,target, targetDuration);
+        return new Training(id,date, time, exerciseDescription, trainingQuality,duration,repsDuration,repsMaxHeight,balldata,target, targetDuration);
     }
 
 /**

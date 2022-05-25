@@ -23,6 +23,7 @@ import com.example.magdadmilbat.database.DatabaseManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -141,11 +142,11 @@ public class Feedback extends AppCompatActivity implements View.OnClickListener 
     public void onClick(View view) {
         if (view == btnBackMain2) {
             LocalDate dateObj = LocalDate.now();
-            String timeObj = LocalTime.now()
-                    .truncatedTo(ChronoUnit.SECONDS)
-                    .format(DateTimeFormatter.ISO_LOCAL_TIME);
+            LocalTime timeObj = LocalTime.now();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+            String timetext = timeObj.format(formatter);
 
-            Training exerciseObj = new Training(dateObj.toString(), timeObj, "נשיפה עמוקה", repsSuccess, duration, formatDouble2db(repDuration), format2db(repMaxHeight),balldata, targetrep,targetDuration);
+            Training exerciseObj = new Training(1,dateObj.toString(), timetext, "נשיפה עמוקה", repsSuccess, duration, formatDouble2db(repDuration), format2db(repMaxHeight),balldata, targetrep,targetDuration);
             DatabaseManager dbObj = new DatabaseManager(Feedback.this);
             dbObj.addTraining(exerciseObj);
             Intent intent = new Intent(this, MainActivity.class);

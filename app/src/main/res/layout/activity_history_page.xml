@@ -28,6 +28,8 @@
         android:layout_height="match_parent"
         android:layout_margin="10dp"
         android:dividerHeight="10.0sp"
+        android:scrollbars="none"
+        android:overScrollMode="ifContentScrolls"
         android:divider="@android:color/transparent"
         android:id="@+id/lvHistory"
         />

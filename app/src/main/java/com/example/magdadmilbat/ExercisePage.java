@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.media.AudioAttributes;
 import android.media.AudioManager;
 import android.media.SoundPool;
@@ -44,7 +45,19 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
+
+import nl.dionsegijn.konfetti.core.Angle;
+import nl.dionsegijn.konfetti.core.Party;
+import nl.dionsegijn.konfetti.core.PartyFactory;
+import nl.dionsegijn.konfetti.core.Position;
+import nl.dionsegijn.konfetti.core.emitter.Emitter;
+import nl.dionsegijn.konfetti.core.emitter.EmitterConfig;
+import nl.dionsegijn.konfetti.core.models.Shape;
+import nl.dionsegijn.konfetti.core.models.Size;
+import nl.dionsegijn.konfetti.xml.KonfettiView;
 
 public class ExercisePage extends Activity implements View.OnClickListener, JavaCameraView.CvCameraViewListener2 {
 
@@ -118,6 +131,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static long timeBallInAir = 0;
 
     static String repsNumTarget = "";
+    private static KonfettiView konfettiView = null;
+    private static Shape.DrawableShape drawableShape = null;
 
 
     /* --------------------------------------------------------------------------------------------------- */
@@ -136,7 +151,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             }
         }
     };
-
 
     public static void breathAnimation() {
         animTrans = new TranslateAnimation(Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -35, Animation.ABSOLUTE, 0, Animation.ABSOLUTE, -50);
@@ -168,6 +182,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         animTrans.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
+                showkonfetti();
             }
 
             @Override
@@ -693,6 +708,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         cricleView6 = findViewById(R.id.cricleView6);
         remarksText = findViewById(R.id.remarkstext);
         tvRepetition = findViewById(R.id.tvRepetition);
+        konfettiView = findViewById(R.id.konfettiView);
+        final Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_heart);
+        drawableShape = new Shape.DrawableShape(drawable, true);
 
         feedbackDown = getResources().getStringArray(R.array.feedbackDown);
         feedbackUp = getResources().getStringArray(R.array.feedbackUp);
@@ -781,6 +799,18 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         };
     }
 
+    public static void showkonfetti(){
+        EmitterConfig emitterConfig = new Emitter(100L, TimeUnit.MILLISECONDS).max(100);
+        konfettiView.start(
+                new PartyFactory(emitterConfig)
+                        .spread(360)
+                        .shapes(Arrays.asList(Shape.Square.INSTANCE, Shape.Circle.INSTANCE, drawableShape))
+                        .colors(Arrays.asList(0xfce18a, 0xff726d, 0xf4306d, 0xb48def))
+                        .setSpeedBetween(0f, 30f)
+                        .position(new Position.Relative(0.5, 0.3))
+                        .build()
+        );
+    }
     public void startWaitingAnim() {
         anim = ValueAnimator.ofFloat(0.4f, 1.0f);
         anim.setDuration(1000);

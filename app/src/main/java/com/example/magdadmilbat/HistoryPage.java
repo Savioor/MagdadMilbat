@@ -35,6 +35,7 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history_page);
+        getSupportActionBar().setTitle("היסטוריית אימונים");
         btnBack = findViewById(R.id.btnBack);
         alertTv = findViewById(R.id.alert);
         btnBack.setOnClickListener(this);
@@ -162,9 +163,17 @@ public class HistoryPage extends AppCompatActivity implements AdapterView.OnItem
                 d.dismiss();
             }
             if (which == -1) { // -1 cancel the operation
+                int databaseid = trainings.get(idItem).getId();
                 trainings.remove(idItem);
+                Toast.makeText(HistoryPage.this,"id:" + idItem + "|db id:"+databaseid,2).show();
+                databaseManager.deleteTraining(String.valueOf(databaseid));
                 adap = new TrainingListAdapter(HistoryPage.this, R.layout.list_item, trainings);
                 lv.setAdapter(adap);
+                if (trainings.isEmpty()) {
+                    alertTv.setText("אין אימונים ברשימה");
+                    alertTv.setVisibility(View.VISIBLE);
+                    return;
+                }
                 d.dismiss();
             }
         }

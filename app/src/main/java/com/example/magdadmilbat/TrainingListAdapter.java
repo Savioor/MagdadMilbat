@@ -16,6 +16,7 @@ import androidx.annotation.RequiresApi;
 
 import com.example.MagdadMilbat.R;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class TrainingListAdapter  extends ArrayAdapter<Training> {
@@ -29,7 +30,7 @@ public class TrainingListAdapter  extends ArrayAdapter<Training> {
         mResource = resource;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @NonNull
     @Override
     public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -43,14 +44,19 @@ public class TrainingListAdapter  extends ArrayAdapter<Training> {
         convertView = inflater.inflate(mResource, parent, false);
         TextView tvQuality = convertView.findViewById(R.id.textView1);
         TextView tvDate = convertView.findViewById(R.id.textView2);
-        TextView tvTime = convertView.findViewById(R.id.textView3);
+//        TextView tvTime = convertView.findViewById(R.id.textView3);
         ProgressBar pb = convertView.findViewById(R.id.ProgressBar);
+        LocalDate dateObj = LocalDate.parse(date);
+        LocalDate dateObj2 = LocalDate.now();
+        if(dateObj.isEqual(dateObj2)){
+            date = time;
+        }
 
-        tvQuality.setText(trainingQuality+ "/" + target);
+        tvQuality.setText(target+ "/" + trainingQuality + " חזרות ");
         pb.setMax(Integer.parseInt(target));
         pb.setProgress(Integer.parseInt(trainingQuality));
         tvDate.setText(date);
-        tvTime.setText(time);
+//        tvTime.setText(time);
         return convertView;
     }
 }
