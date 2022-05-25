@@ -473,6 +473,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         final int H_CORE = 0, S_CORE = 1, V_CORE = 2;
         double[] rgb, rgb_min, hsvArr; // the circle's color.
         final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
+        final int BLUE = 0, ORANGE = 1, GREEN = 2;
+        Ball[] balls = new Ball[3];
+        for(int i = 0; i < 3; i++){
+            balls[i] = new Ball(0, new Point(0, 0));
+        }
 
         final int LINE_UPPER_BOUND = (int) (img.height() * LINE_UPPER_PERC), LINE_LOWER_BOUND = (int) (img.height() * LINE_LOWER_PERC);
 
@@ -491,101 +496,120 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             c = circles.get(0, i);
             center = new Point(Math.round(c[0]), Math.round(c[1]));
             int radius = (int) c[2];
-            rgb = img.get((int) center.x, (int) center.y);
-            rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
+            // rgb = img.get((int) center.x, (int) center.y);
+            // rgb_min = img.get((int) center.x - radius + 10, (int) center.y);
 
             if (center.y > LINE_UPPER_BOUND && center.y < LINE_LOWER_BOUND) {
                 if (!detectGreen && center.x > first_line - radius && center.x < first_line + radius) {
-                    detectGreen = true;
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    greenHeight.add(center.y);
+                    if (balls[GREEN].getCenter().y < center.y) {
+                        balls[GREEN] = new Ball(radius, center);
+                    }
                 } else if (!detectOrange && center.x > second_line - radius && center.x < second_line + radius) {
-                    detectOrange = true;
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    orangeHeight.add(center.y);
-                    long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-                        if (orangeChecked.equals("true")) {
-                            if (!isUp) {
-                                screenFeedback(1);
-                                isUp = true;
-                                isRepEntirelyComplete = false;
-                                timeBallInAir = System.currentTimeMillis();
-
-                            } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
-                                if (repCounter >= Integer.parseInt(repsNumTarget)) {
-                                    screenFeedback(3);
-                                } else {
-                                    screenFeedback(2);
-                                }
-                                playSoundSuccess();
-                                breathAnimation();
-                                isRepEntirelyComplete = true;
-                                goodReputations++;
-                                orangeAirTime.add(1.0);
-
-                            }
-                        }
-
-                    } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
-                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                        screenFeedback(-1);
-                        if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
-                            screenFeedback(3);
-                        } else {
-                            screenFeedback(5);
-                        }
-
-                        isUp = false;
+                    if (balls[ORANGE].getCenter().y < center.y) {
+                        balls[ORANGE] = new Ball(radius, center);
                     }
-
-                    orangeInRange = true;
                 } else if (!detectBlue && center.x > third_line - radius && center.x < third_line + radius) {
-                    detectBlue = true;
-                    Imgproc.circle(img, center, (int) c[2], new Scalar(255, 0, 0), 5);
-                    if (initialY == 0)
-                        initialY = (int) center.y;
-                    blueHeight.add(center.y);
-                    long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                    if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-                        if (orangeChecked.equals("false")) {
-                            if (!isUp) {
-                                screenFeedback(1);
-                                isUp = true;
-                                isRepEntirelyComplete = false;
-                                timeBallInAir = System.currentTimeMillis();
-
-                            } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
-                                if (repCounter >= Integer.parseInt(repsNumTarget)) {
-                                    screenFeedback(3);
-                                } else {
-                                    screenFeedback(2);
-                                }
-                                playSoundSuccess();
-                                breathAnimation();
-
-                                isRepEntirelyComplete = true;
-                                goodReputations++;
-                                blueAirTime.add(1.0);
-                            }
-
-                        }
-                    } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
-                        timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                        screenFeedback(-1);
-                        if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
-                            screenFeedback(3);
-                        } else {
-                            screenFeedback(5);
-                        }
-
-                        isUp = false;
+                    if (balls[BLUE].getCenter().y < center.y) {
+                        balls[BLUE] = new Ball(radius, center);
                     }
-
-                    blueInRange = true;
                 }
             }
         }
+
+        /** Handle green ball **/
+        int radius = balls[GREEN].getRadius();
+        center = balls[GREEN].getCenter();
+        detectGreen = true;
+        Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
+        greenHeight.add(center.y);
+
+        /** Handle orange ball **/
+        radius = balls[ORANGE].getRadius();
+        center = balls[ORANGE].getCenter();
+        detectOrange = true;
+        Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
+        orangeHeight.add(center.y);
+        long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+        if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+            if (orangeChecked.equals("true")) {
+                if (!isUp) {
+                    screenFeedback(1);
+                    isUp = true;
+                    isRepEntirelyComplete = false;
+                    timeBallInAir = System.currentTimeMillis();
+
+                } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
+                    if (repCounter >= Integer.parseInt(repsNumTarget)) {
+                        screenFeedback(3);
+                    } else {
+                        screenFeedback(2);
+                    }
+                    playSoundSuccess();
+                    breathAnimation();
+                    isRepEntirelyComplete = true;
+                    goodReputations++;
+                    orangeAirTime.add(1.0);
+                }
+            }
+
+        } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
+            timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+            screenFeedback(-1);
+            if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                screenFeedback(3);
+            } else {
+                screenFeedback(5);
+            }
+
+            isUp = false;
+        }
+        orangeInRange = true;
+
+        /** Handle blue ball **/
+        radius = balls[BLUE].getRadius();
+        center = balls[BLUE].getCenter();
+        detectBlue = true;
+        Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
+        if (initialY == 0)
+            initialY = (int) center.y;
+        blueHeight.add(center.y);
+        temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+        if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+            if (orangeChecked.equals("false")) {
+                if (!isUp) {
+                    screenFeedback(1);
+                    isUp = true;
+                    isRepEntirelyComplete = false;
+                    timeBallInAir = System.currentTimeMillis();
+
+                } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
+                    if (repCounter >= Integer.parseInt(repsNumTarget)) {
+                        screenFeedback(3);
+                    } else {
+                        screenFeedback(2);
+                    }
+                    playSoundSuccess();
+                    breathAnimation();
+
+                    isRepEntirelyComplete = true;
+                    goodReputations++;
+                    blueAirTime.add(1.0);
+                }
+
+            }
+            } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
+                timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                screenFeedback(-1);
+                if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                    screenFeedback(3);
+                } else {
+                    screenFeedback(5);
+                }
+
+                isUp = false;
+            }
+
+            blueInRange = true;
     }
 
     public void initialize() {
