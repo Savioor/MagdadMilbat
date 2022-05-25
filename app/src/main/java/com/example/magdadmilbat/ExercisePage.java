@@ -304,7 +304,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      */
     public static void drawVerticalLines(Mat frame, int FIRST_LINE, int SECOND_LINE, int THIRD_LINE) {
         int height = frame.height();
-        drawLine(frame, new Point(FIRST_LINE, 0), new Point(FIRST_LINE, height));
+//        drawLine(frame, new Point(FIRST_LINE, 0), new Point(FIRST_LINE, height));
         drawLine(frame, new Point(SECOND_LINE, 0), new Point(SECOND_LINE, height));
         drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
     }
@@ -416,7 +416,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         frame = resizedFrame;
 
 
-        final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = frame.width() / 2, THIRD_LINE = 19 * frame.width() / 30;
+        final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = 14 * frame.width() / 30, THIRD_LINE = 18 * frame.width() / 30;
 
         if (isDone) {
             // if the timer is finished
@@ -733,28 +733,28 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             }
         }
 
-        /** Handle green ball **/
-        int radius = balls[GREEN].getRadius();
-        center = balls[GREEN].getCenter();
-//        detectGreen = true;
-        Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
-        greenHeight.add(center.y);
+//        /** Handle green ball **/
+////        int radius = balls[GREEN].getRadius();
+////        center = balls[GREEN].getCenter();
+////        Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
+////        greenHeight.add(center.y);
 
-        /** Handle orange ball **/
-        radius = balls[ORANGE].getRadius();
+        /* Handle orange ball */
+        int radius = balls[ORANGE].getRadius();
         center = balls[ORANGE].getCenter();
-//        detectOrange = true;
         Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
-        orangeHeight.add(center.y);
-        long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-        if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-            if (orangeChecked.equals("true")) {
+
+        if (orangeChecked.equals("true") && radius > 0) {
+            if (initialY == 0)
+                initialY = (int) center.y;
+            orangeHeight.add(center.y);
+            long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+            if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
                 if (!isUp) {
                     screenFeedback(1);
                     isUp = true;
                     isRepEntirelyComplete = false;
                     timeBallInAir = System.currentTimeMillis();
-
                 } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
                     if (repCounter >= Integer.parseInt(repsNumTarget)) {
                         if (requiredTime > 0)
@@ -768,32 +768,33 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     goodReputations++;
                     orangeAirTime.add(1.0);
                 }
-            }
 
-        } else if (orangeChecked.equals("true") && isUp && Math.abs(center.y - initialY) <= radius) {
-            timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-            screenFeedback(-1);
-            if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
-                screenFeedback(3);
-            } else {
-                screenFeedback(5);
-            }
+            } else if (isUp && Math.abs(center.y - initialY) <= radius) {
+                timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                screenFeedback(-1);
+                if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                    screenFeedback(3);
+                } else {
+                    screenFeedback(5);
+                }
 
-            isUp = false;
+                isUp = false;
+            }
+            orangeInRange = true;
+
         }
-        orangeInRange = true;
-
-        /** Handle blue ball **/
+        /* Handle blue ball */
         radius = balls[BLUE].getRadius();
         center = balls[BLUE].getCenter();
-//        detectBlue = true;
         Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
-        if (initialY == 0)
-            initialY = (int) center.y;
-        blueHeight.add(center.y);
-        temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-        if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-            if (orangeChecked.equals("false")) {
+
+        if (radius > 0 && orangeChecked.equals("false")) {
+//        detectBlue = true;
+            if (initialY == 0)
+                initialY = (int) center.y;
+            blueHeight.add(center.y);
+            long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+            if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
                 if (!isUp) {
                     screenFeedback(1);
                     isUp = true;
@@ -814,20 +815,20 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     blueAirTime.add(1.0);
                 }
 
-            }
-        } else if (orangeChecked.equals("false") && isUp && Math.abs(center.y - initialY) <= radius) {
-            timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-            screenFeedback(-1);
-            if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
-                screenFeedback(3);
-            } else {
-                screenFeedback(5);
+            } else if (isUp && Math.abs(center.y - initialY) <= radius) {
+                timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                screenFeedback(-1);
+                if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                    screenFeedback(3);
+                } else {
+                    screenFeedback(5);
+                }
+
+                isUp = false;
             }
 
-            isUp = false;
+            blueInRange = true;
         }
-
-        blueInRange = true;
     }
 
     public void startWaitingAnim() {

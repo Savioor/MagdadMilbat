@@ -5,7 +5,6 @@ import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -19,9 +18,9 @@ import com.example.MagdadMilbat.R;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class TrainingListAdapter  extends ArrayAdapter<Training> {
+public class TrainingListAdapter extends ArrayAdapter<Training> {
     private static final String TAG = "TrainingListAdapter";
-    private Context mContext;
+    private final Context mContext;
     int mResource;
 
     public TrainingListAdapter(Context context, int resource, ArrayList<Training> objects) {
@@ -48,11 +47,11 @@ public class TrainingListAdapter  extends ArrayAdapter<Training> {
         ProgressBar pb = convertView.findViewById(R.id.ProgressBar);
         LocalDate dateObj = LocalDate.parse(date);
         LocalDate dateObj2 = LocalDate.now();
-        if(dateObj.isEqual(dateObj2)){
+        if (dateObj.isEqual(dateObj2)) {
             date = time;
         }
 
-        tvQuality.setText(target+ "/" + trainingQuality + " חזרות ");
+        tvQuality.setText(trainingQuality + "/" + target + " חזרות ");
         pb.setMax(Integer.parseInt(target));
         pb.setProgress(Integer.parseInt(trainingQuality));
         tvDate.setText(date);
