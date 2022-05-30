@@ -1,4 +1,4 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -16,7 +16,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.MagdadMilbat.R;
-import com.example.magdadmilbat.database.DatabaseManager;
+import com.magdad.magdadmilbat.database.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.Collections;

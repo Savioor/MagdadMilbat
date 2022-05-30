@@ -1,4 +1,4 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 public class Training {
     private int id;
@@ -6,7 +6,7 @@ public class Training {
     private String time; // Training start time
     private String exerciseDescription;
     private int trainingQuality; // training score
-    private double duration;//duration that the Training take
+    private final double duration;//duration that the Training take
 
     //duration of each repetition in the exercise
     private String repDuration;

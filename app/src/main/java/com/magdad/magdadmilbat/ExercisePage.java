@@ -1,4 +1,4 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 import android.Manifest;
 import android.animation.ValueAnimator;

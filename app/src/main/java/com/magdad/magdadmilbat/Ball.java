@@ -1,17 +1,17 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 import org.opencv.core.Point;
 
 public class Ball {
-    private int _radius;
-    private Point _center;
+    private final int _radius;
+    private final Point _center;
 
-    public Ball(int radius, Point center){
+    public Ball(int radius, Point center) {
         _radius = radius;
         _center = new Point(new double[]{center.x, center.y});
     }
 
-    public Point getCenter(){
+    public Point getCenter() {
         return new Point(new double[]{_center.x, _center.y});
     }
 

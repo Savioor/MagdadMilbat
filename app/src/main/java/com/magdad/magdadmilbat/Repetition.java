@@ -1,4 +1,4 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 public class Repetition {
     private int number; // index of Repetition

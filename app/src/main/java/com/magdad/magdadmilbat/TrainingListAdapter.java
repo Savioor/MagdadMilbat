@@ -1,4 +1,4 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 import android.content.Context;
 import android.os.Build;

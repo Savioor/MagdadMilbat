@@ -1,4 +1,4 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 import android.content.Context;
 import android.os.Build;
@@ -17,7 +17,7 @@ import com.example.MagdadMilbat.R;
 import java.util.ArrayList;
 
 public class RepsListAdapter  extends ArrayAdapter<Repetition> {
-    private Context mContext;
+    private final Context mContext;
     int mResource;
 
     public RepsListAdapter(Context context, int resource, ArrayList<Repetition> objects) {

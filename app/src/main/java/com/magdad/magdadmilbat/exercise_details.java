@@ -1,4 +1,4 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,7 +43,7 @@ public class exercise_details extends AppCompatActivity implements View.OnClickL
         tvTime = findViewById(R.id.tvTime);
         tvTitle = findViewById(R.id.tvTitle);
         tvRepetition = findViewById(R.id.tvRepetition);
-        lvReps = (ListView) findViewById(R.id.lvreps);
+        lvReps = findViewById(R.id.lvreps);
         alertrep = findViewById(R.id.alertrep);
         tvballuse = findViewById(R.id.balluse);
         btnBack.setOnClickListener(this);

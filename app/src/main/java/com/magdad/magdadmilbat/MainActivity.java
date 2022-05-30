@@ -1,6 +1,4 @@
-package com.example.magdadmilbat;
-
-import androidx.appcompat.app.AppCompatActivity;
+package com.magdad.magdadmilbat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -9,9 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.MagdadMilbat.R;
 
-// important web-site cheats - https://github.com/quickbirdstudios/opencv-android
 import org.opencv.android.OpenCVLoader;
 
 
@@ -30,14 +29,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        btnStartExercise = (Button)findViewById(R.id.btnStartExercise);
-        btnHistory = (Button)findViewById(R.id.btnHistory);
-        btnSettings = (Button)findViewById(R.id.btnFeedback);
+        btnStartExercise = findViewById(R.id.btnStartExercise);
+        btnHistory = findViewById(R.id.btnHistory);
+        btnSettings = findViewById(R.id.btnFeedback);
         spSetApp = getSharedPreferences("spSetApp", 0);
         spBreath = getSharedPreferences("settingsBreath", 0);
-        String isFirstLaunch = spSetApp.getString("firstLaunch",null);
+        String isFirstLaunch = spSetApp.getString("firstLaunch", null);
         // set default values for application settings
-        if(isFirstLaunch == null){
+        if (isFirstLaunch == null) {
             SharedPreferences.Editor editor2 = spBreath.edit();
             editor2.putString("numberOfrepBlue", DEFAULT_REPS);
             editor2.putString("difficultyBlue", DEFAULT_DIFFICULTY);

@@ -1,4 +1,4 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -43,16 +43,16 @@ public class SettingsPage extends AppCompatActivity implements SeekBar.OnSeekBar
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
-        btnBack = (Button)findViewById(R.id.btnBack);
-        btnSave = (Button)findViewById(R.id.btnSave);
-        sbLevel = (SeekBar)findViewById(R.id.sbLevel);
+        btnBack = findViewById(R.id.btnBack);
+        btnSave = findViewById(R.id.btnSave);
+        sbLevel = findViewById(R.id.sbLevel);
         sv = findViewById(R.id.navballs);
         b1 = findViewById(R.id.blue);
         b2 = findViewById(R.id.orange);
-        sbRepetition = (SeekBar)findViewById(R.id.sbRepetition);
-        tvLevelNumber = (TextView)findViewById(R.id.tvLevelNumber);
-        tvRepetitionNumber = (TextView)findViewById(R.id.tvRepetitionNumber);
-        etDuration = (EditText)findViewById(R.id.etDuration);
+        sbRepetition = findViewById(R.id.sbRepetition);
+        tvLevelNumber = findViewById(R.id.tvLevelNumber);
+        tvRepetitionNumber = findViewById(R.id.tvRepetitionNumber);
+        etDuration = findViewById(R.id.etDuration);
         ivRight = findViewById(R.id.ivRight);
         ivLeft = findViewById(R.id.ivLeft);
         sv.setSmoothScrollingEnabled(true);

@@ -1,4 +1,4 @@
-package com.example.magdadmilbat;
+package com.magdad.magdadmilbat;
 
 public class Consts {
     double LINE_UPPER_PERC = 0.236;
