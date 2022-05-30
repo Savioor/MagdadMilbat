@@ -9,3 +9,21 @@ An example for an image it recieves may be:
 [Will insert pictures]
 
 ### Explanation of the backend code
+Firstly, we'll begin with our image processing varaibles:
+```java
+static ArrayList<Double> greenHeight = new ArrayList<Double>();
+static ArrayList<Double> blueHeight = new ArrayList<Double>();
+static ArrayList<Double> orangeHeight = new ArrayList<Double>();
+
+static ArrayList<Double> greenAirTime = new ArrayList<Double>();
+static ArrayList<Double> blueAirTime = new ArrayList<Double>();
+static ArrayList<Double> orangeAirTime = new ArrayList<Double>();
+
+static boolean greenInAir = false, orangeInAir = false, blueInAir = false;
+
+static Scalar[][] rgbRange = new Scalar[3][2];
+static Scalar[][] hsvRange = new Scalar[3][2];
+``` 
+greenHeight, blueHeight and orangeHeight are all to be used to store the height of each ball throughout the video. 
+
+// WILL RESUME
