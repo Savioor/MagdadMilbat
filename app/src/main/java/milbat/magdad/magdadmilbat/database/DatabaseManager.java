@@ -1,21 +1,23 @@
-package com.magdad.magdadmilbat.database;
+package milbat.magdad.magdadmilbat.database;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.magdad.magdadmilbat.Training;
-
 import java.util.ArrayList;
 
+import milbat.magdad.magdadmilbat.Training;
+
 public class DatabaseManager extends SQLiteOpenHelper {
-public static final String TABLE_NAME = "Training";
+    public static final String TABLE_NAME = "Training";
     public static final String ID = "ID";
     public static final int DB_VERSION = 4;
+
     public DatabaseManager(Context context) {
         super(context, "MyDatabase", null, DB_VERSION); //version.
     }
+
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         createTrainingTable(sqLiteDatabase);

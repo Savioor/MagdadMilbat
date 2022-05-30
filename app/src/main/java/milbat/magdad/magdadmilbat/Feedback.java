@@ -1,4 +1,4 @@
-package com.magdad.magdadmilbat;
+package milbat.magdad.magdadmilbat;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -15,7 +15,6 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.MagdadMilbat.R;
-import com.magdad.magdadmilbat.database.DatabaseManager;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -23,6 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import milbat.magdad.magdadmilbat.database.DatabaseManager;
 import nl.dionsegijn.konfetti.core.Party;
 import nl.dionsegijn.konfetti.core.PartyFactory;
 import nl.dionsegijn.konfetti.core.emitter.Emitter;

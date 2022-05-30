@@ -1,4 +1,4 @@
-package com.magdad.magdadmilbat;
+package milbat.magdad.magdadmilbat;
 
 import android.content.Context;
 import android.content.res.Configuration;

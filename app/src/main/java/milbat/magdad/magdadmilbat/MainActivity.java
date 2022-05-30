@@ -1,4 +1,4 @@
-package com.magdad.magdadmilbat;
+package milbat.magdad.magdadmilbat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;

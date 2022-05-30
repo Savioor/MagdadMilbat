@@ -1,4 +1,4 @@
-package com.magdad.magdadmilbat.database.settings;
+package milbat.magdad.magdadmilbat.database.settings;
 
 
 /**

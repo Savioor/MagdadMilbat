@@ -1,4 +1,4 @@
-package com.magdad.magdadmilbat;
+package milbat.magdad.magdadmilbat;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
@@ -309,6 +309,11 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
     }
 
+    /**
+     * get the duration of the settings
+     *
+     * @return the number of seconds the ball needs to be up
+     */
     public static double getDuration() {
         String str = spBreath.getString("duration", null);
         return Double.parseDouble(str);

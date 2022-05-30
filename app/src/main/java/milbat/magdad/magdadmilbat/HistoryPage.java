@@ -1,4 +1,4 @@
-package com.magdad.magdadmilbat;
+package milbat.magdad.magdadmilbat;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -16,10 +16,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.MagdadMilbat.R;
-import com.magdad.magdadmilbat.database.DatabaseManager;
 
 import java.util.ArrayList;
 import java.util.Collections;
+
+import milbat.magdad.magdadmilbat.database.DatabaseManager;
 
 public class HistoryPage extends AppCompatActivity implements AdapterView.OnItemClickListener, View.OnClickListener, AdapterView.OnItemLongClickListener {
     private ListView lv;

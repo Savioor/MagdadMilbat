@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.magdad.magdadmilbat.MainActivity">
+    tools:context="milbat.magdad.magdadmilbat.MainActivity">
 
     <Button
         android:id="@+id/btnStartExercise"
