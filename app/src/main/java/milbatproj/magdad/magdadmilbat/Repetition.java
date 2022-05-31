@@ -1,4 +1,4 @@
-package milbat.magdad.magdadmilbat;
+package milbatproj.magdad.magdadmilbat;
 
 public class Repetition {
     private int number; // index of Repetition

@@ -1,4 +1,4 @@
-package milbat.magdad.magdadmilbat;
+package milbatproj.magdad.magdadmilbat;
 
 import org.opencv.core.Point;
 

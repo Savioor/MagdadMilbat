@@ -1,4 +1,4 @@
-package milbat.magdad.magdadmilbat.database.settings;
+package milbatproj.magdad.magdadmilbat.database.settings;
 
 import java.util.HashMap;
 import java.util.List;

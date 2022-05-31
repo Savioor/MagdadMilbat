@@ -17,24 +17,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MagdadMilbat">
         <activity
-            android:name="milbat.magdad.magdadmilbat.exercise_details"
+            android:name="milbatproj.magdad.magdadmilbat.exercise_details"
             android:exported="false" />
         <activity
-            android:name="milbat.magdad.magdadmilbat.Feedback"
+            android:name="milbatproj.magdad.magdadmilbat.Feedback"
             android:exported="false" />
         <activity
-            android:name="milbat.magdad.magdadmilbat.ExercisePage"
+            android:name="milbatproj.magdad.magdadmilbat.ExercisePage"
             android:exported="false"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             />
         <activity
-            android:name="milbat.magdad.magdadmilbat.HistoryPage"
+            android:name="milbatproj.magdad.magdadmilbat.HistoryPage"
             android:exported="false" />
         <activity
-            android:name="milbat.magdad.magdadmilbat.SettingsPage"
+            android:name="milbatproj.magdad.magdadmilbat.SettingsPage"
             android:exported="false" />
         <activity
-            android:name="milbat.magdad.magdadmilbat.MainActivity"
+            android:name="milbatproj.magdad.magdadmilbat.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

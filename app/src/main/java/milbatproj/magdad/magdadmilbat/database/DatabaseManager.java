@@ -1,4 +1,4 @@
-package milbat.magdad.magdadmilbat.database;
+package milbatproj.magdad.magdadmilbat.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
 
-import milbat.magdad.magdadmilbat.Training;
+import milbatproj.magdad.magdadmilbat.Training;
 
 public class DatabaseManager extends SQLiteOpenHelper {
     public static final String TABLE_NAME = "Training";

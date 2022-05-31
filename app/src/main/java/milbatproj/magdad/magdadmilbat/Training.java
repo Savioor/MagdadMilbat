@@ -1,4 +1,4 @@
-package milbat.magdad.magdadmilbat;
+package milbatproj.magdad.magdadmilbat;
 
 public class Training {
     private int id;
