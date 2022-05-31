@@ -1,4 +1,4 @@
-package milbat.magdad.magdadmilbat;
+package milbatproj.magdad.magdadmilbat;
 
 import android.animation.ObjectAnimator;
 import android.content.Intent;
@@ -22,7 +22,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
-import milbat.magdad.magdadmilbat.database.DatabaseManager;
+import milbatproj.magdad.magdadmilbat.database.DatabaseManager;
 import nl.dionsegijn.konfetti.core.Party;
 import nl.dionsegijn.konfetti.core.PartyFactory;
 import nl.dionsegijn.konfetti.core.emitter.Emitter;

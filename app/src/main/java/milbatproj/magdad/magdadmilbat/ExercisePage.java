@@ -1,4 +1,4 @@
-package milbat.magdad.magdadmilbat;
+package milbatproj.magdad.magdadmilbat;
 
 import android.Manifest;
 import android.animation.ValueAnimator;
@@ -220,7 +220,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      */
     public static void drawHorizontalLines(Mat frame, int height, int width) {
 //        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
-        final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
+        final double LINE_UPPER_PERC = 0.266, LINE_LOWER_PERC = 0.93;
         drawLine(frame, new Point(0, height * LINE_UPPER_PERC), new Point(width, height * LINE_UPPER_PERC));
         drawLine(frame, new Point(0, height * LINE_LOWER_PERC), new Point(width, height * LINE_LOWER_PERC));
 //        drawLine(frame, new Point(0, 600), new Point(width, 600));
@@ -369,7 +369,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     }
 
     private static void drawLine(Mat img, Point p1, Point p2) {
-        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0));
+        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0), 5);
     }
 
     public static void onArrBlueChange() {
@@ -688,151 +688,145 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      * @return the initial Y axis position.
      */
     private void getFrameData(Mat img, int first_line, int second_line, int third_line) {
-        if (allExrDuration == 0) {
-            allExrDuration = System.currentTimeMillis();
-            screenFeedback(4);
-        }
+        try {
+            if (allExrDuration == 0) {
+                allExrDuration = System.currentTimeMillis();
+                screenFeedback(4);
+            }
 
-        Mat circles = new Mat();
-        double[] c;
-        Point center;
-        final int H_CORE = 0, S_CORE = 1, V_CORE = 2;
-        final double LINE_UPPER_PERC = 0.236, LINE_LOWER_PERC = 0.93;
-        final int BLUE = 0, ORANGE = 1, GREEN = 2;
-        Ball[] balls = new Ball[3];
-        for (int i = 0; i < 3; i++) {
-            balls[i] = new Ball(0, new Point(0, 0));
-        }
+            Mat circles = new Mat();
+            double[] c;
+            Point center;
+            final int H_CORE = 0, S_CORE = 1, V_CORE = 2;
+            final double LINE_UPPER_PERC = 0.28, LINE_LOWER_PERC = 0.93;
+            final int BLUE = 0, ORANGE = 1, GREEN = 2;
+            Ball[] balls = new Ball[3];
+            for (int i = 0; i < 3; i++) {
+                balls[i] = new Ball(0, new Point(0, 0));
+            }
 
-        final int LINE_UPPER_BOUND = (int) (img.height() * LINE_UPPER_PERC), LINE_LOWER_BOUND = (int) (img.height() * LINE_LOWER_PERC);
+            final int LINE_UPPER_BOUND = (int) (img.height() * LINE_UPPER_PERC), LINE_LOWER_BOUND = (int) (img.height() * LINE_LOWER_PERC);
 
-        ArrayList<Mat> resultHSV = toHSVImage(img);
-        Mat sMat = resultHSV.get(S_CORE);
-        Imgproc.HoughCircles(sMat, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 70, 32.0, 40, 70);
+            ArrayList<Mat> resultHSV = toHSVImage(img);
+            Mat sMat = resultHSV.get(S_CORE);
+            Imgproc.HoughCircles(sMat, circles, Imgproc.CV_HOUGH_GRADIENT, 1.0, 30, 70, 32.0, 40, 70);
 
 
-        String orangeChecked = spBreath.getString("orange", null);
-        requiredTime = getDuration();
+            String orangeChecked = spBreath.getString("orange", null);
+            requiredTime = getDuration();
 
-        for (int i = circles.width() - 1; i >= 0; i--) {
-            c = circles.get(0, i);
-            center = new Point(Math.round(c[0]), Math.round(c[1]));
-            int radius = (int) c[2];
+            for (int i = circles.width() - 1; i >= 0; i--) {
+                c = circles.get(0, i);
+                center = new Point(Math.round(c[0]), Math.round(c[1]));
+                int radius = (int) c[2];
 
-//            Imgproc.circle(img, center, radius, new Scalar(0, 255, 0), 5);
-
-            if (center.y > LINE_UPPER_BOUND && center.y < LINE_LOWER_BOUND) {
-                if (center.x > first_line - radius && center.x < first_line + radius) {
-                    if (balls[GREEN].getRadius() == 0 || balls[GREEN].getCenter().y > center.y) {
-                        balls[GREEN] = new Ball(radius, center);
-                    }
-                } else if (center.x > second_line - radius && center.x < second_line + radius) {
-                    if (balls[ORANGE].getRadius() == 0 || balls[ORANGE].getCenter().y > center.y) {
-                        balls[ORANGE] = new Ball(radius, center);
-                    }
-                } else if (center.x > third_line - radius && center.x < third_line + radius) {
-                    if (balls[BLUE].getRadius() == 0 || balls[BLUE].getCenter().y > center.y) {
-                        balls[BLUE] = new Ball(radius, center);
+                if (center.y > LINE_UPPER_BOUND && center.y < LINE_LOWER_BOUND) {
+                    if (center.x > first_line - radius && center.x < first_line + radius) {
+                        if (balls[GREEN].getRadius() == 0 || balls[GREEN].getCenter().y > center.y) {
+                            balls[GREEN] = new Ball(radius, center);
+                        }
+                    } else if (center.x > second_line - radius && center.x < second_line + radius) {
+                        if (balls[ORANGE].getRadius() == 0 || balls[ORANGE].getCenter().y > center.y) {
+                            balls[ORANGE] = new Ball(radius, center);
+                        }
+                    } else if (center.x > third_line - radius && center.x < third_line + radius) {
+                        if (balls[BLUE].getRadius() == 0 || balls[BLUE].getCenter().y > center.y) {
+                            balls[BLUE] = new Ball(radius, center);
+                        }
                     }
                 }
             }
-        }
 
-//        /** Handle green ball **/
-////        int radius = balls[GREEN].getRadius();
-////        center = balls[GREEN].getCenter();
-////        Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
-////        greenHeight.add(center.y);
+            /* Handle orange ball */
+            int radius = balls[ORANGE].getRadius();
+            center = balls[ORANGE].getCenter();
+            Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
 
-        /* Handle orange ball */
-        int radius = balls[ORANGE].getRadius();
-        center = balls[ORANGE].getCenter();
-        Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
-
-        if (orangeChecked.equals("true") && radius > 0) {
-            if (initialY == 0)
-                initialY = (int) center.y;
-            orangeHeight.add(center.y);
-            long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-            if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-                if (!isUp) {
-                    screenFeedback(1);
-                    isUp = true;
-                    isRepEntirelyComplete = false;
-                    timeBallInAir = System.currentTimeMillis();
-                } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
-                    if (repCounter >= Integer.parseInt(repsNumTarget)) {
-                        if (requiredTime > 0)
-                            screenFeedback(3);
-                    } else {
-                        screenFeedback(2);
+            if (orangeChecked.equals("true") && radius > 0) {
+                if (initialY == 0)
+                    initialY = (int) center.y;
+                orangeHeight.add(center.y);
+                long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+                    if (!isUp) {
+                        screenFeedback(1);
+                        isUp = true;
+                        isRepEntirelyComplete = false;
+                        timeBallInAir = System.currentTimeMillis();
+                    } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
+                        if (repCounter >= Integer.parseInt(repsNumTarget)) {
+                            if (requiredTime > 0)
+                                screenFeedback(3);
+                        } else {
+                            screenFeedback(2);
+                        }
+                        playSoundSuccess();
+                        breathAnimation();
+                        isRepEntirelyComplete = true;
+                        goodReputations++;
+                        orangeAirTime.add(1.0);
                     }
-                    playSoundSuccess();
-                    breathAnimation();
-                    isRepEntirelyComplete = true;
-                    goodReputations++;
-                    orangeAirTime.add(1.0);
-                }
 
-            } else if (isUp && Math.abs(center.y - initialY) <= radius) {
-                timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                screenFeedback(-1);
-                if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
-                    screenFeedback(3);
-                } else {
-                    screenFeedback(5);
-                }
-
-                isUp = false;
-            }
-            orangeInRange = true;
-
-        }
-        /* Handle blue ball */
-        radius = balls[BLUE].getRadius();
-        center = balls[BLUE].getCenter();
-        Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
-
-        if (radius > 0 && orangeChecked.equals("false")) {
-//        detectBlue = true;
-            if (initialY == 0)
-                initialY = (int) center.y;
-            blueHeight.add(center.y);
-            long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-            if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
-                if (!isUp) {
-                    screenFeedback(1);
-                    isUp = true;
-                    isRepEntirelyComplete = false;
-                    timeBallInAir = System.currentTimeMillis();
-
-                } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
-                    if (repCounter >= Integer.parseInt(repsNumTarget)) {
+                } else if (isUp && Math.abs(center.y - initialY) <= radius) {
+                    timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                    screenFeedback(-1);
+                    if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
                         screenFeedback(3);
                     } else {
-                        screenFeedback(2);
+                        screenFeedback(5);
                     }
-                    playSoundSuccess();
-                    breathAnimation();
 
-                    isRepEntirelyComplete = true;
-                    goodReputations++;
-                    blueAirTime.add(1.0);
+                    isUp = false;
                 }
+                orangeInRange = true;
 
-            } else if (isUp && Math.abs(center.y - initialY) <= radius) {
-                timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                screenFeedback(-1);
-                if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
-                    screenFeedback(3);
-                } else {
-                    screenFeedback(5);
-                }
-
-                isUp = false;
             }
+            /* Handle blue ball */
+            radius = balls[BLUE].getRadius();
+            center = balls[BLUE].getCenter();
+            Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
 
-            blueInRange = true;
+            if (radius > 0 && orangeChecked.equals("false")) {
+                if (initialY == 0)
+                    initialY = (int) center.y;
+                blueHeight.add(center.y);
+                long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+                    if (!isUp) {
+                        screenFeedback(1);
+                        isUp = true;
+                        isRepEntirelyComplete = false;
+                        timeBallInAir = System.currentTimeMillis();
+
+                    } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
+                        if (repCounter >= Integer.parseInt(repsNumTarget)) {
+                            screenFeedback(3);
+                        } else {
+                            screenFeedback(2);
+                        }
+                        playSoundSuccess();
+                        breathAnimation();
+
+                        isRepEntirelyComplete = true;
+                        goodReputations++;
+                        blueAirTime.add(1.0);
+                    }
+
+                } else if (isUp && Math.abs(center.y - initialY) <= radius) {
+                    timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
+                    screenFeedback(-1);
+                    if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                        screenFeedback(3);
+                    } else {
+                        screenFeedback(5);
+                    }
+
+                }
+
+                blueInRange = true;
+            }
+        } catch (Exception e) {
+            System.out.println("Catch exeption");
         }
     }
 

@@ -1,4 +1,4 @@
-package milbat.magdad.magdadmilbat;
+package milbatproj.magdad.magdadmilbat;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,9 +23,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        String DEFAULT_REPS = "10";
+        String DEFAULT_REPS = "5";
         String DEFAULT_DIFFICULTY = "3";
-        String DEFAULT_TIME = "3";
+        String DEFAULT_TIME = "0";
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
