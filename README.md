@@ -48,7 +48,8 @@ throughout the video.
    collapses. We wrapped the function getFrameData with try and catch, but it does not always work.
 2. When we change the database (add or remove a parameter) the history page collapses, and we need
    to do cash cleaning for the app.
-3. If the patient closes the exercise page immediately (before the ******)
+3. If the patient closes the exercise page immediately (before the red circles appears) the time of
+   training in the history is incorrect.
 
 ### Directions for the future
 
@@ -57,6 +58,6 @@ throughout the video.
 2. At the moment, if the patient does not reach the height goal the app doesn't recognizes it as a
    success and doesn't show it in the history page. On the other hand if the patient doesn't reach
    the time goal it does. Adding the option to see half-successful intervals can increase the
-   self-confidence of the patients and also help the speech therapists
+   self-confidence of the patients and also help the speech therapists.
 
 // WILL RESUME
