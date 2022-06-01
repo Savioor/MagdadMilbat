@@ -37,9 +37,99 @@ greenHeight, blueHeight and orangeHeight are all to be used to store the height 
 throughout the video.
 
 ### Explanation of the history database
+On this page we define the SQLITE DATABASE, which keeps our training history in the table.
+#### There are a number of things you should know about the functions
+>##### createTrainingTable()
+>in this function we create new table of Training, with statements for all the parameters we need
+<br />
+
+>##### addTraining()
+>This function inserts into a table a training represented by the Training class.
+<br />
+
+>##### onUpgrade()
+>This function is called, when SQLite detects a change in the structure of the table, when new parameters are added to the table.
+>within this function we update the new table and delete the old one.
+>
+>##### Two things you should know about this function:
+>1. Currently, this function delete the all old data
+>2. If we want this function to be called, we need to notify SQLite that we have made changes, by updating the variable DB_VERSION to a new version.
 
 ### Explanation of the feedback page
+This page is intended to provide users feedback, close to the training they have completed.
+the training they did will be saved in the database.
+#### An explanation of our variables:
+> This variables save the data of repitition in the exercise, 
+> Each index in our ArrayList contains a value of repetition in training
+>```java
+>static ArrayList<Integer> repMaxHeight = new ArrayList<>();
+>static ArrayList<Integer> repDuration = new ArrayList<>();
+>```
+> repMaxHeight - Maximum height of repetition, 
+> repDuration - The total duration of repetition
+      
+<br/>
+   
+>SharPreference variable, gives access to balls preferences
+>```java
+>static SharedPreferences spBreath;
+>```
+   
+<br/>
+   
+>The number of successful repetitions counted in training
+>```java
+>int repsSuccess;
+>```
 
+#### An explanation of the important functions on this page:
+>  ##### format2db()
+>  This function is designed to make it easier for us to save repetitions data, and to convert our repetitions data from repMaxHeight,repDuration to a string format, 
+> The string is kept under one column in the table.
+   
+<br/>
+   
+> ##### onClick()
+> By clicking back to the home screen, we save the data in the database by creating a Training object and sending it all the parameters we have collected and are
+> needed to build the object, then We  open a reference to SQLite and call the addTraining() function that adds the training to the database.
+   
+  <br/>
+   
+##### onCreate()
+This function has a number of lines of code that are worth understanding.
+>Gets the data we transferred from the exercise page   
+>```java
+>   repDuration = intent.getExtras().getIntegerArrayList("repDuration");
+>   repMaxHeight = intent.getExtras().getIntegerArrayList("repMaxHeight");
+>   repsSuccess = intent.getExtras().getInt("repsSuccess");
+>   duration = intent.getExtras().getDouble("duration");
+>   balldata = intent.getExtras().getInt("balldata");
+>```
+   
+   <br/>
+   
+> Checks which ball to refer to, depending on user preferences
+>```java
+> String targetBall = balldata == 3 ? "numberOfrepBlue" : balldata == 2 ? "numberOfrepOrange" :null;
+> targetrep = Integer.parseInt(spBreath.getString(targetBall,null));
+>```  
+   
+   <br/>
+   
+   > The confetti displayed to the user is used in an external library (called DanielMartinus/Konfetti)
+   > https://github.com/DanielMartinus/Konfetti
+   >```java
+>   EmitterConfig emitterConfig = new Emitter(5L, TimeUnit.SECONDS).perSecond(50);
+>       Party party = new PartyFactory(emitterConfig)
+>               .angle(270)
+>               .spread(90)
+>               .setSpeedBetween(1f, 5f)
+>               .timeToLive(2000L)
+>               .position(0.0, 0.0, 1.0, 0.0)
+>               .build();
+>       konfettiView.start(party);
+>  ```
+   
 ### Explanation of the setting page
 
 ### Known software bug
