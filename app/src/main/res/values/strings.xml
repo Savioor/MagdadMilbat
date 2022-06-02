@@ -22,14 +22,19 @@
     <string name="good_job">עבודה טובה!</string>
     <string name="breath">צריך לסדר את המעמד...</string>
 
-    <string-array name="feedbackDown">
+    <string-array name="feedbackDown1">
         <item>מדהים!</item>
         <item>לא לשכוח לקחת הפסקות מידי פעם:)</item>
-        <item>רק עוד קצת!</item>
+        <item>רק עוד קצת לאימון!</item>
         <item>עבודה טובה!</item>
         <item>כל הכבוד!</item>
     </string-array>
 
+    <string-array name="feedbackDown2">
+        <item>קצת יותר!</item>
+        <item>שווה לנסות!</item>
+        <item>אפשר להצליח!</item>
+    </string-array>
     <string-array name="feedbackUp">
         <item>להשאיר את הכדור!</item>
     </string-array>

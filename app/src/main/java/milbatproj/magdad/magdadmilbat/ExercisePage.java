@@ -96,6 +96,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
 
     static boolean isRepEntirelyComplete = false;
+    static boolean isStarted = false;
 
     /* ANIMATION VARIABLES */
     boolean started = false;
@@ -121,7 +122,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     static SoundPool sp;
     static int coin;
 
-    static String[] feedbackDown, feedbackUp, feedbackAfterUp, feedbackFinish, feedbackStart;
+    static String[] feedbackDown1, feedbackDown2, feedbackUp, feedbackAfterUp, feedbackFinish, feedbackStart;
+    static boolean wasGoodRep;
 
     static boolean detectBlue, detectOrange, detectGreen;
 
@@ -523,16 +525,19 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
 
         isRepEntirelyComplete = false;
 
-
+        wasGoodRep = true;
+        isStarted = false;
     }
 
     public void screenFeedback(int choice) {
         /**
          * -1 = repEnd
-         * 0 = feedbackDown,
+         * 0 = start
          * 1 = feedbackUp,
          * 2 = feedbackAfterUp,
          * 3= feedbackFinish;
+         * 4 = feedbackDown2 not goot
+         * 5 = feedbackDown1 good
          */
         r = new Runnable() {
             @Override
@@ -594,7 +599,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         final Drawable drawable = ContextCompat.getDrawable(getApplicationContext(), R.drawable.ic_heart);
         drawableShape = new Shape.DrawableShape(drawable, true);
 
-        feedbackDown = getResources().getStringArray(R.array.feedbackDown);
+        feedbackDown1 = getResources().getStringArray(R.array.feedbackDown1);
+        feedbackDown2 = getResources().getStringArray(R.array.feedbackDown2);
         feedbackUp = getResources().getStringArray(R.array.feedbackUp);
         feedbackAfterUp = getResources().getStringArray(R.array.feedbackAfterUp);
         feedbackFinish = getResources().getStringArray(R.array.feedbackFinish);
@@ -664,7 +670,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 int a = msg.what;
                 int arg = msg.arg1;
                 if (a == -1) {
-                    String[] arrfeedback = arg == 5 ? feedbackDown : arg == 1 ? feedbackUp : arg == 2 ? feedbackAfterUp : arg == 3 ? feedbackFinish : feedbackStart;
+                    String[] arrfeedback = arg == 5 ? feedbackDown1 : arg == 1 ? feedbackUp : arg == 2 ? feedbackAfterUp : arg == 3 ? feedbackFinish : arg == 4 ? feedbackDown2 : feedbackStart;
                     showFeedback(arrfeedback);
                 } else {
                     String str1 = String.valueOf(a);
@@ -689,10 +695,6 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
      */
     private void getFrameData(Mat img, int first_line, int second_line, int third_line) {
         try {
-            if (allExrDuration == 0) {
-                allExrDuration = System.currentTimeMillis();
-                screenFeedback(4);
-            }
 
             Mat circles = new Mat();
             double[] c;
@@ -736,7 +738,25 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     }
                 }
             }
-
+            if (!isStarted &&
+                    (
+                            (balls[ORANGE].getRadius() == 0 || balls[BLUE].getRadius() == 0)
+                                    ||
+                                    (LINE_LOWER_BOUND - balls[ORANGE].getCenter().y > 1.5 * balls[ORANGE].getRadius())
+                    )
+            ) {
+                return;
+            } else if (!isStarted) {
+                allExrDuration = System.currentTimeMillis();
+                screenFeedback(0);
+            }
+            if (isStarted &&
+                    (((orangeChecked.equals("true") && balls[ORANGE].getRadius() == 0) ||
+                            (orangeChecked.equals("false") && balls[BLUE].getRadius() == 0)))) {
+                System.out.println("test");
+                return;
+            }
+            isStarted = true;
             /* Handle orange ball */
             int radius = balls[ORANGE].getRadius();
             center = balls[ORANGE].getCenter();
@@ -753,6 +773,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                         isUp = true;
                         isRepEntirelyComplete = false;
                         timeBallInAir = System.currentTimeMillis();
+                        wasGoodRep = false;
                     } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
                         if (repCounter >= Integer.parseInt(repsNumTarget)) {
                             if (requiredTime > 0)
@@ -765,13 +786,17 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                         isRepEntirelyComplete = true;
                         goodReputations++;
                         orangeAirTime.add(1.0);
+
+                        wasGoodRep = true;
                     }
 
                 } else if (isUp && Math.abs(center.y - initialY) <= radius) {
                     timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
                     screenFeedback(-1);
-                    if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                    if (repCounter >= Integer.parseInt(repsNumTarget)) {
                         screenFeedback(3);
+                    } else if (!wasGoodRep) {
+                        screenFeedback(4);
                     } else {
                         screenFeedback(5);
                     }
@@ -797,6 +822,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                         isUp = true;
                         isRepEntirelyComplete = false;
                         timeBallInAir = System.currentTimeMillis();
+                        wasGoodRep = false;
 
                     } else if (!isRepEntirelyComplete && temp_timeBallInAir >= (long) (requiredTime * 10.0)) {
                         if (repCounter >= Integer.parseInt(repsNumTarget)) {
@@ -810,19 +836,22 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                         isRepEntirelyComplete = true;
                         goodReputations++;
                         blueAirTime.add(1.0);
+
+                        wasGoodRep = true;
                     }
 
                 } else if (isUp && Math.abs(center.y - initialY) <= radius) {
                     timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
                     screenFeedback(-1);
-                    if (repCounter + 1 >= Integer.parseInt(repsNumTarget)) {
+                    if (repCounter >= Integer.parseInt(repsNumTarget)) {
                         screenFeedback(3);
+                    } else if (!wasGoodRep) {
+                        screenFeedback(4);
                     } else {
                         screenFeedback(5);
                     }
-
+                    isUp = false;
                 }
-
                 blueInRange = true;
             }
         } catch (Exception e) {
