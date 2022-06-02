@@ -514,4 +514,3 @@ This function has a number of lines of code that are worth understanding.
    the time goal it does. Adding the option to see half-successful intervals can increase the
    self-confidence of the patients and also help the speech therapists.
 
-// WILL RESUME
