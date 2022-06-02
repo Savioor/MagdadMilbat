@@ -95,7 +95,7 @@ Firsly, we get the frame by writing the line
   final int FIRST_LINE = 10 * frame.width() / 30, SECOND_LINE = 14 * frame.width() / 30, THIRD_LINE = 18 * frame.width() / 30;
   ```
  The rest of the function, if so, is this:
- ```
+ ```java
 if (isDone) {
     // if the timer is finished
     getFrameData(frame, FIRST_LINE, SECOND_LINE, THIRD_LINE);
