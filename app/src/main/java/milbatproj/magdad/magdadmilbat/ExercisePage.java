@@ -648,7 +648,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         } else
             ballToUse = 3;
 
-        CountDownTimer count = new CountDownTimer(5000, 1000) {
+        CountDownTimer count = new CountDownTimer(2000, 1000) {
             @Override
             public void onTick(long l) {
             }
@@ -722,6 +722,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                 center = new Point(Math.round(c[0]), Math.round(c[1]));
                 int radius = (int) c[2];
 
+
                 if (center.y > LINE_UPPER_BOUND && center.y < LINE_LOWER_BOUND) {
                     if (center.x > first_line - radius && center.x < first_line + radius) {
                         if (balls[GREEN].getRadius() == 0 || balls[GREEN].getCenter().y > center.y) {
@@ -742,7 +743,9 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     (
                             (balls[ORANGE].getRadius() == 0 || balls[BLUE].getRadius() == 0)
                                     ||
-                                    (LINE_LOWER_BOUND - balls[ORANGE].getCenter().y > 1.5 * balls[ORANGE].getRadius())
+                                    (LINE_LOWER_BOUND - balls[ORANGE].getCenter().y > 1.2 * balls[ORANGE].getRadius())
+                                    ||
+                                    (Math.abs(balls[BLUE].getCenter().y - balls[ORANGE].getCenter().y) > 0.5 * balls[ORANGE].getRadius())
                     )
             ) {
                 return;
@@ -762,12 +765,13 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             center = balls[ORANGE].getCenter();
             Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
 
+
             if (orangeChecked.equals("true") && radius > 0) {
                 if (initialY == 0)
                     initialY = (int) center.y;
                 orangeHeight.add(center.y);
                 long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+                if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + 1.1 * radius >= ((orangeHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2.2 * radius) / 4.0)) {
                     if (!isUp) {
                         screenFeedback(1);
                         isUp = true;
@@ -816,7 +820,7 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
                     initialY = (int) center.y;
                 blueHeight.add(center.y);
                 long temp_timeBallInAir = (System.currentTimeMillis() - timeBallInAir) / 100;
-                if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2 * radius) / 4.0)) {
+                if (Math.abs(center.y - initialY) > radius && Math.abs(center.y - initialY) + 1.1 * radius >= ((blueHeightSetting + 1) * (Math.abs(LINE_UPPER_BOUND - LINE_LOWER_BOUND) - 2.2 * radius) / 4.0)) {
                     if (!isUp) {
                         screenFeedback(1);
                         isUp = true;
