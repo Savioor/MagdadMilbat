@@ -223,8 +223,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     public static void drawHorizontalLines(Mat frame, int height, int width) {
 //        final int LINE_UPPER_BOUND = 550, LINE_LOWER_BOUND = 50;
         final double LINE_UPPER_PERC = 0.266, LINE_LOWER_PERC = 0.93;
-        drawLine(frame, new Point(0, height * LINE_UPPER_PERC), new Point(width, height * LINE_UPPER_PERC));
-        drawLine(frame, new Point(0, height * LINE_LOWER_PERC), new Point(width, height * LINE_LOWER_PERC));
+        drawLine(frame, new Point(0, height * LINE_UPPER_PERC), new Point(width, height * LINE_UPPER_PERC), new Scalar(255, 255, 102));
+        drawLine(frame, new Point(0, height * LINE_LOWER_PERC), new Point(width, height * LINE_LOWER_PERC), new Scalar(255, 255, 102));
 //        drawLine(frame, new Point(0, 600), new Point(width, 600));
     }
 
@@ -307,8 +307,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
     public static void drawVerticalLines(Mat frame, int FIRST_LINE, int SECOND_LINE, int THIRD_LINE) {
         int height = frame.height();
 //        drawLine(frame, new Point(FIRST_LINE, 0), new Point(FIRST_LINE, height));
-        drawLine(frame, new Point(SECOND_LINE, 0), new Point(SECOND_LINE, height));
-        drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height));
+        drawLine(frame, new Point(SECOND_LINE, 0), new Point(SECOND_LINE, height), new Scalar(0, 255, 204));
+        drawLine(frame, new Point(THIRD_LINE, 0), new Point(THIRD_LINE, height), new Scalar(0, 255, 204));
     }
 
     /**
@@ -370,8 +370,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
         }
     }
 
-    private static void drawLine(Mat img, Point p1, Point p2) {
-        Imgproc.line(img, p1, p2, new Scalar(0, 255, 0), 5);
+    private static void drawLine(Mat img, Point p1, Point p2, Scalar color) {
+        Imgproc.line(img, p1, p2, color, 5);
     }
 
     public static void onArrBlueChange() {
@@ -763,7 +763,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             /* Handle orange ball */
             int radius = balls[ORANGE].getRadius();
             center = balls[ORANGE].getCenter();
-            Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
+            //if you want to draw circle that the algorithm recognized as the orange ball- uncomments the next line
+//            Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
 
 
             if (orangeChecked.equals("true") && radius > 0) {
@@ -813,7 +814,8 @@ public class ExercisePage extends Activity implements View.OnClickListener, Java
             /* Handle blue ball */
             radius = balls[BLUE].getRadius();
             center = balls[BLUE].getCenter();
-            Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
+            //if you want to draw circle that the algorithm recognized as the blue ball- uncomments the next line
+//            Imgproc.circle(img, center, radius, new Scalar(255, 0, 0), 5);
 
             if (radius > 0 && orangeChecked.equals("false")) {
                 if (initialY == 0)
